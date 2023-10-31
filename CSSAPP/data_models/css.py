@@ -22,11 +22,12 @@ class CSS(models.Model):
     telephone = models.CharField(max_length=255)
     date_nais = models.DateField()
     civilite = models.CharField(max_length=20, choices=CIVILITE_CHOICES , default='Célibataire')
+    role= models.CharField(max_length=10, default='css', editable=True)
     email = models.EmailField(unique=True)
     genre = models.CharField(max_length=10, choices=[('Homme', 'Homme'), ('Femme', 'Femme')])
     mot_de_passe = models.CharField(max_length=255)
     confirmer_mot_de_passe = models.CharField(max_length=255)
-    imagesprofiles = models.ImageField(upload_to='images/',max_length=500) 
+    imagesprofiles = models.ImageField(upload_to='images/', max_length=500) 
 
 
     def clean(self):
@@ -43,10 +44,9 @@ class CSS(models.Model):
     def save(self, *args, **kwargs):
         if not self.matricule:
             self.matricule = self.generate_matricule()
-
         self.clean() 
-        
 
+        super(CSS, self).save(*args, **kwargs)
 
     def generate_matricule(self):
         last_css = CSS.objects.order_by('-matricule').first()

@@ -6,7 +6,6 @@ from django.core.exceptions import ValidationError
 
 
 
-
 CIVILITE_CHOICES = [
     ('marié', 'MARIE'),
     ('veuf(ve)', 'VEUF(VE)'),
@@ -64,9 +63,10 @@ class Etudiant(models.Model):
     filiere = models.CharField(max_length=20, choices=FILIERE_CHOICES , default='informatique')
     niveaux = models.CharField(max_length=20, choices=NIVEAUX_CHOICES , default='licence1')
     statut = models.CharField(max_length=20, choices=STATUT_CHOICES , default='En Frequentation')
+    role = models.CharField(max_length=10, default='etudiant', editable=True)
     mois_debut_annee_academique = models.IntegerField(choices=MOIS_CHOICES, default=9)  # Choisissez le mois de début de l'année académique
     annee_academique = models.CharField(max_length=9, default=None)  # Champ pour l'année académique au format "AAAA - AAAA"
-    annee_frequentation_fin = models.DateField(default=None)
+    annee_frequentation_fin = models.DateField(blank=True, null=True)
     email = models.EmailField(unique=True , default=None)
     genre = models.CharField(max_length=10, choices=[('Homme', 'Homme'), ('Femme', 'Femme')] , default='Homme')
     mot_de_passe = models.CharField(max_length=255 , default=None)
@@ -90,6 +90,7 @@ class Etudiant(models.Model):
         if not self.matricule:
             self.matricule = self.generate_matricule()
         self.clean() 
+        
         
 
         self.update_annee_academique()

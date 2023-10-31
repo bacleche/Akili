@@ -24,8 +24,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('Home.urls')),
     path('Login_akili/', include('LoginApp.urls')),  
-    #path('Etudiant_Space/', include('EtudiantApp.urls')),  
-    #path('Css_Space/', include('CSSAPP.urls')),  
+    path('Etudiant_Space/', include('EtudiantApp.urls')),  
+    path('Css_Space/', include('CSSAPP.urls')),  
 
 
  
