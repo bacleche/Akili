@@ -38,13 +38,13 @@ class Demande(models.Model):
         ('LICENCE', 'Licence'),
     )
 
-    identite_concerne = models.ForeignKey(Etudiant, on_delete=models.DO_NOTHING)
+    identite_concerne = models.ForeignKey(Etudiant, on_delete=models.CASCADE)
     objet_demande = models.CharField(max_length=50, choices=OBJET_CHOICES)
     session = models.CharField(max_length=2, choices=SESSION_CHOICES_DUT)
     filiere = models.CharField(max_length=50, choices=FILIERE_CHOICES)
     cycle = models.CharField(max_length=50, choices=CYCLE_CHOICES)
     annee_academique = models.CharField(max_length=10)
-    identite_receptioniste = models.ForeignKey(CSS, on_delete=models.DO_NOTHING)
+    identite_receptioniste = models.ForeignKey(CSS, on_delete=models.CASCADE)
     
     def save(self, *args, **kwargs):
         current_year = timezone.now().year

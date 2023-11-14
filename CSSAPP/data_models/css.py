@@ -59,6 +59,6 @@ class CSS(models.Model):
 
 
 @receiver(pre_save, sender=CSS)
-def etudiant_pre_save(sender, instance, **kwargs):
+def css_pre_save(sender, instance, **kwargs):
     if not instance.matricule:
         instance.matricule = instance.generate_matricule()
