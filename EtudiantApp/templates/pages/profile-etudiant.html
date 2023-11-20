@@ -268,7 +268,7 @@
                   <li class="user-header">
                     <img src="{{ imagesprofiles }}" class="img-circle" alt="User Image" />
                     <p>
-                      {{ nom }} - Etudiant
+                      {{ nom }} - ETUDIANT
                       <small>Member since Nov. 2012</small>
                     </p>
                   </li>
@@ -312,7 +312,6 @@
               <p>{{nom}}</p>
 
               <a href="#"><i class="fa fa-circle text-success"></i> En Ligne</a>
-             
             </div>
           </div>
           <!-- search form -->
@@ -328,12 +327,12 @@
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class="header">MAIN NAVIGATION</li>
-            <li class="active treeview">
+            <li class="treeview">
               <a href="#">
                 <i class="fa fa-dashboard"></i> <span>Tableau de Bord</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li class="active"><a href="{% url 'student_space' %}"><i class="fa fa-circle-o"></i>Accueil</a></li>
+                <li ><a href="index.html"><i class="fa fa-circle-o"></i>Accueil</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -351,20 +350,20 @@
             <li class="treeview">
               <a href="#">
                 <i class="fa fa-laptop"></i>
-                <span>Zone de posts</span>
+                <span>Zone de Posts</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
                 <li><a href="{% url 'poste_memoire_etudiant' %}"><i class="fa fa-circle-o"></i>Travail de recherche</a></li>
               </ul>
             </li>
-            <li class="treeview">
+            <li class="active  treeview">
               <a href="#">
                 <i class="fa fa-user"></i> <span>profile</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="{% url 'Profiles_etudiant' %}"><i class="fa fa-circle-o"></i>Voir Profile</a></li>
+                <li class="active"><a href="{% url 'Profiles_etudiant' %}"><i class="fa fa-circle-o"></i>Voir Profile</a></li>
                 <li><a href="{% url 'profile_details_etudiant' %}"><i class="fa fa-circle-o"></i>Modifier Profile</a></li>
               </ul>
             </li>
@@ -395,17 +394,20 @@
                 <small class="label pull-right bg-yellow">12</small>
               </a>
             </li>
-            
             <li class="treeview">
               <a href="#">
                 <i class="fa fa-share"></i> <span>Transfert Administratif</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="#"><i class="fa fa-circle-o"></i>La scolarité</a></li>
+                <li><a href="#"><i class="fa fa-circle-o"></i>DCFI</a></li>
+                <li>
+                  <a href="#"><i class="fa fa-circle-o"></i>ETUDIANTS</a>
+                </li>
+                
               </ul>
             </li>
-            <li><a href="{% url 'deconnexion' %}"><i class="fa fa-sign-out"></i> Se Deconnecter</a></li>
+            <li><a href="documentation/index.html"><i class="fa fa-sign-out"></i> Se Deconnecter</a></li>
             
           </ul>
         </section>
@@ -418,10 +420,10 @@
         <section class="content-header">
           <h1>
             Tableau De Bord
-            <small>Panneau de Control | {{role|upper}} </small>
+            <small>Panneau de Control - {{role|upper}}</small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+            <li><a href="#"><i class="fa fa-dashboard"></i> Profiles </a></li>
             <li class="active">Tableau de Bord</li>
           </ol>
         </section>
@@ -485,7 +487,43 @@
           </div><!-- /.row -->
           <!-- Main row -->
           <div class="row">
-            <img src="{% static 'assets_dash/AKILI.png' %}" class="responsive-image" />
+            <form action="" method="post" role="form" class="php-email-form">
+              
+                  <div class="col-md-6 form-group">
+                      <label for="name">Nom:</label>
+                      <input type="text" name="name" class="form-control" id="name" disabled placeholder="Votre nom" value="{{nom}}" required="">
+                  </div>
+                  <div class="col-md-6 form-group">
+                      <label for="surname">Prénom:</label>
+                      <input type="text" name="surname" class="form-control" id="surname" disabled placeholder="Votre prénom" value="{{prenom}}" required="">
+                  </div>
+                  <div class="col-md-6 form-group mt-3 mt-md-0">
+                      <label for="email">Email:</label>
+                      <input type="email" class="form-control" name="email" id="email" disabled placeholder="Votre email" value="{{email}}" required="">
+                  </div>
+                  <div class="col-md-6 form-group">
+                    <label for="surname">Civilité:</label>
+                    <input type="text" name="civilite" class="form-control" id="civilite" disabled placeholder="Votre prénom" value="{{civilite}}" required="">
+                  </div>
+                  <div class="col-md-6 form-group">
+                    <label for="surname">Rôle:</label>
+                    <input type="text" name="surname" class="form-control" id="surname" disabled placeholder="Votre prénom" value="{{role}}" required="">
+                  </div>
+                  <div class="col-md-6 form-group">
+                    <label for="surname">Téléphone:</label>
+                    <input type="text" name="phone" class="form-control" id="phone" disabled placeholder="Votre téléphone" value="{{telephone}}" required="">
+                  </div>
+                  <div class="col-md-6 form-group">
+                    <label for="surname">Date de Naissance:</label>
+                    <input type="date" name="date" class="form-control" id="date" disabled placeholder="Votre date de naissance" value="{{date_nais}}" required="">
+                  </div>
+                  <div class="col-md-6 form-group mt-3 mt-md-0">
+                      <label for="password">Mot de passe:</label>
+                      <input type="password" class="form-control" name="password" id="password" disabled placeholder="Votre mot de passe" value="{{mot_de_passe}}" required="">
+                  </div>
+              
+            </form>
+          
           </div><!-- /.row (main row) -->
 
         </section><!-- /.content -->

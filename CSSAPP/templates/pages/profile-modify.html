@@ -510,9 +510,15 @@
                   <input type="email" class="form-control" name="email" id="email"  placeholder="Votre email" value="{{email}}" required="">
               </div>
               <div class="col-md-6 form-group">
-                <label for="surname">Civilité:</label>
-                <input type="text" name="civilite" class="form-control" id="civilite"  placeholder="Votre prénom" value="{{civilite}}" required="">
-              </div>
+                <label for="civilite">Civilité:</label>
+                <select name="civilite" class="form-control" id="civilite" required>
+                    {% for choix in civilite_choices %}
+                        <option value="{{ choix.0 }}" {% if choix.0 == civilite %}selected{% endif %}>{{ choix.1 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            
               <div class="col-md-6 form-group">
                 <label for="surname">Téléphone:</label>
                 <input type="text" name="phone" class="form-control" id="phone"  placeholder="Votre téléphone" value="{{telephone}}" required="">
@@ -521,21 +527,19 @@
                 <label for="surname">Date de Naissance:</label>
                 <input type="date" name="date_nais" class="form-control" id="date"  placeholder="Votre date de naissance" value="{{date_nais}}" required="">
               </div>
-              <div class="col-md-6 form-group">
+              <div class="col-md-6 form-group hidden">
                 <label for="role">role:</label>
-                <input type="text" name="role" class="form-control" id="role"  placeholder="" value="{{role}}" disabled>
+                <input type="text" name="role" class="form-control hidden" id="role"  placeholder="" value="{{role}}">
               </div>
               <div class="col-md-6 form-group">
                 <label for="password">Mot de passe:</label>
                 <input type="password" class="form-control" name="password" id="password" placeholder="Votre mot de passe" value="{{mot_de_passe}}" required="">
-                <!-- Ajoutez une balise de débogage pour afficher la valeur du champ -->
-                <p>mot_de_passe: {{mot_de_passe}}</p>
+                
             </div>
             <div class="col-md-6 form-group">
                 <label for="password_conf">Confirmer Mot de passe:</label>
                 <input type="password" class="form-control" name="password_conf" id="password_conf" placeholder="Confirmation" value="{{confirmer_mot_de_passe}}" required="">
-                <!-- Ajoutez une balise de débogage pour afficher la valeur du champ -->
-                <p>confirmer_mot_de_passe: {{confirmer_mot_de_passe}}</p>
+              
             </div>
             
               <div class="col-md-6 form-group">

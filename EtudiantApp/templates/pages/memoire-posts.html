@@ -32,11 +32,7 @@
 
   </head>
   <style>
-    .main-footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-  }
+    
   .content-wrapper {
     min-height: 100vh; /* ou une hauteur minimale appropriée */
 }
@@ -45,6 +41,13 @@
       width: 300px;  /* Largeur souhaitée */
       height: 43px;  /* Hauteur automatique pour maintenir le ratio d'aspect */
   }
+
+  @media (max-width: 767px) {
+    /* Styles spécifiques aux petits écrans ici */
+    .btn-block {
+       width: 100%;
+    }
+ }
 
   .responsive-image {
     max-width: 100%; /* L'image ne sera jamais plus large que son conteneur */
@@ -260,15 +263,15 @@
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <img src="{{ imagesprofiles }}" class="user-image" alt="User Image"/>
-                  <span class="hidden-xs">{{ nom }}</span>
+                  <img src="{{ user_data.imagesprofiles }}" class="user-image" alt="User Image"/>
+                  <span class="hidden-xs">{{ user_data.nom }}</span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
-                    <img src="{{ imagesprofiles }}" class="img-circle" alt="User Image" />
+                    <img src="{{ user_data.imagesprofiles }}" class="img-circle" alt="User Image" />
                     <p>
-                      {{ nom }} - Etudiant
+                      {{ user_data.nom }} - Etudiant
                       <small>Member since Nov. 2012</small>
                     </p>
                   </li>
@@ -306,10 +309,10 @@
           <!-- Sidebar user panel -->
           <div class="user-panel">
             <div class="pull-left image">
-              <img src="{{ imagesprofiles }}" class="img-circle" alt="User Image" />
+              <img src="{{ user_data.imagesprofiles }}" class="img-circle" alt="User Image" />
             </div>
             <div class="pull-left info">
-              <p>{{nom}}</p>
+              <p>{{user_data.nom}}</p>
 
               <a href="#"><i class="fa fa-circle text-success"></i> En Ligne</a>
              
@@ -355,7 +358,7 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="{% url 'poste_memoire_etudiant' %}"><i class="fa fa-circle-o"></i>Travail de recherche</a></li>
+                <li><a href="pages/UI/general.html"><i class="fa fa-circle-o"></i>Travail de recherche</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -418,10 +421,10 @@
         <section class="content-header">
           <h1>
             Tableau De Bord
-            <small>Panneau de Control | {{role|upper}} </small>
+            <small>Panneau de Control | {{user_data.role|upper}} </small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+            <li><a href="#"><i class="fa fa-dashboard"></i> Memoire-Post</a></li>
             <li class="active">Tableau de Bord</li>
           </ol>
         </section>
@@ -484,10 +487,15 @@
             </div><!-- ./col -->
           </div><!-- /.row -->
           <!-- Main row -->
-          <div class="row">
-            <img src="{% static 'assets_dash/AKILI.png' %}" class="responsive-image" />
-          </div><!-- /.row (main row) -->
-
+          
+          <!-- votre_template.html -->
+          <form method="post" action="{% url 'poster_memoire' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+           
+            <button type="submit" class="btn btn-primary btn-block">Poster le mémoire</button>
+         </form>
+         
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
       <footer class="main-footer">

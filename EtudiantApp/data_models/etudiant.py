@@ -119,6 +119,9 @@ class Etudiant(models.Model):
         else:
             start_year = current_year - 1
             end_year = current_year
+    
+    def __str__(self):
+        return f"{self.nom} {self.prenom}"
 
 @receiver(pre_save, sender=Etudiant)
 def etudiant_pre_save(sender, instance, **kwargs):
@@ -130,3 +133,4 @@ def etudiant_pre_save(sender, instance, **kwargs):
         current_year = timezone.now().year
         if instance.annee_frequentation_fin == current_year:
             instance.statut = 'Ancien etudiant'
+
