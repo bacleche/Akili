@@ -26,6 +26,11 @@ class Memoire(models.Model):
             ):
                 raise ValidationError("Le co-auteur doit être du même niveau, de la même filière et du même cycle.")
 
+        existing_memoires = Memoire.objects.filter(
+            models.Q(identite=self.identite) | models.Q(co_auteur=self.identite) |
+            models.Q(identite=self.co_auteur) | models.Q(co_auteur=self.co_auteur)
+        )
+        
         # Vérifiez si un mémoire avec les mêmes identités existe déjà
         existing_memoires = Memoire.objects.filter(identite=self.identite, co_auteur=self.co_auteur)
         if self.pk:

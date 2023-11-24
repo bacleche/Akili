@@ -63,12 +63,9 @@ def mis_a_jour_etudiant(request):
     return render(request, 'pages/profile-modify-etudiant.html', {'user': user})
 
 
-def poste_memoire_etudiant(request):
-    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
-    return render(request, 'pages/memoire-posts.html', user_data)
 
 def poster_memoire(request):
-    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
+    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles' , 'cycle', 'filiere' , 'niveaux']}
     
     if request.method == 'POST':
         form = MemoireForm(request.POST, request.FILES, user_data=user_data)
@@ -77,5 +74,6 @@ def poster_memoire(request):
             return redirect('poster_memoire')
     else:
         form = MemoireForm(user_data=user_data)
+        
 
     return render(request, 'pages/memoire-posts.html', {'form': form, 'user_data': user_data})
