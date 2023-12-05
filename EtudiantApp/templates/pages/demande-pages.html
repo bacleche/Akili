@@ -32,7 +32,11 @@
 
   </head>
   <style>
-    
+    .main-footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+  }
   .content-wrapper {
     min-height: 100vh; /* ou une hauteur minimale appropriée */
 }
@@ -42,28 +46,12 @@
       height: 43px;  /* Hauteur automatique pour maintenir le ratio d'aspect */
   }
 
-  @media (max-width: 767px) {
-    /* Styles spécifiques aux petits écrans ici */
-    .btn-block {
-       width: 100%;
-    }
- }
-
   .responsive-image {
     max-width: 100%; /* L'image ne sera jamais plus large que son conteneur */
     height: auto; /* L'hauteur est calculée proportionnellement à la largeur */
     display: block; /* Pour enlever l'espace sous l'image */
     margin: 0 auto; 
 }
-
-.error-message {
-  color: red;
-}
-
-.success-message {
-  color: green;
-}
-
 
 
   </style>
@@ -280,7 +268,7 @@
                   <li class="user-header">
                     <img src="{{ user_data.imagesprofiles }}" class="img-circle" alt="User Image" />
                     <p>
-                      {{ user_data.nom }} - {{user_data.role | upper}}
+                      {{ user_data.nom }} - {{user_data.role |upper}}
                       <small>Numero d'identification : {{user_data.Identification}}</small>
                     </p>
                   </li>
@@ -340,12 +328,12 @@
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class="header">MAIN NAVIGATION</li>
-            <li class="active treeview">
+            <li class="treeview">
               <a href="#">
                 <i class="fa fa-dashboard"></i> <span>Tableau de Bord</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li class="active"><a href="{% url 'student_space' %}"><i class="fa fa-circle-o"></i>Accueil</a></li>
+                <li class=""><a href="{% url 'student_space' %}"><i class="fa fa-circle-o"></i>Accueil</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -367,7 +355,7 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/UI/general.html"><i class="fa fa-circle-o"></i>Travail de recherche</a></li>
+                <li><a href="{% url 'poster_memoire' %}"><i class="fa fa-circle-o"></i>Travail de recherche</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -380,14 +368,13 @@
                 <li><a href="{% url 'profile_details_etudiant' %}"><i class="fa fa-circle-o"></i>Modifier Profile</a></li>
               </ul>
             </li>
-            <li class="treeview">
+            <li class="active treeview">
               <a href="#">
                 <i class="fa fa-folder"></i> <span>Formuler une Demande</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/examples/500.html"><i class="fa fa-circle-o"></i> Attestations</a></li>
-                <li><a href="pages/examples/blank.html"><i class="fa fa-circle-o"></i> Bulletins</a></li>
+                <li class="active"><a href="pages/examples/500.html"><i class="fa fa-circle-o"></i>effectuer une demande</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -433,7 +420,7 @@
             <small>Panneau de Control | {{user_data.role|upper}} </small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Memoire-Post</a></li>
+            <li><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
             <li class="active">Tableau de Bord</li>
           </ol>
         </section>
@@ -496,37 +483,46 @@
             </div><!-- ./col -->
           </div><!-- /.row -->
           <!-- Main row -->
-          
-          <!-- votre_template.html -->
-          {% comment %} <form method="post" action="{% url 'poster_memoire' %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}           
-            <button type="submit" class="btn btn-primary btn-block">Poster le mémoire</button>
-         </form> {% endcomment %}
+          <div class="row">
+            <h2>Créer une demande</h2>
+              <form method="post" action="{% url 'creer_demande' %}">
+                {% csrf_token %}
+                
+                {{ form.as_p }}
+                <p id="cycle-value" class="hidden">{{user_data.cycle}}</p>
          
-         <form method="post" action="{% url 'poster_memoire' %}" enctype="multipart/form-data">
-          {% csrf_token %}
-          {% if messages %}
-              {% for message in messages %}
-                  {% if message.tags == 'success' %}
-                      <div class="success-message">
-                          {{ message }}
-                      </div>
-                  {% elif message.tags == 'error' %}
-                      <div class="error-message">
-                          {{ message }}
-                      </div>
-                  {% endif %}
-              {% endfor %}
-          {% endif %}
-          {{ form.as_div }}
-          <button type="submit" class="btn btn-primary btn-block">Poster le mémoire</button>
-      </form>
-      
-      
-      
-     
-      
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const cycleValue = document.getElementById('cycle-value').textContent.trim().toLowerCase();
+                        const sessionDutField = document.getElementById('id_session_dut');
+                        const sessionLicField = document.getElementById('id_session_lic');
+                        const labelSessionDut = document.querySelector('label[for=id_session_dut]');
+                        const labelSessionLic = document.querySelector('label[for=id_session_lic]');
+        
+                        function toggleSessionFields() {
+                            if (cycleValue === 'dut') {
+                                sessionLicField.hidden = true;
+                                labelSessionLic.hidden = true;
+                                sessionDutField.hidden = false;
+                                labelSessionDut.hidden = false;
+                            } else if (cycleValue === 'licence') {
+                                sessionLicField.hidden = false;
+                                labelSessionLic.hidden = false;
+                                sessionDutField.hidden = true;
+                                labelSessionDut.hidden = true;
+                            }
+                        }
+        
+                        toggleSessionFields();  // Appeler la fonction lors du chargement initial
+        
+                        document.getElementById('id_cycle').addEventListener('change', toggleSessionFields);  // Écouter les changements de cycle
+                    });
+                </script>
+        
+                <button type="submit">Enregistrer la demande</button>
+            </form>
+        </div><!-- /.row (main row) -->
+        
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
       <footer class="main-footer">
@@ -548,8 +544,6 @@
     <script src="{% static 'assets_dash/bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>    
     <!-- Morris.js charts -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-    <script src="{% static 'assets_dash/plugins/morris/morris.min.js' %}" type="text/javascript"></script>
-    <!-- Sparkline -->
     <script src="{% static 'assets_dash/plugins/sparkline/jquery.sparkline.min.js' %}" type="text/javascript"></script>
     <!-- jvectormap -->
     <script src="{% static 'assets_dash/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js' %}" type="text/javascript"></script>
@@ -572,6 +566,5 @@
     <script src="{% static 'assets_dash/dist/js/app.min.js' %}" type="text/javascript"></script>
 
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="{% static 'assets_dash/dist/js/pages/dashboard.js' %}" type="text/javascript"></script>
   </body>
 </html>

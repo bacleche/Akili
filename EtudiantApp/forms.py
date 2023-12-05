@@ -1,51 +1,75 @@
 from django import forms
 from EtudiantApp.data_models.memoire import Memoire
 from EtudiantApp.data_models.etudiant import Etudiant
+from EtudiantApp.data_models.demande import Demande
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 
 
 class MemoireForm(forms.ModelForm):
     class Meta:
         model = Memoire
-        fields = ['titre', 'date_poste', 'identite', 'co_auteur' , 'document']
+        fields = ['titre', 'date_poste', 'identite', 'matricule_identification_binome', 'document']
+        widgets = {
+            'matricule_identification_binome': forms.TextInput(attrs={'required': False}),
+        }
 
     def __init__(self, *args, **kwargs):
         # Récupérez l'utilisateur connecté depuis les kwargs
         user_data = kwargs.pop('user_data', None)
         super().__init__(*args, **kwargs)
 
-        # Filtrez les choix du champ identite pour inclure uniquement l'étudiant connecté
         if user_data:
-            self.fields['co_auteur'].queryset = Etudiant.objects.exclude(matricule=user_data['matricule'])
-            
-            
-        if user_data:
+            self.fields['matricule_identification_binome'].queryset = Etudiant.objects.all()
             self.fields['identite'].queryset = Etudiant.objects.filter(matricule=user_data['matricule'])
 
+        # Rendez le champ du binôme non obligatoire
+        self.fields['matricule_identification_binome'].required = False
 
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
 
+
+
+class DemandeForm(forms.ModelForm):
+    class Meta:
+        model = Demande
+        fields = ['identite_concerne', 'objet_demande', 'session_dut', 'session_lic', 'filiere', 'cycle', 'annee_academique', 'identite_receptioniste']
+        widgets = {
+            'identite_concerne': forms.Select(attrs={'class': 'form-control'}),
+            'objet_demande': forms.Select(attrs={'class': 'form-control'}),
+            'session_dut': forms.Select(attrs={'class': 'form-control' , 'id': 'id_session_dut'}),
+            'session_lic': forms.Select(attrs={'class': 'form-control' , 'id': 'id_session_lic'}),
+            'filiere': forms.Select(attrs={'class': 'form-control'}),
+            'cycle': forms.Select(attrs={'class': 'form-control'}),
+            'annee_academique': forms.Select(attrs={'class': 'form-control'}),
+            'identite_receptioniste': forms.Select(attrs={'class': 'form-control'}),
+        }
+        
+    def clean_annee_academique(self):
+        annee_academique = self.cleaned_data['annee_academique']
+        current_year = timezone.now().year
+
+        if int(annee_academique.split(' - ')[0]) > current_year:
+            raise forms.ValidationError("L'année académique ne peut pas être supérieure à l'année en cours.")
+
+        return annee_academique
+
     def clean(self):
         cleaned_data = super().clean()
-        identite = cleaned_data.get('identite')
-        co_auteur = cleaned_data.get('co_auteur')
+        cycle = cleaned_data.get('cycle')
 
-        if co_auteur:
-            if (
-                getattr(co_auteur, 'niveaux', None) != getattr(identite, 'niveaux', None)
-                or getattr(co_auteur, 'cycle', None) != getattr(identite, 'cycle', None)
-                or getattr(co_auteur, 'filiere', None) != getattr(identite, 'filiere', None)
-            ):
-                raise forms.ValidationError("Le co-auteur doit être du même niveau et de la même option.")
-        existing_memoires = Memoire.objects.filter(
-            models.Q(identite=identite) | models.Q(co_auteur=identite) |
-            models.Q(identite=co_auteur) | models.Q(co_auteur=co_auteur)
-        )
+        # Validez que les champs de session sont vides en fonction du cycle choisi
+        if cycle == 'DUT':
+            session_lic = cleaned_data.get('session_lic')
+            if session_lic:
+                raise forms.ValidationError("Le champ Session Licence doit être vide pour un cycle DUT.")
+        elif cycle == 'LICENCE':
+            session_dut = cleaned_data.get('session_dut')
+            if session_dut:
+                raise forms.ValidationError("Le champ Session DUT doit être vide pour un cycle Licence.")
+        
+        return cleaned_data
 
-        existing_memoires = Memoire.objects.filter(identite=identite, co_auteur=co_auteur)
-        if self.instance.pk:
-            existing_memoires = existing_memoires.exclude(pk=self.instance.pk)
 
-        if existing_memoires.exists():
-                raise forms.ValidationError("Vous ne pouvez publier qu'un seul mémoire avec ces identités.")

@@ -268,8 +268,8 @@
                   <li class="user-header">
                     <img src="{{ imagesprofiles }}" class="img-circle" alt="User Image" />
                     <p>
-                      {{ nom }} - Etudiant
-                      <small>Member since Nov. 2012</small>
+                      {{ nom }} - {{role |upper}}
+                      <small>Numero d'identification : {{Identification}}</small>
                     </p>
                   </li>
                   <!-- Menu Body -->
@@ -374,8 +374,7 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/examples/500.html"><i class="fa fa-circle-o"></i> Attestations</a></li>
-                <li><a href="pages/examples/blank.html"><i class="fa fa-circle-o"></i> Bulletins</a></li>
+                <li><a href="{% url 'creer_demande' %}"><i class="fa fa-circle-o"></i>effectuer une demande</a></li>
               </ul>
             </li>
             <li class="treeview">

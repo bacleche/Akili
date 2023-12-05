@@ -12,29 +12,29 @@ class Memoire(models.Model):
     Id_mem = models.AutoField(primary_key=True)
     titre = models.CharField(max_length=255)
     date_poste = models.DateField(default=date.today)
-    identite = models.ForeignKey(Etudiant, on_delete=models.DO_NOTHING,  related_name='auteur_principal')
-    co_auteur = models.ForeignKey(Etudiant, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='co_auteur')
+    identite = models.ForeignKey(Etudiant, on_delete=models.DO_NOTHING, related_name='auteur_principal')
+    matricule_identification_binome = models.CharField(max_length=20, blank=True, null=True)
     document = models.FileField(upload_to='memoires', max_length=500, validators=[validate_pdf_extension])
 
     def clean(self):
-        # Assurez-vous que le co-auteur (s'il existe) est du même niveau, de la même filière et du même cycle
-        if self.co_auteur:
-            if (
-                self.co_auteur.niveaux != self.identite.niveaux
-                or self.co_auteur.cycle != self.identite.cycle
-                or self.co_auteur.filiere != self.identite.filiere
-            ):
-                raise ValidationError("Le co-auteur doit être du même niveau, de la même filière et du même cycle.")
+        # Assurez-vous que le matricule_identification_binome existe et est correct
+        if self.matricule_identification_binome:
+            try:
+                binome = Etudiant.objects.get(Identification=self.matricule_identification_binome)
+                # Ajoutez d'autres vérifications si nécessaire
+            except Etudiant.DoesNotExist:
+                raise ValidationError("Le matricule d'identification du binôme est incorrect.")
+        else:
+            binome = None
 
         existing_memoires = Memoire.objects.filter(
-            models.Q(identite=self.identite) | models.Q(co_auteur=self.identite) |
-            models.Q(identite=self.co_auteur) | models.Q(co_auteur=self.co_auteur)
+            models.Q(identite=self.identite) |
+            models.Q(matricule_identification_binome=self.matricule_identification_binome) |
+            (models.Q(identite=binome) if binome else models.Q()) |
+            (models.Q(matricule_identification_binome=binome.Identification) if binome and binome.Identification else models.Q())
         )
         
         # Vérifiez si un mémoire avec les mêmes identités existe déjà
-        existing_memoires = Memoire.objects.filter(identite=self.identite, co_auteur=self.co_auteur)
-        if self.pk:
-            existing_memoires = existing_memoires.exclude(pk=self.pk)  # Exclure le mémoire actuel lors de la mise à jour
-
+        existing_memoires = existing_memoires.exclude(pk=self.pk) if self.pk else existing_memoires
         if existing_memoires.exists():
             raise ValidationError("Vous ne pouvez publier qu'un seul mémoire avec ces identités.")

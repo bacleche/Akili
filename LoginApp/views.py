@@ -15,6 +15,7 @@ def sign_in(request):
         print(css)
         if etudiant and etudiant.mot_de_passe == password:
                 request.session['matricule'] = etudiant.matricule
+                request.session['Identification'] = etudiant.Identification
                 request.session['nom'] = etudiant.nom
                 request.session['prenom'] = etudiant.prenom
                 request.session['civilite'] = etudiant.civilite
@@ -26,9 +27,12 @@ def sign_in(request):
                 request.session['mot_de_passe'] = etudiant.mot_de_passe
                 request.session['confirmer_mot_de_passe'] = etudiant.confirmer_mot_de_passe
                 request.session['imagesprofiles'] = etudiant.imagesprofiles.url 
+                request.session['cycle'] = etudiant.cycle
+                request.session['filiere'] = etudiant.filiere
+                request.session['niveaux'] = etudiant.niveaux
+
                 return redirect('student_space')
         
-       
         elif css and css.mot_de_passe == password:
                 request.session['matricule'] = css.matricule
                 request.session['nom'] = css.nom

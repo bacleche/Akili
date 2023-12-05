@@ -1,18 +1,19 @@
 from django.shortcuts import render , redirect
 from EtudiantApp.data_models.etudiant import Etudiant
-from .forms import MemoireForm
+from .forms import *
+from django.contrib import messages
 
 # Create your views here.
 def EtudiantSPACE(request):
-    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+    user_data = {key: request.session.get(key) for key in ['matricule', 'Identification' , 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
     return render(request, 'pages/index.html', user_data)
 
 def Profiles_etudiant(request):
-    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+    user_data = {key: request.session.get(key) for key in ['matricule', 'Identification' , 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
     return render(request, 'pages/profile-etudiant.html', user_data)
 
 def profile_details_etudiant(request):
-    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+    user_data = {key: request.session.get(key) for key in ['matricule', 'Identification' , 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
     user_data['civilite_choices'] = Etudiant._meta.get_field('civilite').choices
     return render(request, 'pages/profile-modify-etudiant.html', user_data)
 
@@ -64,16 +65,43 @@ def mis_a_jour_etudiant(request):
 
 
 
+# def poster_memoire(request):
+#     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles' , 'cycle', 'filiere' , 'niveaux']}
+    
+#     if request.method == 'POST':
+#         form = MemoireForm(request.POST, request.FILES, user_data=user_data)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('poster_memoire')
+#     else:
+#         form = MemoireForm(user_data=user_data)
+        
+
+#     return render(request, 'pages/memoire-posts.html', {'form': form, 'user_data': user_data})
+
 def poster_memoire(request):
-    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles' , 'cycle', 'filiere' , 'niveaux']}
+    user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles' , 'cycle', 'filiere' , 'niveaux']}
     
     if request.method == 'POST':
         form = MemoireForm(request.POST, request.FILES, user_data=user_data)
         if form.is_valid():
             form.save()
-            return redirect('poster_memoire')
+            messages.success(request, 'Le mémoire a été posté avec succès!')
+            return redirect('poster_memoire')           
     else:
         form = MemoireForm(user_data=user_data)
-        
 
     return render(request, 'pages/memoire-posts.html', {'form': form, 'user_data': user_data})
+
+def creer_demande(request):
+    user_data = {key: request.session.get(key) for key in ['matricule', 'Identification' , 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles' , 'cycle', 'filiere' , 'niveaux']}
+    if request.method == 'POST':
+        form = DemandeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Ajoutez ici toute logique supplémentaire après l'enregistrement de la demande
+            return redirect('creer_demande')  # Remplacez 'nom_de_votre_vue_de_confirmation' par le nom de votre vue de confirmation
+    else:
+        form = DemandeForm()
+
+    return render(request, 'pages/demande-pages.html', {'form': form , 'user_data': user_data})
