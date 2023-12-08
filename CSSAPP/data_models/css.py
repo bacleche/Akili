@@ -2,33 +2,18 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
+from Utilisateur.data_models.utilisateur import Utilisateur
 
 
 
 
-CIVILITE_CHOICES = [
-    ('marié', 'MARIE'),
-    ('veuf(ve)', 'VEUF(VE)'),
-    ('célibataire', 'CELIBATAIRE'),
-]
-
-
-class CSS(models.Model):
+class CSS(Utilisateur):
     # Vos autres champs
 
     matricule = models.CharField(max_length=20, unique=True, blank=True, editable=False)
-    nom = models.CharField(max_length=255)
-    prenom = models.CharField(max_length=255)
-    telephone = models.CharField(max_length=255)
-    date_nais = models.DateField()
-    civilite = models.CharField(max_length=20, choices=CIVILITE_CHOICES , default='Célibataire')
-    role= models.CharField(max_length=10, default='css', editable=True)
     email = models.EmailField(unique=True)
-    genre = models.CharField(max_length=10, choices=[('Homme', 'Homme'), ('Femme', 'Femme')])
     mot_de_passe = models.CharField(max_length=255)
     confirmer_mot_de_passe = models.CharField(max_length=255)
-    imagesprofiles = models.ImageField(upload_to='images/', max_length=500) 
-
 
     def clean(self):
         # Assurez-vous que les mots de passe ont au moins 8 caractères
@@ -55,7 +40,7 @@ class CSS(models.Model):
             matricule_number = int(last_matricule[1:]) + 1
         else:
             matricule_number = 1
-        return f'M{matricule_number:06d}'
+        return f'C{matricule_number:06d}'
 
 
 @receiver(pre_save, sender=CSS)

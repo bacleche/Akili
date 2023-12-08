@@ -3,14 +3,8 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from Utilisateur.data_models.utilisateur import Utilisateur
 
-
-
-CIVILITE_CHOICES = [
-    ('marié', 'MARIE'),
-    ('veuf(ve)', 'VEUF(VE)'),
-    ('célibataire', 'CELIBATAIRE'),
-]
 
 NIVEAUX_CHOICES = [
     ('licence1', 'LICENCE1'),
@@ -60,29 +54,20 @@ ANNEE_ACADEMIQUE_CHOICES = [
     ('2029 - 2030', '2029 - 2030'),
 ]
 
-class Etudiant(models.Model):
-    # Vos autres champs
+class Etudiant(Utilisateur):
 
     matricule = models.CharField(max_length=20, unique=True, blank=True, editable=False)
     Identification = models.CharField(max_length=20 , unique=True , blank=True , editable=False)
-    nom = models.CharField(max_length=255)
-    prenom = models.CharField(max_length=255)
-    telephone = models.CharField(max_length=255)
-    date_nais = models.DateField()
-    civilite = models.CharField(max_length=20, choices=CIVILITE_CHOICES , default='Célibataire')
     cycle = models.CharField(max_length=20, choices=CYCLE_CHOICES , default='licence')
     filiere = models.CharField(max_length=20, choices=FILIERE_CHOICES , default='informatique')
     niveaux = models.CharField(max_length=20, choices=NIVEAUX_CHOICES , default='licence1')
     statut = models.CharField(max_length=20, choices=STATUT_CHOICES , default='En Frequentation')
-    role = models.CharField(max_length=10, default='etudiant', editable=True)
     mois_debut_annee_academique = models.IntegerField(choices=MOIS_CHOICES, default=9)  # Choisissez le mois de début de l'année académique
     annee_academique = models.CharField(max_length=19, choices=ANNEE_ACADEMIQUE_CHOICES , default='2023 - 2024')  # Champ pour l'année académique au format "AAAA - AAAA"
     annee_frequentation_fin = models.DateField(blank=True, null=True)
-    email = models.EmailField(unique=True , default=None)
     genre = models.CharField(max_length=10, choices=[('Homme', 'Homme'), ('Femme', 'Femme')] , default='Homme')
     mot_de_passe = models.CharField(max_length=255 , default=None)
     confirmer_mot_de_passe = models.CharField(max_length=255 , default=None)
-    imagesprofiles = models.ImageField(upload_to='images/',max_length=500,default='../static/assets_dash/r.jpg') 
     
 
 

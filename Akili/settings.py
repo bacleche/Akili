@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'EtudiantApp',
     'CSSAPP',
     'DCFISPACE',
+    'Utilisateur',
 ]
 
 MIDDLEWARE = [
