@@ -60,7 +60,6 @@ class DemandeForm(forms.ModelForm):
         cleaned_data = super().clean()
         cycle = cleaned_data.get('cycle')
 
-        # Validez que les champs de session sont vides en fonction du cycle choisi
         if cycle == 'DUT':
             session_lic = cleaned_data.get('session_lic')
             if session_lic:

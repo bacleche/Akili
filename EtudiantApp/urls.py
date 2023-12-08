@@ -9,7 +9,4 @@ urlpatterns = [
     path('poster_memoire', views.poster_memoire, name='poster_memoire'),   
     path('creer_demande', views.creer_demande, name='creer_demande'),  
 
-
-
-
 ]

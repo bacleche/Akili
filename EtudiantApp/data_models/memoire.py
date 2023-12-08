@@ -1,7 +1,11 @@
 from django.db import models
 from datetime import date
 from EtudiantApp.data_models.etudiant import Etudiant
+from EtudiantApp.data_models.notifications import Notification
+
 from django.core.exceptions import ValidationError
+
+from django.contrib import messages
 
 def validate_pdf_extension(value):
     if not value.name.endswith('.pdf'):
@@ -15,6 +19,7 @@ class Memoire(models.Model):
     identite = models.ForeignKey(Etudiant, on_delete=models.DO_NOTHING, related_name='auteur_principal')
     matricule_identification_binome = models.CharField(max_length=20, blank=True, null=True)
     document = models.FileField(upload_to='memoires', max_length=500, validators=[validate_pdf_extension])
+    binome_notification_envoyee = models.BooleanField(default=False)
 
     def clean(self):
         # Assurez-vous que le matricule_identification_binome existe et est correct
@@ -38,3 +43,29 @@ class Memoire(models.Model):
         existing_memoires = existing_memoires.exclude(pk=self.pk) if self.pk else existing_memoires
         if existing_memoires.exists():
             raise ValidationError("Vous ne pouvez publier qu'un seul mémoire avec ces identités.")
+
+    
+
+    def save(self, *args, **kwargs):
+        is_new = not self.pk  # Vérifiez si le mémoire est nouveau
+        
+        # Récupérez le binôme associé au matricule_identification_binome
+        binome = None
+        if self.matricule_identification_binome:
+            try:
+                binome = Etudiant.objects.get(Identification=self.matricule_identification_binome)
+            except Etudiant.DoesNotExist:
+                raise ValidationError("Le matricule d'identification du binôme est incorrect.")
+        
+        super().save(*args, **kwargs)
+    
+        if is_new and binome:
+            # Envoyez la notification au binôme ici
+            titre_poste = self.titre  # Utilisez le champ approprié pour le titre du poste
+            contenu_notification = f"Vous avez été ajouté comme binôme dans un nouveau poste de mémoire : {titre_poste}."
+            date_creation = self.date_poste
+            notification = Notification(destinataire=binome, contenu=contenu_notification, date_creation=date_creation)
+            notification.save()
+
+            self.binome_notification_envoyee = True
+            self.save(update_fields=['binome_notification_envoyee'])
