@@ -3,8 +3,11 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from Utilisateur.data_models.utilisateur import Utilisateur
+from Utilisateur.data_models.utilisateur import Utilisateur , UtilisateurManager
 
+
+class EtudiantManager(UtilisateurManager):
+    pass
 
 NIVEAUX_CHOICES = [
     ('licence1', 'LICENCE1'),
@@ -65,22 +68,11 @@ class Etudiant(Utilisateur):
     mois_debut_annee_academique = models.IntegerField(choices=MOIS_CHOICES, default=9)  # Choisissez le mois de début de l'année académique
     annee_academique = models.CharField(max_length=19, choices=ANNEE_ACADEMIQUE_CHOICES , default='2023 - 2024')  # Champ pour l'année académique au format "AAAA - AAAA"
     annee_frequentation_fin = models.DateField(blank=True, null=True)
-    genre = models.CharField(max_length=10, choices=[('Homme', 'Homme'), ('Femme', 'Femme')] , default='Homme')
-    mot_de_passe = models.CharField(max_length=255 , default=None)
-    confirmer_mot_de_passe = models.CharField(max_length=255 , default=None)
+
     
+    objects = EtudiantManager()
 
 
-    def clean(self):
-        # Assurez-vous que les mots de passe ont au moins 8 caractères
-        if len(self.mot_de_passe) < 8:
-            raise ValidationError("Le mot de passe doit comporter au moins 8 caractères.")
-        if len(self.confirmer_mot_de_passe) < 8:
-            raise ValidationError("La confirmation du mot de passe doit comporter au moins 8 caractères.")
-        
-        # Vérifiez que les deux champs de mot de passe sont identiques
-        if self.mot_de_passe != self.confirmer_mot_de_passe:
-            raise ValidationError("Les mots de passe ne correspondent pas.")
         
     def save(self, *args, **kwargs):
         if not self.matricule:
@@ -88,8 +80,6 @@ class Etudiant(Utilisateur):
             self.Identification = self.generate_identification()
 
         self.clean() 
-        
-        
 
         self.update_annee_academique()
         super(Etudiant, self).save(*args, **kwargs)
@@ -137,7 +127,7 @@ class Etudiant(Utilisateur):
 
     
     def __str__(self):
-        return f"{self.nom} {self.prenom} {self.cycle}"
+          return f"{self.user.last_name} {self.user.first_name} {self.cycle}"
 
 @receiver(pre_save, sender=Etudiant)
 def etudiant_pre_save(sender, instance, **kwargs):

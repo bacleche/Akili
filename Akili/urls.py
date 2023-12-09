@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.contrib.auth.views import LoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,7 +26,6 @@ urlpatterns = [
     path('Login_akili/', include('LoginApp.urls')),  
     path('Etudiant_Space/', include('EtudiantApp.urls')),  
     path('Css_Space/', include('CSSAPP.urls')),  
-
 
  
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -9,22 +9,21 @@ from Utilisateur.data_models.utilisateur import Utilisateur
 
 
 class UtilisateurAdmin(admin.ModelAdmin):
-    list_display = ('nom', 'prenom', 'telephone', 'email', 'genre')
-    search_fields = ('nom', 'prenom', 'telephone', 'email')
+    list_display = ('last_name','telephone', 'email', 'genre')
+    search_fields = ('last_name', 'telephone', 'email')
     list_filter = ('genre',)
 
-admin.site.register(Utilisateur, UtilisateurAdmin)
 
 class EtudiantAdmin(UtilisateurAdmin):
-    list_display = ('nom', 'prenom', 'matricule', 'Identification' , 'cycle', 'filiere', 'niveaux', 'statut')
-    search_fields = ('nom', 'prenom', 'matricule', 'Identification' , 'cycle', 'filiere')
+    list_display = ('matricule', 'Identification' , 'cycle', 'filiere', 'niveaux', 'statut')
+    search_fields = ('matricule', 'Identification' , 'cycle', 'filiere')
     list_filter = ('cycle', 'filiere', 'niveaux', 'statut')
 
 admin.site.register(Etudiant, EtudiantAdmin)
 
 class CSSAdmin(UtilisateurAdmin):
-    list_display = ('nom', 'prenom', 'matricule', 'email')
-    search_fields = ('nom', 'prenom', 'matricule', 'email')
+    list_display = ('matricule', 'email')
+    search_fields = ('matricule', 'email')
     list_filter = ('genre',)
 
 

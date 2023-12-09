@@ -2,8 +2,11 @@ from django.shortcuts import render , redirect
 from EtudiantApp.data_models.etudiant import Etudiant
 from .forms import *
 from django.contrib import messages
+from Utilisateur.data_models.utilisateur import Utilisateur
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
-# Create your views here.
+
 def EtudiantSPACE(request):
     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification' , 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
     return render(request, 'pages/index.html', user_data)

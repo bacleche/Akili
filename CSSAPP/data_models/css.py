@@ -2,29 +2,20 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
-from Utilisateur.data_models.utilisateur import Utilisateur
+from Utilisateur.data_models.utilisateur import Utilisateur , UtilisateurManager
 
+
+class CSSManager(UtilisateurManager):
+    pass
 
 
 
 class CSS(Utilisateur):
-    # Vos autres champs
 
     matricule = models.CharField(max_length=20, unique=True, blank=True, editable=False)
     email = models.EmailField(unique=True)
-    mot_de_passe = models.CharField(max_length=255)
-    confirmer_mot_de_passe = models.CharField(max_length=255)
 
-    def clean(self):
-        # Assurez-vous que les mots de passe ont au moins 8 caractères
-        if len(self.mot_de_passe) < 8:
-            raise ValidationError("Le mot de passe doit comporter au moins 8 caractères.")
-        if len(self.confirmer_mot_de_passe) < 8:
-            raise ValidationError("La confirmation du mot de passe doit comporter au moins 8 caractères.")
-        
-        # Vérifiez que les deux champs de mot de passe sont identiques
-        if self.mot_de_passe != self.confirmer_mot_de_passe:
-            raise ValidationError("Les mots de passe ne correspondent pas.")
+    objects = CSSManager()
 
     def save(self, *args, **kwargs):
         if not self.matricule:
@@ -47,3 +38,7 @@ class CSS(Utilisateur):
 def css_pre_save(sender, instance, **kwargs):
     if not instance.matricule:
         instance.matricule = instance.generate_matricule()
+
+
+
+#Ceci est le profil du CHef de service de la Scolarité
