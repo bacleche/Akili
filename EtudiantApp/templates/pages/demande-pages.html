@@ -32,29 +32,41 @@
 
   </head>
   <style>
-    .main-footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
+    
+    .content-wrapper {
+      min-height: 100vh; /* ou une hauteur minimale appropriée */
   }
-  .content-wrapper {
-    min-height: 100vh; /* ou une hauteur minimale appropriée */
-}
-
-    #logo-img {
-      width: 300px;  /* Largeur souhaitée */
-      height: 43px;  /* Hauteur automatique pour maintenir le ratio d'aspect */
+  
+      #logo-img {
+        width: 200px;  /* Largeur souhaitée */
+        height: 33px;  /* Hauteur automatique pour maintenir le ratio d'aspect */
+    }
+  
+    @media (max-width: 767px) {
+      /* Styles spécifiques aux petits écrans ici */
+      .btn-block {
+         width: 100%;
+      }
+   }
+  
+    .responsive-image {
+      max-width: 100%; /* L'image ne sera jamais plus large que son conteneur */
+      height: auto; /* L'hauteur est calculée proportionnellement à la largeur */
+      display: block; /* Pour enlever l'espace sous l'image */
+      margin: 0 auto; 
   }
-
-  .responsive-image {
-    max-width: 100%; /* L'image ne sera jamais plus large que son conteneur */
-    height: auto; /* L'hauteur est calculée proportionnellement à la largeur */
-    display: block; /* Pour enlever l'espace sous l'image */
-    margin: 0 auto; 
-}
-
-
-  </style>
+  
+  .error-message {
+    color: red;
+  }
+  
+  .success-message {
+    color: green;
+  }
+  
+  
+  
+    </style>
   <body class="skin-blue">
     <div class="wrapper">
       
@@ -483,45 +495,17 @@
             </div><!-- ./col -->
           </div><!-- /.row -->
           <!-- Main row -->
-          <div class="row">
+         
             <h2>Créer une demande</h2>
               <form method="post" action="{% url 'creer_demande' %}">
                 {% csrf_token %}
                 
                 {{ form.as_p }}
                 <p id="cycle-value" class="hidden">{{user_data.cycle}}</p>
-         
-                <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-                        const cycleValue = document.getElementById('cycle-value').textContent.trim().toLowerCase();
-                        const sessionDutField = document.getElementById('id_session_dut');
-                        const sessionLicField = document.getElementById('id_session_lic');
-                        const labelSessionDut = document.querySelector('label[for=id_session_dut]');
-                        const labelSessionLic = document.querySelector('label[for=id_session_lic]');
-        
-                        function toggleSessionFields() {
-                            if (cycleValue === 'dut') {
-                                sessionLicField.hidden = true;
-                                labelSessionLic.hidden = true;
-                                sessionDutField.hidden = false;
-                                labelSessionDut.hidden = false;
-                            } else if (cycleValue === 'licence') {
-                                sessionLicField.hidden = false;
-                                labelSessionLic.hidden = false;
-                                sessionDutField.hidden = true;
-                                labelSessionDut.hidden = true;
-                            }
-                        }
-        
-                        toggleSessionFields();  // Appeler la fonction lors du chargement initial
-        
-                        document.getElementById('id_cycle').addEventListener('change', toggleSessionFields);  // Écouter les changements de cycle
-                    });
-                </script>
-        
-                <button type="submit">Enregistrer la demande</button>
+                
+                <button type="submit" class="btn btn-primary">Enregistrer la demande</button>
             </form>
-        </div><!-- /.row (main row) -->
+      
         
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
@@ -563,8 +547,27 @@
     <!-- FastClick -->
     <script src="{% static 'assets_dash/plugins/fastclick/fastclick.min.js' %}" ></script>
     <!-- AdminLTE App -->
-    <script src="{% static 'assets_dash/dist/js/app.min.js' %}" type="text/javascript"></script>
+    {% comment %} <script src="{% static 'assets_dash/dist/js/app.min.js' %}" type="text/javascript"></script> {% endcomment %}
 
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          const cycleValue = document.getElementById('id_cycle').value.toLowerCase();
+          console.log(cycleValue)
+          const sessionDutField = document.getElementById('id_session_dut');
+          const sessionLicField = document.getElementById('id_session_lic');
+          const labelSessionDut = document.querySelector('label[for=id_session_dut]');
+          const labelSessionLic = document.querySelector('label[for=id_session_lic]');
+  
+          if (cycleValue == 'licence')
+          {
+            console.log('bonjour je suis en LIC')
+            labelSessionDut.hidden = true
+            sessionDutField.style.display = 'none'
+          } else {
+            console.log('bonjour je suis en DUT')
+          }
+      });
+  </script>
   </body>
 </html>

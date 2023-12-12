@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 
 def EtudiantSPACE(request):
     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification' , 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+    print(user_data)
     return render(request, 'pages/index.html', user_data)
 
 def Profiles_etudiant(request):
@@ -97,14 +98,32 @@ def poster_memoire(request):
     return render(request, 'pages/memoire-posts.html', {'form': form, 'user_data': user_data})
 
 def creer_demande(request):
-    user_data = {key: request.session.get(key) for key in ['matricule', 'Identification' , 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles' , 'cycle', 'filiere' , 'niveaux']}
+    user_data = {
+        'matricule': request.session.get('matricule'),
+        'Identification': request.session.get('Identification'),
+        'nom': request.session.get('nom'),
+        'prenom': request.session.get('prenom'),
+        'telephone': request.session.get('telephone'),
+        'date_nais': request.session.get('date_nais'),
+        'civilite': request.session.get('civilite'),
+        'role': request.session.get('role'),
+        'email': request.session.get('email'),
+        'genre': request.session.get('genre'),
+        'mot_de_passe': request.session.get('mot_de_passe'),
+        'confirmer_mot_de_passe': request.session.get('confirmer_mot_de_passe'),
+        'imagesprofiles': request.session.get('imagesprofiles'),
+        'cycle': request.session.get('cycle'),
+        'filiere': request.session.get('filiere'),
+        'niveaux': request.session.get('niveaux'),
+    }
+
     if request.method == 'POST':
-        form = DemandeForm(request.POST)
+        form = DemandeForm(request.POST, user_data=user_data)
         if form.is_valid():
             form.save()
             # Ajoutez ici toute logique supplémentaire après l'enregistrement de la demande
             return redirect('creer_demande')  # Remplacez 'nom_de_votre_vue_de_confirmation' par le nom de votre vue de confirmation
     else:
-        form = DemandeForm()
+        form = DemandeForm(user_data=user_data)
 
-    return render(request, 'pages/demande-pages.html', {'form': form , 'user_data': user_data})
+    return render(request, 'pages/demande-pages.html', {'form': form, 'user_data': user_data})
