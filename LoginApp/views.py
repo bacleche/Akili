@@ -150,6 +150,18 @@ def sign_in(request):
                 return redirect('student_space')
             elif isinstance(utilisateur, CSS):
                 # Redirigez l'utilisateur en fonction de son rôle
+                request.session['matricule'] = utilisateur.matricule
+                request.session['nom'] = utilisateur.user.last_name
+                request.session['prenom'] = utilisateur.user.first_name
+                request.session['telephone'] = utilisateur.telephone
+                request.session['date_nais'] = utilisateur.date_nais.strftime('%Y-%m-%d')
+                request.session['civilite'] = utilisateur.civilite
+                request.session['role'] = utilisateur.role
+                request.session['email'] = utilisateur.user.email
+                request.session['genre'] = utilisateur.genre
+                t = request.session['mot_de_passe'] = utilisateur.user.password
+                print(t)
+                request.session['imagesprofiles'] = utilisateur.imagesprofiles.url
                 return redirect('cssWork')
         else:
             error_message = "Email et/ou Mot de passe Incorrect ! réessayez."

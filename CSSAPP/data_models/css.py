@@ -13,7 +13,6 @@ class CSSManager(UtilisateurManager):
 class CSS(Utilisateur):
 
     matricule = models.CharField(max_length=20, unique=True, blank=True, editable=False)
-    email = models.EmailField(unique=True)
 
     objects = CSSManager()
 
@@ -32,6 +31,9 @@ class CSS(Utilisateur):
         else:
             matricule_number = 1
         return f'C{matricule_number:06d}'
+    
+    def __str__(self):
+          return f"{self.user.last_name} {self.user.first_name}"
 
 
 @receiver(pre_save, sender=CSS)
