@@ -5,6 +5,9 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from Utilisateur.data_models.utilisateur import Utilisateur
 from django.contrib.auth import authenticate, login
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 
 # def sign_in(request):
@@ -118,6 +121,7 @@ def sign_in(request):
         except Etudiant.DoesNotExist:
             try:
                 utilisateur = CSS.objects.get(user__email=email)
+                
             except CSS.DoesNotExist:
                 # Utilisateur non trouvé
                 error_message = "Email et/ou Mot de passe Incorrect ! réessayez."
@@ -126,44 +130,129 @@ def sign_in(request):
 
         # Vérifiez le mot de passe en utilisant la méthode check_password
         if utilisateur.user.check_password(password):
+            if utilisateur.first_login:
+                request.session['user_to_change_password'] = utilisateur.user.id
+                request.session['email'] = utilisateur.user.email
+                # print(t)
+                # Rediriger vers la réinitialisation du mot de passe lors de la première connexion
+                return redirect('change_password')  
+            else:
             # Authentification réussie, connectez l'utilisateur
-            login(request, utilisateur.user)
+                login(request, utilisateur.user)
 
-            if isinstance(utilisateur, Etudiant):
-                # Redirigez l'utilisateur en fonction de son rôle
-                request.session['matricule'] = utilisateur.matricule
-                request.session['Identification'] = utilisateur.Identification
-                request.session['nom'] = utilisateur.user.last_name
-                request.session['prenom'] = utilisateur.user.first_name
-                request.session['telephone'] = utilisateur.telephone
-                request.session['date_nais'] = utilisateur.date_nais.strftime('%Y-%m-%d')
-                request.session['civilite'] = utilisateur.civilite
-                request.session['role'] = utilisateur.role
-                request.session['email'] = utilisateur.user.email
-                request.session['genre'] = utilisateur.genre
-                t = request.session['mot_de_passe'] = utilisateur.user.password
-                print(t)
-                request.session['imagesprofiles'] = utilisateur.imagesprofiles.url
-                request.session['cycle'] = utilisateur.cycle
-                request.session['filiere'] = utilisateur.filiere
-                request.session['niveaux'] = utilisateur.niveaux
-                return redirect('student_space')
-            elif isinstance(utilisateur, CSS):
-                # Redirigez l'utilisateur en fonction de son rôle
-                request.session['matricule'] = utilisateur.matricule
-                request.session['nom'] = utilisateur.user.last_name
-                request.session['prenom'] = utilisateur.user.first_name
-                request.session['telephone'] = utilisateur.telephone
-                request.session['date_nais'] = utilisateur.date_nais.strftime('%Y-%m-%d')
-                request.session['civilite'] = utilisateur.civilite
-                request.session['role'] = utilisateur.role
-                request.session['email'] = utilisateur.user.email
-                request.session['genre'] = utilisateur.genre
-                t = request.session['mot_de_passe'] = utilisateur.user.password
-                print(t)
-                request.session['imagesprofiles'] = utilisateur.imagesprofiles.url
-                return redirect('cssWork')
+                if isinstance(utilisateur, Etudiant):
+                    # Redirigez l'utilisateur en fonction de son rôle
+                    request.session['matricule'] = utilisateur.matricule
+                    request.session['Identification'] = utilisateur.Identification
+                    request.session['nom'] = utilisateur.user.last_name
+                    request.session['prenom'] = utilisateur.user.first_name
+                    request.session['telephone'] = utilisateur.telephone
+                    request.session['date_nais'] = utilisateur.date_nais.strftime('%Y-%m-%d')
+                    request.session['civilite'] = utilisateur.civilite
+                    request.session['role'] = utilisateur.role
+                    request.session['email'] = utilisateur.user.email
+                    request.session['genre'] = utilisateur.genre
+                    t = request.session['mot_de_passe'] = utilisateur.user.password
+                    print(t)
+                    request.session['imagesprofiles'] = utilisateur.imagesprofiles.url
+                    request.session['cycle'] = utilisateur.cycle
+                    request.session['filiere'] = utilisateur.filiere
+                    request.session['niveaux'] = utilisateur.niveaux
+                    return redirect('student_space')
+                elif isinstance(utilisateur, CSS):
+                    # Redirigez l'utilisateur en fonction de son rôle
+                    request.session['matricule'] = utilisateur.matricule
+                    request.session['nom'] = utilisateur.user.last_name
+                    request.session['prenom'] = utilisateur.user.first_name
+                    request.session['telephone'] = utilisateur.telephone
+                    request.session['date_nais'] = utilisateur.date_nais.strftime('%Y-%m-%d')
+                    request.session['civilite'] = utilisateur.civilite
+                    request.session['role'] = utilisateur.role
+                    request.session['email'] = utilisateur.user.email
+                    request.session['genre'] = utilisateur.genre
+                    t = request.session['mot_de_passe'] = utilisateur.user.password
+                    print(t)
+                    request.session['imagesprofiles'] = utilisateur.imagesprofiles.url
+                    return redirect('cssWork')
         else:
             error_message = "Email et/ou Mot de passe Incorrect ! réessayez."
 
     return render(request, 'login.html', {'error_message': error_message})
+
+
+def change_password(request):
+    if request.method == 'POST':
+        new_password1 = request.POST.get('password')
+        new_password2 = request.POST.get('confirmPassword')
+
+        if new_password1 and new_password2:
+            # Récupérez l'adresse e-mail de l'utilisateur depuis la session
+            email = request.session.get('email')
+            user_id = request.session.get('user_to_change_password')
+            print(email)
+            print(user_id)
+
+            if email and user_id:
+                try:
+                    # Vérifiez si l'utilisateur est un étudiant
+                    etudiant = Etudiant.objects.get(user__email=email)
+
+                    # Vérifiez si l'utilisateur est un étudiant et que c'est sa première connexion
+                    if etudiant and etudiant.first_login:
+                        # Récupérez l'utilisateur à partir de l'ID
+                        user = User.objects.get(id=user_id)
+
+                        # Si c'est sa première connexion, changez le mot de passe
+                        if new_password1 == new_password2:
+                            user.set_password(new_password1)
+                            etudiant.first_login = False
+                            user.save()
+                            etudiant.save()
+                            update_session_auth_hash(request, user)
+                            messages.success(request, 'Votre mot de passe a été changé avec succès!')
+                            return redirect('SignInView')
+                        else:
+                            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
+                    elif etudiant:
+                        # Si c'est un étudiant mais ce n'est pas sa première connexion, redirigez vers SignInView
+                        return redirect('SignInView')
+
+                except Etudiant.DoesNotExist:
+                    pass
+                
+                try:
+                    # Vérifiez si l'utilisateur est de type CSS
+                    css = CSS.objects.get(user__email=email)
+
+                    # Vérifiez si l'utilisateur est un CSS et que c'est sa première connexion
+                    if css and css.first_login:
+                        # Récupérez l'utilisateur à partir de l'ID
+                        user = User.objects.get(id=user_id)
+
+                        # Si c'est sa première connexion, changez le mot de passe
+                        if new_password1 == new_password2:
+                            user.set_password(new_password1)
+                            css.first_login = False
+                            user.save()
+                            css.save()
+                            update_session_auth_hash(request, user)
+                            messages.success(request, 'Votre mot de passe a été changé avec succès!')
+                            return redirect('SignInView')
+                        else:
+                            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
+                    elif css:
+                        # Si c'est un CSS mais ce n'est pas sa première connexion, redirigez vers SignInView
+                        return redirect('SignInView')
+
+                except CSS.DoesNotExist:
+                    pass
+
+                # Si l'utilisateur n'est ni étudiant ni CSS, redirigez vers SignInView
+                return redirect('SignInView')
+                
+            else:
+                messages.error(request, 'Adresse e-mail ou ID d\'utilisateur non trouvé dans la session.')
+        else:
+            messages.error(request, 'Veuillez remplir tous les champs.')
+
+    return render(request, 'password_reset.html')

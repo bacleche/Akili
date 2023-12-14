@@ -24,12 +24,10 @@ class Genre(models.TextChoices):
 
 class Utilisateur(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    # nom = models.CharField(max_length=255)
-    # prenom = models.CharField(max_length=255)
+    first_login = models.BooleanField(default=True)
     telephone = models.CharField(max_length=255)
     date_nais = models.DateField()
     civilite = models.CharField(max_length=20, choices=Civilite.choices , default=Civilite.CELIBATAIRE)
-    # email = models.EmailField(unique=True , default=None)
     genre = models.CharField(max_length=20 , choices=Genre.choices , default=Genre.HOMME)
     imagesprofiles = models.ImageField(upload_to='images/',max_length=500,default='images/r.jpeg') 
     role = models.CharField(max_length=20 , choices=Role.choices)
