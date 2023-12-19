@@ -8,5 +8,6 @@ urlpatterns = [
     path('mis_a_jour_etudiant', views.mis_a_jour_etudiant, name='mis_a_jour_etudiant'),  
     path('poster_memoire', views.poster_memoire, name='poster_memoire'),   
     path('creer_demande', views.creer_demande, name='creer_demande'),  
-
+    path('marquer_notification_lue/<int:notification_id>/', views.marquer_notification_lue, name='marquer_notification_lue'),
+    path('creer_nouvelle_notification/', views.creer_nouvelle_notification, name='creer_nouvelle_notification'),
 ]

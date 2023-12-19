@@ -5,6 +5,12 @@ from django.contrib import messages
 from Utilisateur.data_models.utilisateur import Utilisateur
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
+from EtudiantApp.data_models.notifications import Notification
+from django.shortcuts import HttpResponse
+from django.http import JsonResponse
+
+from django.views.decorators.csrf import csrf_exempt
 
 
 def EtudiantSPACE(request):
@@ -127,3 +133,89 @@ def creer_demande(request):
         form = DemandeForm(user_data=user_data)
 
     return render(request, 'pages/demande-pages.html', {'form': form, 'user_data': user_data})
+
+
+
+
+def marquer_notification_lue(request, notification_id):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        try:
+            notification = Notification.objects.get(id=notification_id)
+        except Notification.DoesNotExist:
+            return JsonResponse({'message': "La notification n'existe pas"}, status=404)
+
+        if action == 'accepter':
+            # Logique d'acceptation de la notification
+            notification.marquer_comme_lue()
+            # Ajoutez ici la logique pour la nouvelle notification à l'expéditeur
+
+            return JsonResponse({'message': 'Notification acceptée avec succès'})
+
+        elif action == 'rejeter':
+            # Logique de refus de la notification
+            notification.marquer_comme_lue()
+            # Ajoutez ici la logique pour la nouvelle notification à l'expéditeur
+
+            return JsonResponse({'message': 'Notification rejetée avec succès'})
+
+        else:
+            return JsonResponse({'message': 'Action non reconnue'}, status=400)
+
+    else:
+        # Gérez le cas où la requête n'est pas de type POST
+        return JsonResponse({'message': 'Méthode non autorisée'}, status=405)
+
+    
+
+def accepter_notification(request, notification_id):
+    notification = get_object_or_404(Notification, id=notification_id)
+    notification.accepter_notification()
+
+    # Enregistrez une nouvelle notification pour l'expéditeur
+    contenu_exp = f"{notification.destinataire.user.last_name} {notification.destinataire.user.first_name} a accepté votre notification."
+    nouvelle_notification_exp = Notification(destinataire=notification.expediteur, contenu=contenu_exp, date_creation=timezone.now())
+    nouvelle_notification_exp.save()
+
+    return redirect('marquer_notification_lue')
+
+
+def refuser_notification(request, notification_id):
+    notification = get_object_or_404(Notification, id=notification_id)
+    notification.refuser_notification()
+
+    # Enregistrez une nouvelle notification pour l'expéditeur
+    contenu_exp = f"{notification.destinataire.user.last_name} {notification.destinataire.user.first_name} a refusé votre notification."
+    nouvelle_notification_exp = Notification(destinataire=notification.expediteur, contenu=contenu_exp, date_creation=timezone.now())
+    nouvelle_notification_exp.save()
+
+    return redirect('marquer_notification_lue')
+
+
+@csrf_exempt  # Vous pouvez retirer cette décoration si CSRF n'est pas nécessaire
+def creer_nouvelle_notification(request):
+    if request.method == 'POST':
+        expediteur_id = request.POST.get('expediteurId')
+        destinataire_id = request.POST.get('destinataireId')
+        message = request.POST.get('message')
+        print(expediteur_id)
+        print(destinataire_id)
+
+        try:
+            expediteur = Etudiant.objects.get(id=expediteur_id)
+            destinataire = Etudiant.objects.get(id=destinataire_id)
+            
+            nouvelle_notification = Notification(
+                destinataire=destinataire,
+                expediteur=expediteur,
+                contenu=message,
+            )
+            print(nouvelle_notification)
+            nouvelle_notification.save()
+
+            return JsonResponse({'message': 'Nouvelle notification créée avec succès'})
+        except Etudiant.DoesNotExist:
+            return JsonResponse({'message': 'L\'expéditeur ou le destinataire n\'existe pas'}, status=404)
+    else:
+        return JsonResponse({'message': 'Méthode non autorisée'}, status=405)

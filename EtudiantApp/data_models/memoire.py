@@ -60,11 +60,14 @@ class Memoire(models.Model):
         super().save(*args, **kwargs)
     
         if is_new and binome:
+            expediteur = self.identite
+            if expediteur is None:
+               raise ValidationError("L'expéditeur n'est pas défini correctement.")
             # Envoyez la notification au binôme ici
             titre_poste = self.titre  # Utilisez le champ approprié pour le titre du poste
-            contenu_notification = f"Vous avez été ajouté comme binôme dans un nouveau poste de mémoire : {titre_poste}."
+            contenu_notification = f"{expediteur.user.last_name} {expediteur.user.first_name} vous a ajouté comme binôme dans un nouveau poste de mémoire : {titre_poste}."
             date_creation = self.date_poste
-            notification = Notification(destinataire=binome, contenu=contenu_notification, date_creation=date_creation)
+            notification = Notification(destinataire=binome, expediteur=expediteur ,  contenu=contenu_notification, date_creation=date_creation)
             notification.save()
 
             self.binome_notification_envoyee = True
