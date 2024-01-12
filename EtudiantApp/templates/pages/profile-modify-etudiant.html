@@ -260,16 +260,16 @@
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <img src="{{ imagesprofiles }}" class="user-image" alt="User Image"/>
-                  <span class="hidden-xs">{{ nom }}</span>
+                  <img src="{{ user.imagesprofiles }}" class="user-image" alt="User Image"/>
+                  <span class="hidden-xs">{{ user.nom }}</span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
-                    <img src="{{ imagesprofiles }}" class="img-circle" alt="User Image" />
+                    <img src="{{ user.imagesprofiles }}" class="img-circle" alt="User Image" />
                     <p>
-                      {{ nom }} - {{role |upper}}
-                      <small>Numero d'identification : {{Identification}}</small>
+                      {{ user.nom }} - {{user.role |upper}}
+                      <small>Numero d'identification : {{user.Identification}}</small>
                     </p>
                   </li>
                   <!-- Menu Body -->
@@ -306,10 +306,10 @@
           <!-- Sidebar user panel -->
           <div class="user-panel">
             <div class="pull-left image">
-              <img src="{{ imagesprofiles }}" class="img-circle" alt="User Image" />
+              <img src="{{ user.imagesprofiles }}" class="img-circle" alt="User Image" />
             </div>
             <div class="pull-left info">
-              <p>{{nom}}</p>
+              <p>{{user.nom}}</p>
 
               <a href="#"><i class="fa fa-circle text-success"></i> En Ligne</a>
              
@@ -418,7 +418,7 @@
         <section class="content-header">
           <h1>
             Tableau De Bord
-            <small>Panneau de Control | {{role|upper}} </small>
+            <small>Panneau de Control | {{user.role|upper}} </small>
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Mis à Jour</a></li>
@@ -485,6 +485,11 @@
           </div><!-- /.row -->
           <!-- Main row -->
           <div class="row mt-2">
+            {% if error %}
+                  <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                  </div>
+            {% endif %}
             <form action="{% url 'mis_a_jour_etudiant' %}" method="POST" role="form" class="php-email-form" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="col-md-6 form-group">
@@ -528,7 +533,7 @@
             </div>
             <div class="col-md-6 form-group">
                 <label for="password_conf">Confirmer Mot de passe:</label>
-                <input type="password" class="form-control" name="password_conf" id="password_conf" placeholder="Confirmation" value="{{confirmer_mot_de_passe}}" required="">
+                <input type="password" class="form-control" name="password_conf" id="password_conf" placeholder="Confirmation" value="{{mot_de_passe}}" required="">
               
             </div>
             

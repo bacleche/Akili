@@ -367,7 +367,7 @@
               </a>
               <ul class="treeview-menu">
                 <li><a href="{% url 'Profiles_css' %}"><i class="fa fa-circle-o"></i>Voir Profile</a></li>
-                <li><a href="pages/forms/advanced.html"><i class="fa fa-circle-o"></i>Modifier Profile</a></li>
+                <li><a href="{% url 'update_profile' %}"><i class="fa fa-circle-o"></i>Modifier Profile</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -376,8 +376,8 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/tables/simple.html"><i class="fa fa-circle-o"></i>Attestations</a></li>
-                <li><a href="pages/tables/data.html"><i class="fa fa-circle-o"></i>Bulletins</a></li>
+                <li><a href="{% url 'list_demandes' %}"><i class="fa fa-circle-o"></i>Attestations</a></li>
+                <li><a href="{% url 'list_bulletin_demandes' %}"><i class="fa fa-circle-o"></i>Bulletins</a></li>
               </ul>
             </li>
            

@@ -383,16 +383,18 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/tables/simple.html"><i class="fa fa-circle-o"></i>Attestations</a></li>
-                <li><a href="pages/tables/data.html"><i class="fa fa-circle-o"></i>Bulletins</a></li>
+                <li><a href="{% url 'registre_demande' %}"><i class="fa fa-circle-o"></i>Listes</a></li>
               </ul>
             </li>
            
-            <li>
-              <a href="pages/mailbox/mailbox.html">
-                <i class="fa fa-envelope"></i> <span>Messagerie</span>
-                <small class="label pull-right bg-yellow">12</small>
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-table"></i> <span>Elements administratifs</span>
+                <i class="fa fa-angle-left pull-right"></i>
               </a>
+              <ul class="treeview-menu">
+                <li><a href=""><i class="fa fa-circle-o"></i>Mes supports</a></li>
+              </ul>
             </li>
             
             <li class="treeview">

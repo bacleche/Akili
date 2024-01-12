@@ -495,7 +495,14 @@
           </div><!-- /.row -->
           <!-- Main row -->
           <div class="row mt-2">
-            <form action="{% url 'mis_a_jour' %}" method="POST" role="form" class="php-email-form" enctype="multipart/form-data">
+            {% if messages %}
+                <div class="alert alert-danger" role="alert">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <form action="{% url 'mis_a_jour_css' %}" method="POST" role="form" class="php-email-form" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="col-md-6 form-group">
                     <label for="name">Nom:</label>
@@ -538,7 +545,7 @@
             </div>
             <div class="col-md-6 form-group">
                 <label for="password_conf">Confirmer Mot de passe:</label>
-                <input type="password" class="form-control" name="password_conf" id="password_conf" placeholder="Confirmation" value="{{confirmer_mot_de_passe}}" required="">
+                <input type="password" class="form-control" name="password_conf" id="password_conf" placeholder="Confirmation" value="{{mot_de_passe}}" required="">
               
             </div>
             

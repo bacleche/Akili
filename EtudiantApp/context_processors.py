@@ -7,15 +7,19 @@ def notifications_non_lues(request):
 
     binome = None
     notifications = None
+    notifications2 = None
 
     try:
         etudiant_connecte = Etudiant.objects.get(Identification=user_data['Identification'])
         binome = etudiant_connecte.Identification
         notifications = Notification.objects.filter(destinataire=etudiant_connecte, est_lue=False)
+        notifications2 = Notification.objects.filter(destinataire=etudiant_connecte, est_lue=True)
+        
     except ObjectDoesNotExist:
         etudiant_connecte = None
 
     return {
         'notifications_non_lues': notifications,
+        'notifications_lues' : notifications2,
         'binome': binome,
     }

@@ -20,6 +20,9 @@ class Memoire(models.Model):
     matricule_identification_binome = models.CharField(max_length=20, blank=True, null=True)
     document = models.FileField(upload_to='memoires', max_length=500, validators=[validate_pdf_extension])
     binome_notification_envoyee = models.BooleanField(default=False)
+    is_pubied = models.BooleanField(default=False)
+
+
 
     def clean(self):
         # Assurez-vous que le matricule_identification_binome existe et est correct
@@ -31,7 +34,7 @@ class Memoire(models.Model):
                 raise ValidationError("Le matricule d'identification du binôme est incorrect.")
         else:
             binome = None
-
+            self.is_pubied = True
         existing_memoires = Memoire.objects.filter(
             models.Q(identite=self.identite) |
             models.Q(matricule_identification_binome=self.matricule_identification_binome) |
@@ -61,13 +64,15 @@ class Memoire(models.Model):
     
         if is_new and binome:
             expediteur = self.identite
+            mem = self.pk
             if expediteur is None:
                raise ValidationError("L'expéditeur n'est pas défini correctement.")
             # Envoyez la notification au binôme ici
             titre_poste = self.titre  # Utilisez le champ approprié pour le titre du poste
             contenu_notification = f"{expediteur.user.last_name} {expediteur.user.first_name} vous a ajouté comme binôme dans un nouveau poste de mémoire : {titre_poste}."
             date_creation = self.date_poste
-            notification = Notification(destinataire=binome, expediteur=expediteur ,  contenu=contenu_notification, date_creation=date_creation)
+            notification = Notification(destinataire=binome, expediteur=expediteur ,  contenu=contenu_notification, date_creation=date_creation , mem=mem)
+        
             notification.save()
 
             self.binome_notification_envoyee = True

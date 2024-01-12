@@ -82,7 +82,7 @@
           <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
               <!-- Messages: style can be found in dropdown.less-->
-              {% if notifications_non_lues %}
+              {% comment %} {% if notifications_non_lues %}
                   <li class="dropdown notifications-menu">
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                           <i class="fa fa-envelope"></i>
@@ -116,7 +116,103 @@
                           <li class="footer"><a href="#">See All Notifications</a></li>
                       </ul>
                   </li>
-              {% endif %}
+              {% else %}
+                <li class="dropdown notifications-menu">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                      <i class="fa fa-envelope-o"></i>
+                      <!-- Ajoutez d'autres styles ou classes CSS pour l'icône ici -->
+                  </a>
+                  <ul class="dropdown-menu">
+                      <li>
+                          <!-- inner menu: contains the actual data -->
+                          <ul class="menu">
+                              {% for notification in notifications_non_lues %}
+                                  <li class="text-center"><!-- start notification -->
+                                      <a href="#" >
+                                        <div class="pull-left">
+                            
+                                          <div class="pull-left">
+                                            <i class="fa fa-users text-aqua"></i> 
+                                          </div>
+                                          <h4>
+                                              {{ notification.titre }}
+                                              <br>
+                                              <small><i class="fa fa-clock-o"></i> {{ notification.date_creation }}</small>
+                                          </h4>
+                                          <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ notification.contenu }}</p>
+                                      </a>
+                                  </li><!-- end notification -->
+                              {% endfor %}
+                          </ul>
+                      </li>
+                      <li class="footer"><a href="#">See All Notifications</a></li>
+                  </ul>
+                </li>
+              {% endif %} {% endcomment %}
+
+<li class="dropdown notifications-menu">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+      <i class="fa fa-envelope"></i> <!-- Icône par défaut -->
+      <!-- Ajoutez d'autres styles ou classes CSS pour l'icône ici -->
+      {% if notifications_non_lues %}
+          <span class="badge">{{ notifications_non_lues.count }}</span>
+      {% endif %}
+  </a>
+  <ul class="dropdown-menu">
+      <li class="header">
+          {% if notifications_non_lues %}
+              You have {{ notifications_non_lues.count }} new notifications
+          {% else %}
+              No notifications
+          {% endif %}
+      </li>
+      <li>
+          <!-- inner menu: contains the actual data -->
+          <ul class="menu">
+              {% for notification in notifications_non_lues %}
+                  <li class="text-center"><!-- start notification -->
+                      <a href="#" data-toggle="modal" data-target="#notificationModal{{ notification.id }}">
+                          <div class="pull-left">
+                              <i class="fa fa-users text-aqua"></i>
+                          </div>
+                          <div class="pull-left">
+                              <h4>
+                                  {{ notification.titre }}
+                                  <br>
+                                  <small><i class="fa fa-clock-o"></i> {{ notification.date_creation }}</small>
+                              </h4>
+                              <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ notification.contenu }}</p>
+                          </div>
+                      </a>
+                  </li><!-- end notification -->
+              {% endfor %}
+              {% for notification in notifications_lues %}
+                  <li class="text-center"><!-- start notification -->
+                      <a href="#">
+                          <div class="pull-left">
+                              <i class="fa fa-users text-aqua"></i>
+                          </div>
+                          <div class="pull-left">
+                              <h4>
+                                  {{ notification.titre }}
+                                  <br>
+                                  <small><i class="fa fa-clock-o"></i> {{ notification.date_creation }}</small>
+                              </h4>
+                              <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ notification.contenu }}</p>
+                          </div>
+                      </a>
+                  </li><!-- end notification -->
+              {% endfor %}
+          </ul>
+      </li>
+      <li class="footer"><a href="#">See All Notifications</a></li>
+  </ul>
+</li>
+
+
+
+
+
               <!-- Notifications: style can be found in dropdown.less -->
               <li class="dropdown notifications-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -510,11 +606,13 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>{{ notification.contenu }}</p>
+                    <p id="contenu">{{ notification.contenu }}</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" onclick="accepterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Accepter {{notification.expediteur.id}}</button>
                     <button type="button" class="btn btn-danger" onclick="rejeterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Rejeter</button>
+                    <button type="button" class="btn btn-warning" onclick="compriS({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Compris</button>
+
                 </div>
             </div>
         </div>
@@ -525,6 +623,16 @@
     <script src="{% static 'assets_dash/plugins/jQuery/jQuery-2.1.3.min.js' %}"></script>
 
     <script>
+
+      let contenu = $('#contenu').text();
+      console.log(contenu)
+      if(contenu.includes("refusé") || contenu.includes("accepté")) {
+        $('.btn-primary').hide();
+        $('.btn-danger').hide();
+
+      } else {
+        $('.btn-warning').hide()
+      }
      
       function accepterNotification(notificationId) {
         var url = "{% url 'marquer_notification_lue' 0 %}".replace('0', notificationId);
@@ -561,6 +669,8 @@
                 });
     
                 $('#notificationModal' + notificationId).modal('hide');
+                
+                
             },
             error: function (error) {
                 console.error('Erreur lors de l\'acceptation de la notification:', error);
@@ -615,6 +725,28 @@
         });
     }
     
+
+    function compriS(notificationId) {
+      var url = "{% url 'marquer_notification_lue' 0 %}".replace('0', notificationId);
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+            'action': 'compris',
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function (data) {
+            console.log('reponse compris');
+            // Logique pour créer une nouvelle notification à l'expéditeur
+            $('#notificationModal' + notificationId).modal('hide');
+        },
+        error: function (error) {
+            console.error('Erreur lors de la comprehension  de la reponse:', error);
+            console.log('Erreur détaillée:', error.responseText);
+        }
+    });
+      
+    }
   </script>
   
     <!-- jQuery UI 1.11.2 -->

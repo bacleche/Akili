@@ -1,6 +1,7 @@
 from django import forms
 from EtudiantApp.data_models.memoire import Memoire
 from EtudiantApp.data_models.etudiant import Etudiant
+from CSSAPP.data_models.css import CSS
 from EtudiantApp.data_models.demande import Demande
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -100,6 +101,57 @@ class DemandeForm(forms.ModelForm):
             self.fields['filiere'].initial = user_data.get('filiere')
             self.fields['cycle'].initial = user_data.get('cycle')
             self.fields['niveau'].initial = user_data.get('niveaux')
+
+            self.fields['etudiant'].queryset = Etudiant.objects.filter(matricule=user_data['matricule'])
+            self.fields['identite_receptioniste'].queryset = CSS.objects.all()
+
+
+
+        # Ajouter les classes Bootstrap aux champs
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+        # Masquer les champs session_dut et session_lic en fonction du type d'étudiant
+        if user_data and user_data.get('cycle') == 'DUT':
+            self.fields['session_lic'].widget = forms.HiddenInput()
+            self.fields['session_lic'].widget.attrs['class'] = 'd-none'
+        elif user_data and user_data.get('cycle') == 'Licence':
+            self.fields['session_dut'].widget = forms.HiddenInput()
+            self.fields['session_dut'].widget.attrs['class'] = 'd-none'
+
+
+class UpdateDemandeForm(forms.ModelForm):
+    class Meta:
+        model = Demande
+        fields = '__all__' 
+
+    def __init__(self, *args, **kwargs):
+        user_data = kwargs.pop('user_data', None)
+        super().__init__(*args, **kwargs)
+
+        # Rendre les champs date_nais, genre et telephone non éditables
+        self.fields['date_nais'].widget.attrs['readonly'] = True
+        self.fields['genre'].widget.attrs['readonly'] = True
+        self.fields['telephone'].widget.attrs['readonly'] = True
+        self.fields['cycle'].widget.attrs['readonly'] = True
+        self.fields['filiere'].widget.attrs['readonly'] = True
+        self.fields['niveau'].widget.attrs['readonly'] = True
+
+
+
+
+        # Pré-remplir les champs date_nais, genre et telephone si l'utilisateur est connecté
+        if user_data:
+            self.fields['date_nais'].initial = user_data.get('date_nais')
+            self.fields['genre'].initial = user_data.get('genre')
+            self.fields['telephone'].initial = user_data.get('telephone')
+            self.fields['filiere'].initial = user_data.get('filiere')
+            self.fields['cycle'].initial = user_data.get('cycle')
+            self.fields['niveau'].initial = user_data.get('niveaux')
+
+            self.fields['etudiant'].queryset = Etudiant.objects.filter(matricule=user_data['matricule'])
+            self.fields['identite_receptioniste'].queryset = CSS.objects.all()
+
 
 
         # Ajouter les classes Bootstrap aux champs
