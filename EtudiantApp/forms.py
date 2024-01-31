@@ -83,12 +83,23 @@ class DemandeForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         # Rendre les champs date_nais, genre et telephone non éditables
+
         self.fields['date_nais'].widget.attrs['readonly'] = True
         self.fields['genre'].widget.attrs['readonly'] = True
         self.fields['telephone'].widget.attrs['readonly'] = True
         self.fields['cycle'].widget.attrs['readonly'] = True
         self.fields['filiere'].widget.attrs['readonly'] = True
         self.fields['niveau'].widget.attrs['readonly'] = True
+        self.fields['date_poste_demande'].widget.attrs['readonly'] = True
+        self.fields['date_de_mise_en_traitement'].widget = forms.HiddenInput()
+        self.fields['date_de_fin_treatment'].widget = forms.HiddenInput()
+        self.fields['date_refus'].widget = forms.HiddenInput()
+        self.fields['date_termine'].widget = forms.HiddenInput()
+        self.fields['etat'].widget = forms.HiddenInput()
+        # self.fields['identite_receptioniste'].widget = forms.HiddenInput()
+
+
+
 
 
 
@@ -136,6 +147,10 @@ class UpdateDemandeForm(forms.ModelForm):
         self.fields['cycle'].widget.attrs['readonly'] = True
         self.fields['filiere'].widget.attrs['readonly'] = True
         self.fields['niveau'].widget.attrs['readonly'] = True
+        self.fields['date_poste_demande'].widget.attrs['readonly'] = True
+        self.fields['date_de_mise_en_traitement'].widget = forms.HiddenInput()
+        self.fields['date_de_fin_treatment'].widget = forms.HiddenInput()
+        self.fields['date_refus'].widget = forms.HiddenInput()
 
 
 

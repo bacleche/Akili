@@ -55,6 +55,15 @@ class Demande(models.Model):
     ('novembre', 'Novembre'),
     ('décembre', 'Décembre'),
 ]
+    
+
+    ETATS_CHOICES = [
+    ('En attente', 'En attente'),
+    ('Acceptée', 'Acceptée'),
+    ('En cours de traitement', 'En cours de traitement'),
+    ('Terminée', 'Terminée'),
+  
+]
 
 
     etudiant = models.ForeignKey(Etudiant, on_delete=models.CASCADE)
@@ -70,6 +79,11 @@ class Demande(models.Model):
     cycle = models.CharField(max_length=12)
     niveau = models.CharField(max_length=12)
     date_poste_demande = models.DateField(default=date.today)
+    date_de_mise_en_traitement = models.DateField(default=date.today)
+    date_de_fin_treatment = models.DateField(default=date.today)
+    date_refus = models.DateField(default=date.today)
+    date_termine = models.DateField(default=date.today)
+    etat = models.CharField(max_length=30, choices=ETATS_CHOICES, default='En attente')
     identite_receptioniste = models.ForeignKey(CSS, on_delete=models.CASCADE, blank=True, null=True)
 
     def save(self, *args, **kwargs):

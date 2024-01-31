@@ -37,6 +37,21 @@
       bottom: 0;
       width: 100%;
   }
+
+  .badge-info {
+    background-color: blue;
+  }
+
+  .badge-treat {
+    background-color:orange;
+  }
+  .badge-danger {
+    background-color: red;
+  }
+
+  .badge-success {
+    background-color: green;
+  }
   .content-wrapper {
     min-height: 100vh; /* ou une hauteur minimale appropriée */
 }
@@ -494,34 +509,110 @@
             </div><!-- ./col -->
           </div><!-- /.row -->
           <!-- Main row -->
-          <div class="table-responsive">
-            <table class="table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Date de Demande</th>
-                        <th scope="col">Etudiant(s) </th>
-                        <th scope="col">Objet de Demande </th>
-                        <th scope="col">Action (s)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                  {% for demande in demandes %}
-                      <tr>
-                          <th scope="row"></th>
-                          <td>{{ demande.date_poste_demande }}</td>
-                          <td>{{ demande.etudiant }}</td>
-                          <td>{{ demande.objet_demande }}</td>
-                          <td>
-                              <a href="{% url 'supprimer_demande' demande_id=demande.id %}">Supprimer</a> |
-                              <a href="{% url 'modifier_demande' demande_id=demande.id %}">Modifier</a> |
-                              <a href="{% url 'imprimer_demande_css' demande_id=demande.id %}">Imprimer</a>
-                          </td>
-                      </tr>
-                  {% endfor %}
-              </tbody>
-            </table>
-        </div>
+          <div class="container mt-6">
+              <div class="row">
+                  <div class="col-md-6 offset-md-6">
+                    <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'recherche_demande_par_etudiant_attestations' %}">
+                      <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Rechercher" name="q">
+                      <input class="form-control mr-sm-2" type="date" name="date" placeholder="Date">
+                      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
+                  </form>
+                  
+                  </div>
+              </div>
+              <div class="table-responsive">
+                {% if demandes %}
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Etudiant(s) </th>
+                            <th scope="col">Objet </th>
+                            <th scope="col">Action(s)-1</th>
+                            <th scope="col">Etat (s)</th>
+                            <th scope="col">Action(s)-2</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                      {% for demande in demandes %}
+                          <tr>
+                              <th scope="row"></th>
+                              <td>{{ demande.date_poste_demande }}</td>
+                              <td>{{ demande.etudiant }}</td>
+                              <td>{{ demande.objet_demande }}</td>
+                              <td>
+                                <div class="btn-group" role="group">
+                                  <a href="{% url 'supprimer_demande_css_attestation' demande_id=demande.id %}" class="btn btn-danger">Supprimer</a>
+                                  <a href="{% url 'imprimer_demande_css' demande_id=demande.id %}" class="btn btn-warning">Imprimer</a>
+                                  <a href="{% url 'generer_fichier_csv' demande_id=demande.id %}" class="btn btn-success">Generer CSV</a>
+                                </div>
+                                </td>
+                              <td>
+                                {% if demande.etat == 'En attente' %}
+                                    <span class="badge badge-warning">En attente</span>
+                                    {% comment %} <a href="#"  class="btn btn-warning">En traitement</a>
+                                    <a href="{% url 'changer_etat_demande_attestion' demande.id 'acceptee' %}"  class="btn btn-warning">Acceptée</a>
+                                    <a href="{% url 'changer_etat_demande_attestion' demande.id 'terminee' %}" class="btn btn-success">Terminée</a>
+                                    <a href="{% url 'changer_etat_demande_attestion' demande.id 'refusee' %}" class="btn btn-danger">Refusée</a> {% endcomment %}
+                                {% elif demande.etat == 'En cours de traitement'%}
+                                    <span class="badge badge-treat">En traitement</span>
+                                
+                                {% elif demande.etat == 'Acceptée' %}
+                                    <span class="badge badge-treat">Acceptée</span>
+                                    {% comment %} <a href="{% url 'changer_etat_demande_attestion' demande.id 'terminee' %}" class="btn btn-success">Terminée</a> {% endcomment %}
+                                    <!-- D'autres actions liées à l'état "Acceptée" si nécessaire -->
+                                {% elif demande.etat == 'Refusée' %}
+                                    <span class="badge badge-danger">Refusée</span>
+                                    <!-- D'autres actions liées à l'état "Refusée" si nécessaire -->
+                                {% elif demande.etat == 'Terminée' %}
+                                    <span class="badge badge-success">Terminée</span>
+                                    <!-- D'autres actions liées à l'état "Terminée" si nécessaire -->
+                                {% else %}
+                                    <span class="badge badge-secondary">{{ demande.etat }}</span>
+                                {% endif %}
+                              </td>
+                              <td>
+                                <div class="btn-group" role="group">
+                                  {% if demande.etat == 'En attente' %}
+                                      {% comment %} <span class="badge badge-warning">En attente</span> {% endcomment %}
+                                      <a href="{% url 'changer_etat_demande_attestion' demande.id 'traitement' %}"  class="btn btn-warning">En traitement</a>
+                                      <a href="{% url 'changer_etat_demande_attestion' demande.id 'acceptee' %}"  class="btn btn-warning">Acceptée</a>
+                                      <a href="{% url 'changer_etat_demande_attestion' demande.id 'terminee' %}" class="btn btn-success">Terminée</a>
+                                      <a href="{% url 'changer_etat_demande_attestion' demande.id 'refusee' %}" class="btn btn-danger">Refusée</a>
+                                  
+                                  {% elif demande.etat == 'En cours de traitement' %}
+                                  {% comment %} <span class="badge badge-info">Acceptée</span> {% endcomment %}
+                                      <a href="{% url 'changer_etat_demande_attestion' demande.id 'acceptee' %}"  class="btn btn-warning">Acceptée</a>
+                                      <a href="{% url 'changer_etat_demande_attestion' demande.id 'terminee' %}" class="btn btn-success">Terminée</a>
+                                      <a href="{% url 'changer_etat_demande_attestion' demande.id 'refusee' %}" class="btn btn-danger">Refusée</a>
+                                  {% elif demande.etat == 'Acceptée' %}
+                                      {% comment %} <span class="badge badge-info">Acceptée</span> {% endcomment %}
+                                      <a href="{% url 'changer_etat_demande_attestion' demande.id 'terminee' %}" class="btn btn-success">Terminée</a>
+                                      <!-- D'autres actions liées à l'état "Acceptée" si nécessaire -->
+                                  {% elif demande.etat == 'Refusée' %}
+                                      {% comment %} <span class="badge badge-danger">Refusée</span> {% endcomment %}
+                                      <!-- D'autres actions liées à l'état "Refusée" si nécessaire -->
+                                  {% elif demande.etat == 'Terminée' %}
+                                      {% comment %} <span class="badge badge-success">Terminée</span> {% endcomment %}
+                                      <!-- D'autres actions liées à l'état "Terminée" si nécessaire -->
+                                  {% else %}
+                                      <span class="badge badge-secondary">{{ demande.etat }}</span>
+                                  {% endif %}
+
+                                </div>
+                              </td>
+                          </tr>
+                      {% endfor %}
+                  </tbody>
+                </table>
+                {% else %}
+                        <p>Aucune donnée correspondante.</p>
+                {% endif %}
+              </div>
+         
 
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->

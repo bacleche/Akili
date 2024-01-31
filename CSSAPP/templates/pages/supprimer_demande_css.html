@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>AKILI - CSS</title>
+    <title>AKILI - ETUDIANT</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.2 -->
     <link href="{% static 'assets_dash/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />    
@@ -39,20 +39,6 @@
   }
   .content-wrapper {
     min-height: 100vh; /* ou une hauteur minimale appropriée */
-}
-.badge-info {
-  background-color: blue;
-}
-
-.badge-treat {
-  background-color:orange;
-}
-.badge-danger {
-  background-color: red;
-}
-
-.badge-success {
-  background-color: green;
 }
 
     #logo-img {
@@ -275,15 +261,15 @@
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <img src="{{ user_data.imagesprofiles }}" class="user-image" alt="User Image"/>
-                  <span class="hidden-xs">{{ nom }}</span>
+                  <span class="hidden-xs">{{ user_data.nom }}</span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
                     <img src="{{ user_data.imagesprofiles }}" class="img-circle" alt="User Image" />
                     <p>
-                      {{ user_data.nom }} - {{user_data.role|upper}}
-                      <small>Member since Nov. 2012</small>
+                      {{ user_data.nom }} - {{user_data.role |upper}}
+                      <small>Numero d'identification : {{user_data.Identification}}</small>
                     </p>
                   </li>
                   <!-- Menu Body -->
@@ -326,6 +312,7 @@
               <p>{{user_data.nom}}</p>
 
               <a href="#"><i class="fa fa-circle text-success"></i> En Ligne</a>
+             
             </div>
           </div>
           <!-- search form -->
@@ -346,7 +333,7 @@
                 <i class="fa fa-dashboard"></i> <span>Tableau de Bord</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li class="active"><a href="index.html"><i class="fa fa-circle-o"></i>Accueil</a></li>
+                <li class="active"><a href="{% url 'student_space' %}"><i class="fa fa-circle-o"></i>Accueil</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -364,14 +351,11 @@
             <li class="treeview">
               <a href="#">
                 <i class="fa fa-laptop"></i>
-                <span>Centre de Vision</span>
+                <span>Zone de posts</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/UI/general.html"><i class="fa fa-circle-o"></i>LICENCE-INFO</a></li>
-                <li><a href="pages/UI/icons.html"><i class="fa fa-circle-o"></i> DUT-INFO</a></li>
-                <li><a href="pages/UI/buttons.html"><i class="fa fa-circle-o"></i> LICENCE-AP</a></li>
-                <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> DUT-AP</a></li>
+                <li><a href="{% url 'poster_memoire' %}"><i class="fa fa-circle-o"></i>Travail de recherche</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -380,8 +364,17 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="{% url 'Profiles_css' %}"><i class="fa fa-circle-o"></i>Voir Profile</a></li>
-                <li><a href="{% url 'update_profile' %}"><i class="fa fa-circle-o"></i>Modifier Profile</a></li>
+                <li><a href="{% url 'Profiles_etudiant' %}"><i class="fa fa-circle-o"></i>Voir Profile</a></li>
+                <li><a href="{% url 'profile_details_etudiant' %}"><i class="fa fa-circle-o"></i>Modifier Profile</a></li>
+              </ul>
+            </li>
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-folder"></i> <span>Formuler une Demande</span>
+                <i class="fa fa-angle-left pull-right"></i>
+              </a>
+              <ul class="treeview-menu">
+                <li><a href="{% url 'creer_demande' %}"><i class="fa fa-circle-o"></i>effectuer une demande</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -390,8 +383,7 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/tables/simple.html"><i class="fa fa-circle-o"></i>Attestations</a></li>
-                <li><a href="pages/tables/data.html"><i class="fa fa-circle-o"></i>Bulletins</a></li>
+                <li><a href="{% url 'registre_demande' %}"><i class="fa fa-circle-o"></i>Listes</a></li>
               </ul>
             </li>
            
@@ -401,32 +393,14 @@
                 <small class="label pull-right bg-yellow">12</small>
               </a>
             </li>
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-folder"></i> <span>Examples</span>
-                <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="pages/examples/invoice.html"><i class="fa fa-circle-o"></i> Invoice</a></li>
-                <li><a href="pages/examples/login.html"><i class="fa fa-circle-o"></i> Login</a></li>
-                <li><a href="pages/examples/register.html"><i class="fa fa-circle-o"></i> Register</a></li>
-                <li><a href="pages/examples/lockscreen.html"><i class="fa fa-circle-o"></i> Lockscreen</a></li>
-                <li><a href="pages/examples/404.html"><i class="fa fa-circle-o"></i> 404 Error</a></li>
-                <li><a href="pages/examples/500.html"><i class="fa fa-circle-o"></i> 500 Error</a></li>
-                <li><a href="pages/examples/blank.html"><i class="fa fa-circle-o"></i> Blank Page</a></li>
-              </ul>
-            </li>
+            
             <li class="treeview">
               <a href="#">
                 <i class="fa fa-share"></i> <span>Transfert Administratif</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="#"><i class="fa fa-circle-o"></i>DCFI</a></li>
-                <li>
-                  <a href="#"><i class="fa fa-circle-o"></i>ETUDIANTS</a>
-                </li>
-                
+                <li><a href="#"><i class="fa fa-circle-o"></i>La scolarité</a></li>
               </ul>
             </li>
             <li><a href="{% url 'deconnexion' %}"><i class="fa fa-sign-out"></i> Se Deconnecter</a></li>
@@ -442,10 +416,10 @@
         <section class="content-header">
           <h1>
             Tableau De Bord
-            <small>Panneau de Control</small>
+            <small>Panneau de Control | {{user_data.role|upper}} </small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Liste des demandes des bulletins</a></li>
+            <li><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
             <li class="active">Tableau de Bord</li>
           </ol>
         </section>
@@ -508,116 +482,30 @@
             </div><!-- ./col -->
           </div><!-- /.row -->
           <!-- Main row -->
+          {% if "attestation" in demande.objet_demande%}
+          <div class="container">
+            <h2>Supprimer la demande</h2>
+            <p>Êtes-vous sûr de vouloir supprimer la demande du {{ demande.date_poste_demande }}?</p>
+            
+            <form method="post" action="{% url 'supprimer_demande_css_attestation' demande_id=demande.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+              <a href="{% url 'list_demandes' %}" class="btn btn-secondary">Annuler</a>
+            </form>
+          </div> 
+          {% else %}
 
-          <div class="container mt-3">
-            <div class="row">
-                <div class="col-md-6 offset-md-6">
-                    <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'recherche_demande_par_etudiant' %}">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Rechercher" name="q">
-                        <input class="form-control mr-sm-2" type="date" name="date" placeholder="Date">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
-                        {% comment %} <div class="input-group-append">
-                          <button class="btn btn-outline-secondary" type="button" id="voiceSearchButton" onclick="startVoiceSearch()">
-                            <i class="fa fa-microphone"></i>
-                          </button>
-                        </div> {% endcomment %}
-                      </form>
-                </div>
-            </div>
-            <div class="table-responsive">
-              {% if demandes %}
-              <table class="table">
-                  <thead class="thead-dark">
-                      <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Date</th>
-                          <th scope="col">Etudiant(s) </th>
-                          <th scope="col">Objet </th>
-                          <th scope="col">Action(s)-1</th>
-                          <th scope="col">Etat (s)</th>
-                          <th scope="col">Action(s)-2</th>
-
-
-                      </tr>
-                  </thead>
-                  <tbody>
-                    {% for demande in demandes %}
-                        <tr>
-                            <th scope="row"></th>
-                            <td>{{ demande.date_poste_demande }}</td>
-                            <td>{{ demande.etudiant }}</td>
-                            <td>{{ demande.objet_demande }}</td>
-                            <td>
-                              <div class="btn-group" role="group">
-                                <a href="{% url 'supprimer_demande_css_bulletin' demande_id=demande.id %}" class="btn btn-danger">Supprimer</a>
-                                <a href="{% url 'imprimer_demande_css' demande_id=demande.id %}" class="btn btn-warning">Imprimer</a>
-                                <a href="{% url 'generer_fichier_csv' demande_id=demande.id %}" class="btn btn-success">Generer CSV</a>
-                              </div>
-                              </td>
-                            <td>
-                              {% if demande.etat == 'En attente' %}
-                                  <span class="badge badge-warning">En attente</span>
-                                  {% comment %} <a href="#"  class="btn btn-warning">En traitement</a>
-                                  <a href="{% url 'changer_etat_demande_attestion' demande.id 'acceptee' %}"  class="btn btn-warning">Acceptée</a>
-                                  <a href="{% url 'changer_etat_demande_attestion' demande.id 'terminee' %}" class="btn btn-success">Terminée</a>
-                                  <a href="{% url 'changer_etat_demande_attestion' demande.id 'refusee' %}" class="btn btn-danger">Refusée</a> {% endcomment %}
-                              {% elif demande.etat == 'En cours de traitement'%}
-                                  <span class="badge badge-treat">En traitement</span>
-                              
-                              {% elif demande.etat == 'Acceptée' %}
-                                  <span class="badge badge-treat">Acceptée</span>
-                                  {% comment %} <a href="{% url 'changer_etat_demande_attestion' demande.id 'terminee' %}" class="btn btn-success">Terminée</a> {% endcomment %}
-                                  <!-- D'autres actions liées à l'état "Acceptée" si nécessaire -->
-                              {% elif demande.etat == 'Refusée' %}
-                                  <span class="badge badge-danger">Refusée</span>
-                                  <!-- D'autres actions liées à l'état "Refusée" si nécessaire -->
-                              {% elif demande.etat == 'Terminée' %}
-                                  <span class="badge badge-success">Terminée</span>
-                                  <!-- D'autres actions liées à l'état "Terminée" si nécessaire -->
-                              {% else %}
-                                  <span class="badge badge-secondary">{{ demande.etat }}</span>
-                              {% endif %}
-                            </td>
-                            <td>
-                              <div class="btn-group" role="group">
-                              {% if demande.etat == 'En attente' %}
-                                  {% comment %} <span class="badge badge-warning">En attente</span> {% endcomment %}
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'traitement' %}"  class="btn btn-warning">En traitement</a>
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'acceptee' %}"  class="btn btn-warning">Acceptée</a>
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'terminee' %}" class="btn btn-success">Terminée</a>
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'refusee' %}" class="btn btn-danger">Refusée</a>
-                              
-                              {% elif demande.etat == 'En cours de traitement' %}
-                              {% comment %} <span class="badge badge-info">Acceptée</span> {% endcomment %}
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'acceptee' %}"  class="btn btn-warning">Acceptée</a>
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'terminee' %}" class="btn btn-success">Terminée</a>
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'refusee' %}" class="btn btn-danger">Refusée</a>
-                              {% elif demande.etat == 'Acceptée' %}
-                                  {% comment %} <span class="badge badge-info">Acceptée</span> {% endcomment %}
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'terminee' %}" class="btn btn-success">Terminée</a>
-                                  <!-- D'autres actions liées à l'état "Acceptée" si nécessaire -->
-                              {% elif demande.etat == 'Refusée' %}
-                                  {% comment %} <span class="badge badge-danger">Refusée</span> {% endcomment %}
-                                  <!-- D'autres actions liées à l'état "Refusée" si nécessaire -->
-                              {% elif demande.etat == 'Terminée' %}
-                                  {% comment %} <span class="badge badge-success">Terminée</span> {% endcomment %}
-                                  <!-- D'autres actions liées à l'état "Terminée" si nécessaire -->
-                              {% else %}
-                                  <span class="badge badge-secondary">{{ demande.etat }}</span>
-                              {% endif %}
-
-                              </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-              </table>
-              {% else %}
-                      <p>Aucune donnée correspondante.</p>
-              {% endif %}
-            </div>
-        </div>
-        
+          <div class="container">
+            <h2>Supprimer la demande</h2>
+            <p>Êtes-vous sûr de vouloir supprimer la demande du {{ demande.date_poste_demande }}?</p>
+            
+            <form method="post" action="{% url 'supprimer_demande_css_bulletin' demande_id=demande.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+              <a href="{% url 'list_bulletin_demandes' %}" class="btn btn-secondary">Annuler</a>
+            </form>
+          </div> 
+          {% endif%}
 
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->

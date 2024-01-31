@@ -32,16 +32,20 @@
 
   </head>
   <style>
-    .main-footer {
+    {% comment %} .main-footer {
       position: fixed;
       bottom: 0;
       width: 100%;
-  }
+  } {% endcomment %}
   .content-wrapper {
     min-height: 100vh; /* ou une hauteur minimale appropriée */
 }
 .badge-info {
   background-color: blue;
+}
+
+.badge-dark {
+  background-color:black;
 }
 
 .badge-treat {
@@ -55,6 +59,10 @@
   background-color: green;
 }
 
+
+.demande-card {
+  margin-bottom: 20px;
+}
     #logo-img {
       width: 300px;  /* Largeur souhaitée */
       height: 43px;  /* Hauteur automatique pour maintenir le ratio d'aspect */
@@ -508,116 +516,95 @@
             </div><!-- ./col -->
           </div><!-- /.row -->
           <!-- Main row -->
+        <!-- pages/historiques_demandes.html -->
+<div class="container mt-5">
+                          <h1 class="text-center">Historique des Demandes</h1>
 
-          <div class="container mt-3">
-            <div class="row">
-                <div class="col-md-6 offset-md-6">
-                    <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'recherche_demande_par_etudiant' %}">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Rechercher" name="q">
-                        <input class="form-control mr-sm-2" type="date" name="date" placeholder="Date">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
-                        {% comment %} <div class="input-group-append">
-                          <button class="btn btn-outline-secondary" type="button" id="voiceSearchButton" onclick="startVoiceSearch()">
-                            <i class="fa fa-microphone"></i>
-                          </button>
-                        </div> {% endcomment %}
-                      </form>
-                </div>
-            </div>
-            <div class="table-responsive">
-              {% if demandes %}
-              <table class="table">
-                  <thead class="thead-dark">
-                      <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Date</th>
-                          <th scope="col">Etudiant(s) </th>
-                          <th scope="col">Objet </th>
-                          <th scope="col">Action(s)-1</th>
-                          <th scope="col">Etat (s)</th>
-                          <th scope="col">Action(s)-2</th>
+                          <div class="row justify-content-center">
+                              {% for etat, demandes_list in historique_demandes %}
+                                  <div class="col-md-6 mt-4">
+                                      <div class="card">
+                                        {% if etat == 'En attente' %}
+                                        <div class="card-header bg-primary text-white badge badge-warning">
+                                            {{ etat }}
+                                        </div>
+                                    {% elif etat == 'En cours de traitement' %}
+                                        <div class="card-header bg-primary text-white badge badge-treat">
+                                            {{ etat }}
+                                        </div>
+                                    {% elif etat == 'Acceptée' %}
+                                        <div class="card-header bg-primary text-white badge badge-treat">
+                                            {{ etat }}
+                                        </div>
+                                    {% elif etat == 'Terminée' %}
+                                    <div class="card-header bg-primary text-white badge badge-success">
+                                        {{ etat }}
+                                    </div>
+                                    {% elif etat == 'Refusée' %}
+                                        <div class="card-header bg-primary text-white badge badge-danger">
+                                            {{ etat }}
+                                        </div>
+                                    {% endif %}
+                                    
+                                          <div class="card-body">
+                                              {% for demande in demandes_list %}
+                                                  <div class="mb-3">
+                                                      <p class="font-weight-bold mb-1">Demande de {{ demande.etudiant }}</p>
+                                                      {% if etat == 'En attente' %}
+                                                          <p>{{ demande.date_poste_demande }}</p>
+                                                      {% elif etat == 'En cours de traitement' %}
+                                                          <p>{{ demande.date_de_mise_en_traitement }}</p>
+                                                      {% elif etat == 'Acceptée' %}
+                                                          <p>{{ demande.date_de_fin_treatment }}</p>
+                                                      {% elif etat == 'Refusée' %}
+                                                          <p>{{ demande.date_refus }}</p>
+                                                      {% elif etat == 'Terminée' %}
+                                                          <p>{{ demande.date_termine }}</p>
+                                                      {% endif %}
+                                                      <!-- Ajoutez d'autres champs selon vos besoins -->
+                                                  </div>
+                                              {% endfor %}
+                                          </div>
+                                      </div>
+                                  </div>
+                              {% endfor %}
+                          </div>
+                          
+                          <div class="row mb-4 mt-4">
+                            <div class="col-md-2 d-flex"  style="margin-top: 70px;">
+                                <div class="card">
+                                    <h1>
+                                        Totaux                                        
+                                    </h1>
+                                    
+                                    <div class="card-body" style="padding-top : 20px;">
+                                        <div class="d-flex">
+                                            <div class="bg-info p-2 rounded" style="background-color:gray; color:white;">
+                                                <p>Total en attente: {{ totals.total_attente }}</p>
+                                            </div>
+                                            <div class="bg-warning p-2 rounded" style="background-color:orange; color:white;">
+                                                <p>Total en cours de traitement: {{ totals.total_en_cours }}</p>
+                                            </div>
+                                            <div class="bg-success p-2 rounded"  style="background-color:orange; color:white;">
+                                                <p>Total acceptée: {{ totals.total_acceptee }}</p>
+                                            </div>
+                                            <div class="bg-danger p-2 rounded" style="background-color:red; color:white;">
+                                                <p>Total refusée: {{ totals.total_refusee }}</p>
+                                            </div>
+                                            <div class="bg-success p-2 rounded" style="background-color:green; color:white;">
+                                                <p>Total terminée: {{ totals.total_terminee }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+</div>
 
-
-                      </tr>
-                  </thead>
-                  <tbody>
-                    {% for demande in demandes %}
-                        <tr>
-                            <th scope="row"></th>
-                            <td>{{ demande.date_poste_demande }}</td>
-                            <td>{{ demande.etudiant }}</td>
-                            <td>{{ demande.objet_demande }}</td>
-                            <td>
-                              <div class="btn-group" role="group">
-                                <a href="{% url 'supprimer_demande_css_bulletin' demande_id=demande.id %}" class="btn btn-danger">Supprimer</a>
-                                <a href="{% url 'imprimer_demande_css' demande_id=demande.id %}" class="btn btn-warning">Imprimer</a>
-                                <a href="{% url 'generer_fichier_csv' demande_id=demande.id %}" class="btn btn-success">Generer CSV</a>
-                              </div>
-                              </td>
-                            <td>
-                              {% if demande.etat == 'En attente' %}
-                                  <span class="badge badge-warning">En attente</span>
-                                  {% comment %} <a href="#"  class="btn btn-warning">En traitement</a>
-                                  <a href="{% url 'changer_etat_demande_attestion' demande.id 'acceptee' %}"  class="btn btn-warning">Acceptée</a>
-                                  <a href="{% url 'changer_etat_demande_attestion' demande.id 'terminee' %}" class="btn btn-success">Terminée</a>
-                                  <a href="{% url 'changer_etat_demande_attestion' demande.id 'refusee' %}" class="btn btn-danger">Refusée</a> {% endcomment %}
-                              {% elif demande.etat == 'En cours de traitement'%}
-                                  <span class="badge badge-treat">En traitement</span>
-                              
-                              {% elif demande.etat == 'Acceptée' %}
-                                  <span class="badge badge-treat">Acceptée</span>
-                                  {% comment %} <a href="{% url 'changer_etat_demande_attestion' demande.id 'terminee' %}" class="btn btn-success">Terminée</a> {% endcomment %}
-                                  <!-- D'autres actions liées à l'état "Acceptée" si nécessaire -->
-                              {% elif demande.etat == 'Refusée' %}
-                                  <span class="badge badge-danger">Refusée</span>
-                                  <!-- D'autres actions liées à l'état "Refusée" si nécessaire -->
-                              {% elif demande.etat == 'Terminée' %}
-                                  <span class="badge badge-success">Terminée</span>
-                                  <!-- D'autres actions liées à l'état "Terminée" si nécessaire -->
-                              {% else %}
-                                  <span class="badge badge-secondary">{{ demande.etat }}</span>
-                              {% endif %}
-                            </td>
-                            <td>
-                              <div class="btn-group" role="group">
-                              {% if demande.etat == 'En attente' %}
-                                  {% comment %} <span class="badge badge-warning">En attente</span> {% endcomment %}
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'traitement' %}"  class="btn btn-warning">En traitement</a>
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'acceptee' %}"  class="btn btn-warning">Acceptée</a>
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'terminee' %}" class="btn btn-success">Terminée</a>
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'refusee' %}" class="btn btn-danger">Refusée</a>
-                              
-                              {% elif demande.etat == 'En cours de traitement' %}
-                              {% comment %} <span class="badge badge-info">Acceptée</span> {% endcomment %}
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'acceptee' %}"  class="btn btn-warning">Acceptée</a>
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'terminee' %}" class="btn btn-success">Terminée</a>
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'refusee' %}" class="btn btn-danger">Refusée</a>
-                              {% elif demande.etat == 'Acceptée' %}
-                                  {% comment %} <span class="badge badge-info">Acceptée</span> {% endcomment %}
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'terminee' %}" class="btn btn-success">Terminée</a>
-                                  <!-- D'autres actions liées à l'état "Acceptée" si nécessaire -->
-                              {% elif demande.etat == 'Refusée' %}
-                                  {% comment %} <span class="badge badge-danger">Refusée</span> {% endcomment %}
-                                  <!-- D'autres actions liées à l'état "Refusée" si nécessaire -->
-                              {% elif demande.etat == 'Terminée' %}
-                                  {% comment %} <span class="badge badge-success">Terminée</span> {% endcomment %}
-                                  <!-- D'autres actions liées à l'état "Terminée" si nécessaire -->
-                              {% else %}
-                                  <span class="badge badge-secondary">{{ demande.etat }}</span>
-                              {% endif %}
-
-                              </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-              </table>
-              {% else %}
-                      <p>Aucune donnée correspondante.</p>
-              {% endif %}
-            </div>
-        </div>
         
+        
+          
 
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->

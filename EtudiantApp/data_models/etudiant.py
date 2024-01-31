@@ -28,8 +28,8 @@ FILIERE_CHOICES = [
 ]
 
 STATUT_CHOICES = [
-    ('En Frequentation', 'En Fréquentation'),
-    ('Ancien etudiant', 'Ancien étudiant'),
+    ('En Fréquentation', 'En Fréquentation'),
+    ('Ancien étudiant', 'Ancien étudiant'),
 ]
 
 MOIS_CHOICES = [
@@ -64,7 +64,7 @@ class Etudiant(Utilisateur):
     cycle = models.CharField(max_length=20, choices=CYCLE_CHOICES , default='licence')
     filiere = models.CharField(max_length=20, choices=FILIERE_CHOICES , default='informatique')
     niveaux = models.CharField(max_length=20, choices=NIVEAUX_CHOICES , default='licence1')
-    statut = models.CharField(max_length=20, choices=STATUT_CHOICES , default='En Frequentation')
+    statut = models.CharField(max_length=20, choices=STATUT_CHOICES , default='En Fréquentation')
     mois_debut_annee_academique = models.IntegerField(choices=MOIS_CHOICES, default=9)  # Choisissez le mois de début de l'année académique
     annee_academique = models.CharField(max_length=19, choices=ANNEE_ACADEMIQUE_CHOICES , default='2023 - 2024')  # Champ pour l'année académique au format "AAAA - AAAA"
     annee_frequentation_fin = models.DateField(blank=True, null=True)
@@ -140,5 +140,5 @@ def etudiant_pre_save(sender, instance, **kwargs):
     if instance.annee_frequentation_fin is not None:
         current_year = timezone.now().year
         if instance.annee_frequentation_fin == current_year:
-            instance.statut = 'Ancien etudiant'
+            instance.statut = 'Ancien étudiant'
 

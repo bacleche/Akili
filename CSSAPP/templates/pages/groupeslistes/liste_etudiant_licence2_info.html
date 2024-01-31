@@ -32,27 +32,9 @@
 
   </head>
   <style>
-    .main-footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-  }
+    
   .content-wrapper {
     min-height: 100vh; /* ou une hauteur minimale appropriée */
-}
-.badge-info {
-  background-color: blue;
-}
-
-.badge-treat {
-  background-color:orange;
-}
-.badge-danger {
-  background-color: red;
-}
-
-.badge-success {
-  background-color: green;
 }
 
     #logo-img {
@@ -67,6 +49,27 @@
     margin: 0 auto; 
 }
 
+.card {
+  perspective: 1000px;
+  
+}
+
+.card-body {
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre initiale */
+}
+
+.card:hover .card-body {
+    transform: rotateY(10deg);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Ombre lors du survol */
+}
+
+/* Ajoutez des règles CSS supplémentaires selon vos besoins pour personnaliser davantage l'effet 3D */
+.overflow-y {
+  overflow-y: auto; /* ou overflow-y: scroll; selon vos préférences */
+  max-height: 300px; /* ou la hauteur souhaitée */
+}
 
   </style>
   <body class="skin-blue">
@@ -274,15 +277,15 @@
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <img src="{{ user_data.imagesprofiles }}" class="user-image" alt="User Image"/>
+                  <img src="{{ imagesprofiles }}" class="user-image" alt="User Image"/>
                   <span class="hidden-xs">{{ nom }}</span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
-                    <img src="{{ user_data.imagesprofiles }}" class="img-circle" alt="User Image" />
+                    <img src="{{ imagesprofiles }}" class="img-circle" alt="User Image" />
                     <p>
-                      {{ user_data.nom }} - {{user_data.role|upper}}
+                      {{ nom }} - Chef de la Scolarité
                       <small>Member since Nov. 2012</small>
                     </p>
                   </li>
@@ -368,10 +371,11 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/UI/general.html"><i class="fa fa-circle-o"></i>LICENCE-INFO</a></li>
+                {% comment %} <li><a href="pages/UI/general.html"><i class="fa fa-circle-o"></i>LICENCE-INFO</a></li>
                 <li><a href="pages/UI/icons.html"><i class="fa fa-circle-o"></i> DUT-INFO</a></li>
                 <li><a href="pages/UI/buttons.html"><i class="fa fa-circle-o"></i> LICENCE-AP</a></li>
-                <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> DUT-AP</a></li>
+                <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> DUT-AP</a></li> {% endcomment %}
+                <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> Listes des ETudiants</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -390,8 +394,8 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/tables/simple.html"><i class="fa fa-circle-o"></i>Attestations</a></li>
-                <li><a href="pages/tables/data.html"><i class="fa fa-circle-o"></i>Bulletins</a></li>
+                <li><a href="{% url 'list_demandes' %}"><i class="fa fa-circle-o"></i>Attestations</a></li>
+                <li><a href="{% url 'list_bulletin_demandes' %}"><i class="fa fa-circle-o"></i>Bulletins</a></li>
               </ul>
             </li>
            
@@ -445,7 +449,7 @@
             <small>Panneau de Control</small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Liste des demandes des bulletins</a></li>
+            <li><a href="#"><i class="fa fa-dashboard"></i> Liste d'etudiant - Classifications</a></li>
             <li class="active">Tableau de Bord</li>
           </ol>
         </section>
@@ -508,115 +512,53 @@
             </div><!-- ./col -->
           </div><!-- /.row -->
           <!-- Main row -->
-
-          <div class="container mt-3">
             <div class="row">
-                <div class="col-md-6 offset-md-6">
-                    <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'recherche_demande_par_etudiant' %}">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Rechercher" name="q">
-                        <input class="form-control mr-sm-2" type="date" name="date" placeholder="Date">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
-                        {% comment %} <div class="input-group-append">
-                          <button class="btn btn-outline-secondary" type="button" id="voiceSearchButton" onclick="startVoiceSearch()">
-                            <i class="fa fa-microphone"></i>
-                          </button>
-                        </div> {% endcomment %}
-                      </form>
-                </div>
+             
+              <div class="table-responsive overflow-y">
+                {% if etudiants_licence %}
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Nom(s)</th>
+                                <th scope="col"> Prenom(s)</th>
+                                <th scope="col">N° D'identification </th>
+                                <th scope="col">Niveaux </th>
+                                <th scope="col">Cycle</th>
+                                <th scope="col">Filière</th>
+                                <th scope="col">Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for etudiant in etudiants_licence %}
+                                <tr>
+                                    <th scope="row"></th>
+                                    <td>{{ etudiant.user.last_name }}</td>
+                                    <td>{{ etudiant.user.first_name }}</td>
+                                    <td>{{ etudiant.Identification }}</td>
+                                    <td>{{ etudiant.niveaux }}</td>
+                                    <td>{{ etudiant.cycle }}</td>
+                                    <td>{{ etudiant.filiere }}</td>
+                                    <td>{{ etudiant.statut }}</td>
+                                    <td>
+                                        {% comment %} <a href="{% url 'supprimer_demande' demande_id=demande.id %}">Supprimer</a> |
+                                        <a href="{% url 'modifier_demande' demande_id=demande.id %}">Modifier</a> |
+                                        <a href="{% url 'imprimer_demande_css' demande_id=demande.id %}">Imprimer</a> |
+                                        <a href="{% url 'generer_fichier_csv' demande_id=demande.id %}">Generer CSV</a> {% endcomment %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>Aucune donnée correspondante.</p>
+                {% endif %}
+              </div>
             </div>
-            <div class="table-responsive">
-              {% if demandes %}
-              <table class="table">
-                  <thead class="thead-dark">
-                      <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Date</th>
-                          <th scope="col">Etudiant(s) </th>
-                          <th scope="col">Objet </th>
-                          <th scope="col">Action(s)-1</th>
-                          <th scope="col">Etat (s)</th>
-                          <th scope="col">Action(s)-2</th>
 
-
-                      </tr>
-                  </thead>
-                  <tbody>
-                    {% for demande in demandes %}
-                        <tr>
-                            <th scope="row"></th>
-                            <td>{{ demande.date_poste_demande }}</td>
-                            <td>{{ demande.etudiant }}</td>
-                            <td>{{ demande.objet_demande }}</td>
-                            <td>
-                              <div class="btn-group" role="group">
-                                <a href="{% url 'supprimer_demande_css_bulletin' demande_id=demande.id %}" class="btn btn-danger">Supprimer</a>
-                                <a href="{% url 'imprimer_demande_css' demande_id=demande.id %}" class="btn btn-warning">Imprimer</a>
-                                <a href="{% url 'generer_fichier_csv' demande_id=demande.id %}" class="btn btn-success">Generer CSV</a>
-                              </div>
-                              </td>
-                            <td>
-                              {% if demande.etat == 'En attente' %}
-                                  <span class="badge badge-warning">En attente</span>
-                                  {% comment %} <a href="#"  class="btn btn-warning">En traitement</a>
-                                  <a href="{% url 'changer_etat_demande_attestion' demande.id 'acceptee' %}"  class="btn btn-warning">Acceptée</a>
-                                  <a href="{% url 'changer_etat_demande_attestion' demande.id 'terminee' %}" class="btn btn-success">Terminée</a>
-                                  <a href="{% url 'changer_etat_demande_attestion' demande.id 'refusee' %}" class="btn btn-danger">Refusée</a> {% endcomment %}
-                              {% elif demande.etat == 'En cours de traitement'%}
-                                  <span class="badge badge-treat">En traitement</span>
-                              
-                              {% elif demande.etat == 'Acceptée' %}
-                                  <span class="badge badge-treat">Acceptée</span>
-                                  {% comment %} <a href="{% url 'changer_etat_demande_attestion' demande.id 'terminee' %}" class="btn btn-success">Terminée</a> {% endcomment %}
-                                  <!-- D'autres actions liées à l'état "Acceptée" si nécessaire -->
-                              {% elif demande.etat == 'Refusée' %}
-                                  <span class="badge badge-danger">Refusée</span>
-                                  <!-- D'autres actions liées à l'état "Refusée" si nécessaire -->
-                              {% elif demande.etat == 'Terminée' %}
-                                  <span class="badge badge-success">Terminée</span>
-                                  <!-- D'autres actions liées à l'état "Terminée" si nécessaire -->
-                              {% else %}
-                                  <span class="badge badge-secondary">{{ demande.etat }}</span>
-                              {% endif %}
-                            </td>
-                            <td>
-                              <div class="btn-group" role="group">
-                              {% if demande.etat == 'En attente' %}
-                                  {% comment %} <span class="badge badge-warning">En attente</span> {% endcomment %}
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'traitement' %}"  class="btn btn-warning">En traitement</a>
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'acceptee' %}"  class="btn btn-warning">Acceptée</a>
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'terminee' %}" class="btn btn-success">Terminée</a>
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'refusee' %}" class="btn btn-danger">Refusée</a>
-                              
-                              {% elif demande.etat == 'En cours de traitement' %}
-                              {% comment %} <span class="badge badge-info">Acceptée</span> {% endcomment %}
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'acceptee' %}"  class="btn btn-warning">Acceptée</a>
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'terminee' %}" class="btn btn-success">Terminée</a>
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'refusee' %}" class="btn btn-danger">Refusée</a>
-                              {% elif demande.etat == 'Acceptée' %}
-                                  {% comment %} <span class="badge badge-info">Acceptée</span> {% endcomment %}
-                                  <a href="{% url 'changer_etat_demande_bulletin' demande.id 'terminee' %}" class="btn btn-success">Terminée</a>
-                                  <!-- D'autres actions liées à l'état "Acceptée" si nécessaire -->
-                              {% elif demande.etat == 'Refusée' %}
-                                  {% comment %} <span class="badge badge-danger">Refusée</span> {% endcomment %}
-                                  <!-- D'autres actions liées à l'état "Refusée" si nécessaire -->
-                              {% elif demande.etat == 'Terminée' %}
-                                  {% comment %} <span class="badge badge-success">Terminée</span> {% endcomment %}
-                                  <!-- D'autres actions liées à l'état "Terminée" si nécessaire -->
-                              {% else %}
-                                  <span class="badge badge-secondary">{{ demande.etat }}</span>
-                              {% endif %}
-
-                              </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-              </table>
-              {% else %}
-                      <p>Aucune donnée correspondante.</p>
-              {% endif %}
-            </div>
-        </div>
+            <a href="" class="btn btn-warning"> <i class="fa fa-print-o"></i>Imprimer la liste</a>
+          </div>
+          
         
 
         </section><!-- /.content -->

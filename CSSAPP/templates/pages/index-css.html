@@ -342,9 +342,9 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/charts/morris.html"><i class="fa fa-circle-o"></i> Morris</a></li>
-                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> Flot</a></li>
-                <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li>
+                <li><a href="{% url 'stat_morris' %}"><i class="fa fa-circle-o"></i>Demandes</a></li>
+                <li><a href="{% url 'taux_etudiants' %}"><i class="fa fa-circle-o"></i> Etudiants</a></li>
+                {% comment %} <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li> {% endcomment %}
               </ul>
             </li>
             <li class="treeview">
@@ -354,10 +354,11 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/UI/general.html"><i class="fa fa-circle-o"></i>LICENCE-INFO</a></li>
+                {% comment %} <li><a href="pages/UI/general.html"><i class="fa fa-circle-o"></i>LICENCE-INFO</a></li>
                 <li><a href="pages/UI/icons.html"><i class="fa fa-circle-o"></i> DUT-INFO</a></li>
                 <li><a href="pages/UI/buttons.html"><i class="fa fa-circle-o"></i> LICENCE-AP</a></li>
-                <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> DUT-AP</a></li>
+                <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> DUT-AP</a></li> {% endcomment %}
+                <li><a href="{% url 'liste_etudiant_classifications' %}"><i class="fa fa-circle-o"></i> Listes des ETudiants</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -378,6 +379,8 @@
               <ul class="treeview-menu">
                 <li><a href="{% url 'list_demandes' %}"><i class="fa fa-circle-o"></i>Attestations</a></li>
                 <li><a href="{% url 'list_bulletin_demandes' %}"><i class="fa fa-circle-o"></i>Bulletins</a></li>
+                <li><a href="{% url 'historique_demandes' %}"><i class="fa fa-circle-o"></i>Historiques</a></li>
+
               </ul>
             </li>
            
