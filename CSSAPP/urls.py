@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from . import creationsdocuments
 
 urlpatterns = [
     path('css_space', views.cssWork, name='cssWork'),
@@ -31,6 +32,22 @@ urlpatterns = [
     path('historique_demandes/', views.historique_demandes, name='historique_demandes'),
     path('stat_morris/', views.stat_morris, name='stat_morris'),
     path('taux_etudiants/', views.taux_etudiants, name='taux_etudiants'),
+    # URLS DE CREATION DE DOCUMENT POUR TOUTES LES CLASSES !!! 
+    path('create_document/<int:etudiant_id>', creationsdocuments.create_document_lic1_info, name='create_document'),
+    path('create_document_lic2_info/<int:etudiant_id>', creationsdocuments.create_document_lic2_info, name='create_document_lic2_info'),
+    path('create_document_lic3_info/<int:etudiant_id>', creationsdocuments.create_document_lic3_info, name='create_document_lic3_info'),
+    path('create_document_lic1_admin/<int:etudiant_id>', creationsdocuments.create_document_lic1_admin, name='create_document_lic1_admin'),
+    path('create_document_lic2_admin/<int:etudiant_id>', creationsdocuments.create_document_lic2_admin, name='create_document_lic2_admin'),
+    path('create_document_lic3_admin/<int:etudiant_id>', creationsdocuments.create_document_lic3_admin, name='create_document_lic3_admin'),
+    path('create_document_dut1_admin/<int:etudiant_id>', creationsdocuments.create_document_dut1_admin, name='create_document_dut1_admin'),
+    path('create_document_dut2_admin/<int:etudiant_id>', creationsdocuments.create_document_dut2_admin, name='create_document_dut2_admin'),
+    path('create_document_dut1_info/<int:etudiant_id>', creationsdocuments.create_document_dut1_info, name='create_document_dut1_info'),
+    path('create_document_dut2_info/<int:etudiant_id>', creationsdocuments.create_document_dut2_info, name='create_document_dut2_info'),
+    path('liste_Attestations', views.liste_Attestations, name='liste_Attestations'),
+    path('liste_bulletinsf', views.liste_bulletinsf, name='liste_bulletinsf'),
+
+
+    #EN BAS UR DE DECONNEXION
     path('deconnexion' , views.custom_logout , name='deconnexion'),
 
 

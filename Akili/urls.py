@@ -25,7 +25,9 @@ urlpatterns = [
     path('', include('Home.urls')),
     path('Login_akili/', include('LoginApp.urls')),  
     path('Etudiant_Space/', include('EtudiantApp.urls')),  
-    path('Css_Space/', include('CSSAPP.urls')),  
+    path('Css_Space/', include('CSSAPP.urls')), 
+    path('dcfi_space/', include('DCFISPACE.urls')),  
+
 
  
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

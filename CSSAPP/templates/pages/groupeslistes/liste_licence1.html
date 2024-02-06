@@ -554,9 +554,55 @@
                                     <td>{{ etudiant.filiere }}</td>
                                     <td>{{ etudiant.statut }}</td>
                                     <td>
+                                      <button type="button"  class="btn btn-success" data-toggle="modal" data-target="#createDocumentModal{{ etudiant.id }}">
+                                        <i class="fa fa-plus"></i> Créer
+                                      </button>
+
+
+                                      <div class="modal fade" id="createDocumentModal{{ etudiant.id }}" tabindex="-1" role="dialog" aria-labelledby="createDocumentModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="createDocumentModalLabel">Créer un document pour l'Etudiant {{etudiant.user.first_name}} </h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                  <div id="successMessage" style="display: none;"></div>
+
+                                                    <!-- Formulaire de création de document -->
+                                                    <form method="POST" action="{% url 'create_document' etudiant.id %}" enctype="multipart/form-data">
+                                                        {% csrf_token %}
+                                                        <label for="nom">Etudiant :</label>
+                                                        <input type="text" readonly name="etudiant" value="{{etudiant.user.last_name}} {{etudiant.user.first_name}}" class="form-control"/>
+                                                        <label for="nom">Date :</label>
+                                                        <input type="date"  class="hidden" name="date_register" />
+                                                        <label for="document">Type de document :</label>
+                                                        <select name="document" id="documentSelect" class="form-control">
+                                                            <option value="attestation">Attestation</option>
+                                                            <option value="bulletin">Bulletin</option>
+                                                        </select>
+                                                        <label for="type_attestation">Type attestation :</label>
+                                                        <select name="type_attestation" id="typeAttestation"  class="form-control">
+                                                            <option value="attestation_frequntation">Attestation de fréquentation</option>
+                                                            <option value="attestation_dde_reussite">Attestation de réussite</option>
+                                                        </select>
+                                                        <br>
+                                                        <input type="file" name="docs" class="form-control" />
+                                                        <br>
+                                                        <!-- ... autres champs ... -->
+                                    
+                                                        <button  class="btn btn-primary submit-form">Créer</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                       <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmationModal{{ etudiant.id }}">
                                         <i class="fa fa-arrow-right"></i> Ancien
                                       </button>
+                                      
 
                                       <!-- Modal de confirmation -->
                                           <div class="modal fade" id="confirmationModal{{ etudiant.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
@@ -701,6 +747,59 @@
             });
         });
     </script>
+
+    <script>
+      // JavaScript pour ouvrir la modal de création de document
+      function openCreateDocumentModal() {
+          $('#createDocumentModal').modal('show');
+      }
+
+      const documentSelect = document.getElementById('documentSelect');
+      const typeAttestation = document.getElementById('typeAttestation');
+      documentSelect.addEventListener('change', function() {
+          if (documentSelect.value === 'attestation') {
+              typeAttestation.disabled = false;
+              typeAttestation.classList.remove('hidden');
+          } else {
+              typeAttestation.disabled = true;
+              typeAttestation.classList.add('hidden');
+          }
+      });
+
+      $('.submit-form').submit(function (event) {
+        event.preventDefault();
+        console.log('SLUT LES ALERTS');
+        
+        $.ajax({
+            type: 'POST',
+            url: '/create_document/' + etudiantId + '/',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                if (data.success) {
+                    // Afficher le message de succès dans le formulaire
+                   $('#successMessage').text(data.message).show();
+                   // console.log('salut je veux me recharger ');
+                   // location.reload();
+                   setTimeout(function() {
+                    window.location.replace(data.redirect);
+                }, 3000);
+
+                } else {
+                    // Gérer d'autres cas si nécessaire
+                }
+            },
+            error: function (error) {
+                console.log('Erreur lors de la soumission du formulaire AJAX:', error);
+                console.log('ECHEC');
+                console.log(data.redirect);  
+            }
+        });
+    });
+    
+  </script>
+  
     
     
 

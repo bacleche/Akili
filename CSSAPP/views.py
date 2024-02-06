@@ -1,5 +1,6 @@
 from django.shortcuts import render , redirect
 from CSSAPP.data_models.css import CSS
+from CSSAPP.data_models.documents import Attestation , Bulletin
 from EtudiantApp.data_models.demande import Demande
 from EtudiantApp.data_models.etudiant import Etudiant
 from django.db.models import Q
@@ -604,6 +605,59 @@ def taux_etudiants(request):
     })
 
    
+
+# def create_document(request, etudiant_id):
+#     etudiant = Etudiant.objects.get(id=etudiant_id)
+    
+
+
+#     if request.method == 'POST':
+#         type_attestation = request.POST.get('type_attestation')
+#         document = request.POST.get('document')
+#         date_regis = date.today()
+#         docs = request.FILES.get('docs')
+#         if document == 'attestation':
+#             # Créer une nouvelle attestation pour l'étudiant
+#             Attestation.objects.create(
+#                 etudiant=etudiant,
+#                 types_attestation = type_attestation,
+#                 date_register = date_regis,
+#                 file = docs,
+#                 # Ajoutez d'autres champs spécifiques à l'attestation ici...
+#             )
+#         elif document == 'bulletin':
+#             # Créer un nouveau bulletin pour l'étudiant
+#             Bulletin.objects.create(
+#                 etudiant=etudiant,
+#                 date_register = date_regis,
+#                 file = docs,
+#                 # Ajoutez d'autres champs spécifiques au bulletin ici...
+#             )
+
+
+#     return render(request, 'pages/create_document.html', {'etudiant': etudiant})
+
+
+
+def liste_Attestations(request):
+    
+    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+
+    attestations = Attestation.objects.all()
+
+    return render(request, 'liste_documents/attestations.html', {'attestations': attestations , 'user_data': user_data})
+
+
+def liste_bulletinsf(request):
+    
+    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+
+    bulletins = Bulletin.objects.all()
+
+    return render(request, 'liste_documents/bulletins.html', {'bulletins': bulletins , 'user_data': user_data})
+
+
+
 
 def custom_logout(request):
     logout(request)

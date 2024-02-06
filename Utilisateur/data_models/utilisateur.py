@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 from django.contrib.auth.models import User
 
 class UtilisateurManager(models.Manager):
@@ -37,3 +38,18 @@ class Utilisateur(models.Model):
     class Meta:
         abstract = True
 
+    def clean(self):
+        """
+        Méthode de validation pour s'assurer que l'utilisateur a au moins 18 ans.
+        """
+        age_minimum = 18
+        age_maximum = 120  # Vous pouvez ajuster cette valeur selon vos besoins
+
+        if self.date_nais:
+            age = timezone.now().year - self.date_nais.year - ((timezone.now().month, timezone.now().day) < (self.date_nais.month, self.date_nais.day))
+
+            if age < age_minimum or age > age_maximum:
+                raise ValidationError({'date_nais': f"Âge invalide. Vous devez avoir entre {age_minimum} et {age_maximum} ans."})
+
+        if len(self.telephone) < 9:
+            raise ValidationError({'telephone': "Le numéro de téléphone doit avoir au moins 9 caractères."})

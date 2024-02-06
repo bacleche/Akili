@@ -5,6 +5,10 @@ from EtudiantApp.data_models.demande import Demande
 from EtudiantApp.data_models.memoire import Memoire
 from EtudiantApp.data_models.notifications import Notification
 from CSSAPP.data_models.css import CSS
+from CSSAPP.data_models.documents import Attestation , Bulletin
+
+from DCFISPACE.data_models.directeur import Directeur
+
 from Utilisateur.data_models.utilisateur import Utilisateur
 
 
@@ -29,12 +33,38 @@ class CSSAdmin(UtilisateurAdmin):
 
 admin.site.register(CSS, CSSAdmin)
 
+class DirecteurAdmin(UtilisateurAdmin):
+    list_display = ('matricule' ,'genre' , 'role')
+    search_fields = ('matricule', 'genre'  , 'role')
+    list_filter = ('genre', 'role')
+
+admin.site.register(Directeur, DirecteurAdmin)
+
+
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ('destinataire', 'contenu', 'est_lue', 'date_creation')
     search_fields = ('destinataire__nom', 'contenu')
     list_filter = ('est_lue', 'date_creation')
 
 admin.site.register(Notification, NotificationAdmin)
+
+
+
+
+class AttestationAdmin(admin.ModelAdmin):
+    list_display = ('etudiant', 'types_attestation','is_signed')
+    search_fields = ('etudiant', 'types_attestation')
+    list_filter = ('is_signed','date_register')
+
+admin.site.register(Attestation, AttestationAdmin)
+
+
+class BulletinAdmin(admin.ModelAdmin):
+    list_display = ('etudiant','is_signed')
+    search_fields = ('etudiant', 'date_register')
+    list_filter = ('is_signed','date_register')
+
+admin.site.register(Bulletin, BulletinAdmin)
 
 
 class DemandeAdmin(admin.ModelAdmin):
