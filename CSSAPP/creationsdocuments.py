@@ -35,6 +35,7 @@ def create_document_lic1_info(request, etudiant_id):
                 types_attestation=type_attestation,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques à l'attestation ici...
             )
             messages.success(request, 'Attestation créée avec succès.')

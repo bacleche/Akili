@@ -8,6 +8,7 @@ urlpatterns = [
     path('mis_a_jour_directeur', views.mis_a_jour_directeur  , name='mis_a_jour_directeur'),
     path('liste_Attestations_directeur', views.liste_Attestations_directeur  , name='liste_Attestations_directeur'),
     path('signer_attestation/<int:attestation_id>', views.signer_attestation, name='signer_attestation'),
+    path('recherche_Attestations_directeur', views.recherche_Attestations_directeur, name='recherche_Attestations_directeur'),
 
 
 ]

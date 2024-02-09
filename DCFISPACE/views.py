@@ -7,7 +7,7 @@ from PyPDF2 import PdfWriter
 
 from django.conf import settings
 import os
-
+from django.db.models import Q
 
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from reportlab.lib.pagesizes import letter
@@ -171,7 +171,7 @@ def signer_attestation(request, attestation_id):
     # Ajouter le texte à chaque page du PDF existant
     for page_number in range(len(existing_pdf.pages)):
         page = existing_pdf.pages[page_number]
-        page_text = "Texte ajouté à l'attestation"
+        page_text = "Texte ajouté à l'attestation ✔️"
         buffer = BytesIO()
         c = canvas.Canvas(buffer, pagesize=letter)
         c.drawString(100, 200, page_text)  # Ajouter le texte à une position spécifique sur chaque page
@@ -189,7 +189,10 @@ def signer_attestation(request, attestation_id):
     with open(attestation.file.path, 'wb') as file:
         file.write(output_buffer.getvalue())
 
-    # Renvoyer une réponse vide car le fichier a été remplacé avec succès
+    attestation.is_signed = True
+    attestation.save()
+    messages.success(request, "L'attestation a été signée avec succès.")
+    # Rediriger vers une vue spécifique
     return redirect('liste_Attestations_directeur')
 
 
@@ -202,3 +205,21 @@ def attestation_text(text):
     
     # Retourner le contenu du PDF
     return  PdfReader(pdf_buffer)
+
+
+def recherche_Attestations_directeur(request):
+    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+    q = request.GET.get('q')
+    date = request.GET.get('date')
+
+    # Filtrer les attestations en fonction de la recherche
+    if q:
+        attestations = Attestation.objects.filter(
+            Q(etudiant__user__first_name__icontains=q) | Q(etudiant__user__last_name__icontains=q)
+        )
+    elif date:
+        attestations = Attestation.objects.filter(date_register=date)
+    else:
+        attestations = Attestation.objects.all()
+
+    return render(request, 'pages-dir/liste_attestation_sign.html', {'attestations': attestations, 'user_data': user_data})
