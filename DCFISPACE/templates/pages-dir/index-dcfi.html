@@ -341,19 +341,18 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="{% url 'Profiles_css' %}"><i class="fa fa-circle-o"></i>Voir Profile</a></li>
-                <li><a href="{% url 'update_profile' %}"><i class="fa fa-circle-o"></i>Modifier Profile</a></li>
+                <li><a href="{% url 'Profiles_directeur' %}"><i class="fa fa-circle-o"></i>Voir Profile</a></li>
+                <li><a href="{% url 'profile_details_directeur' %}"><i class="fa fa-circle-o"></i>Modifier Profile</a></li>
               </ul>
             </li>
             <li class="treeview">
              <a href="#">
-                <i class="fa fa-table"></i> <span>Registre de demandes</span>
+                <i class="fa fa-table"></i> <span>Registres Administratif</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="{% url 'list_demandes' %}"><i class="fa fa-circle-o"></i>Attestations</a></li>
+                <li><a href="{% url 'liste_Attestations_directeur' %}"><i class="fa fa-circle-o"></i>Attestations</a></li>
                 <li><a href="{% url 'list_bulletin_demandes' %}"><i class="fa fa-circle-o"></i>Bulletins</a></li>
-                <li><a href="{% url 'historique_demandes' %}"><i class="fa fa-circle-o"></i>Historiques</a></li>
 
               </ul>
             </li>

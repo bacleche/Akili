@@ -13,7 +13,7 @@ class DirecteurManager(UtilisateurManager):
 class Directeur(Utilisateur):
 
     matricule = models.CharField(max_length=20, unique=True, blank=True, editable=False)
-    signature = models.ImageField(upload_to='signature/',max_length=500,default='signature/sign_dir1.jpng') 
+    signature = models.ImageField(upload_to='signatures/',max_length=500,default='signature/X000001_signature.jpng') 
 
 
     objects = DirecteurManager()
@@ -46,8 +46,6 @@ def directeur_pre_save(sender, instance, **kwargs):
 
 def signature_filename(instance, filename):
     return f'signatures/{instance.matricule}_signature.png'
-
-# Cette fonction permettra de mettre à jour le nom du fichier de signature avant la sauvegarde
 @receiver(pre_save, sender=Directeur)
 def update_signature_filename(sender, instance, **kwargs):
     instance.signature.name = signature_filename(instance, instance.signature.name)
