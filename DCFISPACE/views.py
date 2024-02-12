@@ -42,7 +42,7 @@ def Home_Directeur(request):
 
 def Profiles_directeur(request):
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
-    return render(request, 'pages-dir/change-profiles.html', user_data)
+    return render(request, 'pages-dir/profile-dcfi.html', user_data)
 
 
 
@@ -121,6 +121,17 @@ def liste_Attestations_directeur(request):
 
     return render(request, 'pages-dir/liste_attestation_sign.html', {'attestations': attestations, 'user_data': user_data})
 
+
+
+
+def liste_Bulletins_directeur(request):
+    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+
+    # Filtrer les attestations avec is_transfer_directeur à True
+    bulletins = Bulletin.objects.filter(is_transfer_directeur=True)
+
+    return render(request, 'pages-dir/list_bulletins_sign.html', {'bulletins': bulletins, 'user_data': user_data})
+
 # def signer_attestation(request, attestation_id):
 #     # Récupérer l'objet Attestation
 #     attestation = Attestation.objects.get(id=attestation_id)
@@ -155,6 +166,14 @@ def liste_Attestations_directeur(request):
 #     response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(attestation.file.path)
 #     response.write(output_buffer.getvalue())
 #     return response
+
+
+def signaler_css_attestation_directeur(request, attestation_id):
+    attestation = Attestation.objects.get(id=attestation_id)
+    attestation.is_transfer_css = True
+    attestation.save()
+
+    return redirect('liste_Attestations_directeur')
 
 
 def signer_attestation(request, attestation_id):
@@ -223,3 +242,64 @@ def recherche_Attestations_directeur(request):
         attestations = Attestation.objects.all()
 
     return render(request, 'pages-dir/liste_attestation_sign.html', {'attestations': attestations, 'user_data': user_data})
+
+
+
+
+def signer_buletins(request, bulletin_id):
+    # Récupérer l'objet Attestation
+    bulletin = Bulletin.objects.get(id=bulletin_id)
+
+    # Ouvrir le PDF existant
+    existing_pdf = PdfReader(bulletin.file.path)
+
+    # Créer un buffer pour stocker le PDF modifié
+    output_buffer = BytesIO()
+    pdf_writer = PdfWriter(output_buffer)
+
+    # Ajouter le texte à chaque page du PDF existant
+    for page_number in range(len(existing_pdf.pages)):
+        page = existing_pdf.pages[page_number]
+        page_text = "Texte ajouté au bulletin  ✔️"
+        buffer = BytesIO()
+        c = canvas.Canvas(buffer, pagesize=letter)
+        c.drawString(100, 200, page_text)  # Ajouter le texte à une position spécifique sur chaque page
+        c.save()
+        buffer.seek(0)
+        overlay_pdf = PdfReader(buffer)
+        page.merge_page(overlay_pdf.pages[0])
+        pdf_writer.add_page(page)
+
+    # Écrire le PDF modifié dans le buffer
+    pdf_writer.write(output_buffer)
+    output_buffer.seek(0)
+
+    # Écrire le contenu du buffer dans le fichier existant
+    with open(bulletin.file.path, 'wb') as file:
+        file.write(output_buffer.getvalue())
+
+    bulletin.is_signed = True
+    bulletin.save()
+    messages.success(request, "Le Bulletin  a été signée avec succès.")
+    # Rediriger vers une vue spécifique
+    return redirect('liste_Bulletins_directeur')
+
+
+
+def recherche_Bulletins_directeur(request):
+    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+    q = request.GET.get('q')
+    date = request.GET.get('date')
+
+    # Filtrer les attestations en fonction de la recherche
+    if q:
+        bulletins = Bulletin.objects.filter(
+            Q(etudiant__user__first_name__icontains=q) | Q(etudiant__user__last_name__icontains=q)
+        )
+    elif date:
+        bulletins = Bulletin.objects.filter(date_register=date)
+    else:
+        bulletins = Bulletin.objects.all()
+
+    return render(request, 'pages-dir/list_bulletins_sign.html', {'bulletins': bulletins, 'user_data': user_data})
+

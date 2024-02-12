@@ -1,8 +1,8 @@
 from django.db import models
 from EtudiantApp.data_models.etudiant import Etudiant
 from CSSAPP.data_models.css import CSS
-
-
+from DCFISPACE.data_models.directeur import Directeur
+from django.utils import timezone
 
 
 class Notification(models.Model):
@@ -10,6 +10,10 @@ class Notification(models.Model):
     destinataire_css = models.ForeignKey(CSS, on_delete=models.DO_NOTHING, null=True, related_name='notifications_destinataire_css')
     expediteur = models.ForeignKey(Etudiant, on_delete=models.DO_NOTHING, null=True, related_name='notifications_expediteur')
     expediteur_css = models.ForeignKey(CSS, on_delete=models.DO_NOTHING, null=True, related_name='notifications_expediteur_css')
+    expediteur_dir = models.ForeignKey(Directeur, on_delete=models.DO_NOTHING, null=True, related_name='notifications_expediteur_dir')
+    destinataire_dir = models.ForeignKey(Directeur, on_delete=models.DO_NOTHING, null=True, related_name='notifications_destinataire_dir')
+
+
     contenu = models.TextField()
     est_lue = models.BooleanField(default=False)
     is_accept = models.BooleanField(default=False)

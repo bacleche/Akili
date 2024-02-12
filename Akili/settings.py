@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'Akili.middleware.DeleteExpiredNotificationsMiddleware',
 ]
 
 ROOT_URLCONF = 'Akili.urls'
@@ -72,7 +73,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'EtudiantApp.context_processors.notifications_non_lues',
+                'EtudiantApp.context_processors.notifications_non_lues_dir',
             ],
+            
         },
     },
 ]
@@ -139,3 +142,5 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+

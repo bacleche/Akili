@@ -643,7 +643,7 @@ def liste_Attestations(request):
     
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
-    attestations = Attestation.objects.all()
+    attestations = Attestation.objects.filter(is_signed=True, is_transfer_css=True)
 
     return render(request, 'liste_documents/attestations.html', {'attestations': attestations , 'user_data': user_data})
 

@@ -552,7 +552,8 @@
                                     <td>{{attestation.etudiant.filiere}}</td>
                                     <td>{{attestation.types_attestation}}</td>
                                     <td>{{attestation.date_register}}</td>
-                                    <td>{{attestation.is_signed}}</td>
+                                    <td>{% if attestation.is_signed %}Signé{% else %}Non signé{% endif %}</td>
+
                                     <td></td>
                                     
                                 </tr>

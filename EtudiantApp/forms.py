@@ -113,8 +113,8 @@ class DemandeForm(forms.ModelForm):
             self.fields['cycle'].initial = user_data.get('cycle')
             self.fields['niveau'].initial = user_data.get('niveaux')
 
-            self.fields['etudiant'].queryset = Etudiant.objects.filter(matricule=user_data['matricule'])
-            self.fields['identite_receptioniste'].queryset = CSS.objects.all()
+            self.fields['etudiant'].queryset = Etudiant.objects.filter(matricule=user_data['matricule'])[:1]
+            self.fields['identite_receptioniste'].queryset = CSS.objects.all()[:1]
 
 
 
