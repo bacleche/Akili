@@ -12,6 +12,7 @@ urlpatterns = [
     path('recherche_Attestations_directeur', views.recherche_Attestations_directeur, name='recherche_Attestations_directeur'),
     path('recherche_Bulletins_directeur', views.recherche_Bulletins_directeur, name='recherche_Bulletins_directeur'),
     path('signaler_css_attestation_directeur/<int:attestation_id>', views.signaler_css_attestation_directeur, name='signaler_css_attestation_directeur'),
+    path('imprimer_attestations_directeur', views.imprimer_attestations_directeur, name='imprimer_attestations_directeur'),
 
 
 ]

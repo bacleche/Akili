@@ -72,6 +72,7 @@
   max-height: 300px; /* ou la hauteur souhaitée */
 }
 
+
   </style>
   <body class="skin-blue">
     <div class="wrapper">
@@ -362,6 +363,7 @@
             </div>
                 
           </div>
+        
           
           {% for notification in notifications_non_lues_dir %}
           <!-- Modal -->
@@ -387,6 +389,12 @@
                 </div>
             </div>
           {% endfor %}
+
+          <div class="row">
+            <div class="col-md-6">
+                <a href="{% url 'imprimer_attestations_directeur' %}" class="btn btn-primary">Sauvegarder et Imprimer</a>
+            </div>
+        </div>
 
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
