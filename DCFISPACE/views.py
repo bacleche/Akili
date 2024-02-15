@@ -7,7 +7,7 @@ from PyPDF2 import PdfWriter
 from django.conf import settings
 import os
 from django.db.models import Q
-
+import shutil
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from reportlab.lib.pagesizes import letter
 import PyPDF2
@@ -111,14 +111,23 @@ def mis_a_jour_directeur(request):
 
     return render(request, 'pages-dir/update-profiles-directeur.html', {'user': user})
 
+from django.core.paginator import Paginator
 
 def liste_Attestations_directeur(request):
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+    
 
     # Filtrer les attestations avec is_transfer_directeur à True
-    attestations = Attestation.objects.filter(is_transfer_directeur=True)
+    attestations = Attestation.objects.filter(is_transfer_directeur=True).order_by('-date_register')
+    paginator = Paginator(attestations, 10)
 
-    return render(request, 'pages-dir/liste_attestation_sign.html', {'attestations': attestations, 'user_data': user_data})
+    # Récupérer le numéro de la page à afficher, par défaut 1
+    page_number = request.GET.get('page')
+    
+    # Récupérer les objets attestations pour la page donnée
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'pages-dir/liste_attestation_sign.html', {'attestations': attestations, 'user_data': user_data, 'page_obj':page_obj})
 
 
 
@@ -127,9 +136,17 @@ def liste_Bulletins_directeur(request):
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
     # Filtrer les attestations avec is_transfer_directeur à True
-    bulletins = Bulletin.objects.filter(is_transfer_directeur=True)
+    bulletins = Bulletin.objects.filter(is_transfer_directeur=True).order_by('date_register')
 
-    return render(request, 'pages-dir/list_bulletins_sign.html', {'bulletins': bulletins, 'user_data': user_data})
+    paginator = Paginator(bulletins, 10)
+
+    # Récupérer le numéro de la page à afficher, par défaut 1
+    page_number = request.GET.get('page')
+    
+    # Récupérer les objets attestations pour la page donnée
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'pages-dir/list_bulletins_sign.html', {'bulletins': bulletins, 'user_data': user_data, 'page_obj':page_obj})
 
 # def signer_attestation(request, attestation_id):
 #     # Récupérer l'objet Attestation
@@ -324,7 +341,7 @@ def imprimer_attestations_directeur(request):
 
     # Générer le PDF
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="attestations.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="liste_attestations.pdf"'
     
     # Convertir le HTML en PDF
     pisa_status = pisa.CreatePDF(html, dest=response)
@@ -353,7 +370,7 @@ def imprimer_bulletins_directeur(request):
 
     # Générer le PDF
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="bulletins.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="liste_bulletins.pdf"'
     
     # Convertir le HTML en PDF
     pisa_status = pisa.CreatePDF(html, dest=response)
@@ -363,3 +380,31 @@ def imprimer_bulletins_directeur(request):
         return HttpResponse('Erreur lors de la génération du PDF', status=500)
     
     return response
+
+
+
+def archive_documents_attestation(request):
+    # Récupérer toutes les attestations non archivées
+    attestations = Attestation.objects.filter(is_archived=False)
+    # Chemin d'accès au répertoire d'archives
+    archive_dir = os.path.join(settings.MEDIA_ROOT, 'archives')
+    # Créer le répertoire d'archives s'il n'existe pas déjà
+    if not os.path.exists(archive_dir):
+        os.makedirs(archive_dir)
+    # Parcourir toutes les attestations et les archiver
+    for attestation in attestations:
+        # Chemin du fichier source
+        source_path = attestation.file.path
+        # Chemin du fichier de destination dans le dossier d'archives
+        destination_path = os.path.join(archive_dir, os.path.basename(source_path))
+        # Copier le fichier vers le dossier d'archives
+        shutil.copy2(source_path, destination_path)
+        # Mettre à jour le chemin du document dans la base de données
+        attestation.file = os.path.relpath(destination_path, settings.MEDIA_ROOT)
+        # Marquer le document comme archivé dans la base de données
+        attestation.is_archived = True
+        attestation.save()
+    return HttpResponse("Tous les documents ont été archivés avec succès.")
+
+
+

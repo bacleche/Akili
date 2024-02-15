@@ -45,6 +45,7 @@ def create_document_lic1_info(request, etudiant_id):
                 etudiant=etudiant,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques au bulletin ici...
             )
             messages.success(request, 'Bulletin créé avec succès.')
@@ -74,6 +75,7 @@ def create_document_lic2_info(request, etudiant_id):
                 types_attestation=type_attestation,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques à l'attestation ici...
             )
             messages.success(request, 'Attestation créée avec succès.')
@@ -83,6 +85,7 @@ def create_document_lic2_info(request, etudiant_id):
                 etudiant=etudiant,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques au bulletin ici...
             )
             messages.success(request, 'Bulletin créé avec succès.')
@@ -112,6 +115,7 @@ def create_document_lic3_info(request, etudiant_id):
                 types_attestation=type_attestation,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques à l'attestation ici...
             )
             messages.success(request, 'Attestation créée avec succès.')
@@ -121,6 +125,7 @@ def create_document_lic3_info(request, etudiant_id):
                 etudiant=etudiant,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques au bulletin ici...
             )
             messages.success(request, 'Bulletin créé avec succès.')
@@ -151,6 +156,7 @@ def create_document_lic1_admin(request, etudiant_id):
                 types_attestation=type_attestation,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques à l'attestation ici...
             )
             messages.success(request, 'Attestation créée avec succès.')
@@ -160,6 +166,7 @@ def create_document_lic1_admin(request, etudiant_id):
                 etudiant=etudiant,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques au bulletin ici...
             )
             messages.success(request, 'Bulletin créé avec succès.')
@@ -191,6 +198,7 @@ def create_document_lic2_admin(request, etudiant_id):
                 types_attestation=type_attestation,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques à l'attestation ici...
             )
             messages.success(request, 'Attestation créée avec succès.')
@@ -200,6 +208,7 @@ def create_document_lic2_admin(request, etudiant_id):
                 etudiant=etudiant,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques au bulletin ici...
             )
             messages.success(request, 'Bulletin créé avec succès.')
@@ -229,6 +238,7 @@ def create_document_lic3_admin(request, etudiant_id):
                 types_attestation=type_attestation,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques à l'attestation ici...
             )
             messages.success(request, 'Attestation créée avec succès.')
@@ -238,6 +248,7 @@ def create_document_lic3_admin(request, etudiant_id):
                 etudiant=etudiant,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques au bulletin ici...
             )
             messages.success(request, 'Bulletin créé avec succès.')
@@ -269,6 +280,7 @@ def create_document_dut1_admin(request, etudiant_id):
                 types_attestation=type_attestation,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques à l'attestation ici...
             )
             messages.success(request, 'Attestation créée avec succès.')
@@ -278,6 +290,7 @@ def create_document_dut1_admin(request, etudiant_id):
                 etudiant=etudiant,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques au bulletin ici...
             )
             messages.success(request, 'Bulletin créé avec succès.')
@@ -308,6 +321,7 @@ def create_document_dut2_admin(request, etudiant_id):
                 types_attestation=type_attestation,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques à l'attestation ici...
             )
             messages.success(request, 'Attestation créée avec succès.')
@@ -317,6 +331,7 @@ def create_document_dut2_admin(request, etudiant_id):
                 etudiant=etudiant,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques au bulletin ici...
             )
             messages.success(request, 'Bulletin créé avec succès.')
@@ -346,6 +361,7 @@ def create_document_dut2_info(request, etudiant_id):
                 types_attestation=type_attestation,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques à l'attestation ici...
             )
             messages.success(request, 'Attestation créée avec succès.')
@@ -355,6 +371,7 @@ def create_document_dut2_info(request, etudiant_id):
                 etudiant=etudiant,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques au bulletin ici...
             )
             messages.success(request, 'Bulletin créé avec succès.')
@@ -382,6 +399,7 @@ def create_document_dut1_info(request, etudiant_id):
                 types_attestation=type_attestation,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques à l'attestation ici...
             )
             messages.success(request, 'Attestation créée avec succès.')
@@ -391,6 +409,7 @@ def create_document_dut1_info(request, etudiant_id):
                 etudiant=etudiant,
                 date_register=date_regis,
                 file=docs,
+                is_transfer_directeur = True,
                 # Ajoutez d'autres champs spécifiques au bulletin ici...
             )
             messages.success(request, 'Bulletin créé avec succès.')

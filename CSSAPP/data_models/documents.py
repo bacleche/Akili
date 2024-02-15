@@ -18,6 +18,7 @@ class Attestation(models.Model):
     file = models.ImageField(upload_to='attestations/',max_length=500) 
     profile_directeur = models.ForeignKey(Directeur , on_delete=models.DO_NOTHING , default=1)
     profiles_css = models.ForeignKey(CSS , on_delete=models.DO_NOTHING , default=1)
+    is_archived = models.BooleanField(default=False)
 
     
     def __str__(self):
@@ -53,7 +54,8 @@ class Bulletin(models.Model):
     file = models.ImageField(upload_to='bulletins/',max_length=500) 
     profile_directeur = models.ForeignKey(Directeur , on_delete=models.DO_NOTHING, default=1)
     profiles_css = models.ForeignKey(CSS , on_delete=models.DO_NOTHING, default=1)
-
+    is_archived = models.BooleanField(default=False)
+ 
     def __str__(self):
         return f"Bulletin de {self.etudiant.user.first_name} {self.etudiant.user.last_name}"
 

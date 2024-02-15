@@ -9,10 +9,13 @@ urlpatterns = [
     path('liste_Attestations_directeur', views.liste_Attestations_directeur  , name='liste_Attestations_directeur'),
     path('liste_Bulletins_directeur', views.liste_Bulletins_directeur  , name='liste_Bulletins_directeur'),
     path('signer_attestation/<int:attestation_id>', views.signer_attestation, name='signer_attestation'),
+    path('signer_buletins/<int:bulletin_id>', views.signer_buletins, name='signer_buletins'),
     path('recherche_Attestations_directeur', views.recherche_Attestations_directeur, name='recherche_Attestations_directeur'),
     path('recherche_Bulletins_directeur', views.recherche_Bulletins_directeur, name='recherche_Bulletins_directeur'),
     path('signaler_css_attestation_directeur/<int:attestation_id>', views.signaler_css_attestation_directeur, name='signaler_css_attestation_directeur'),
     path('imprimer_attestations_directeur', views.imprimer_attestations_directeur, name='imprimer_attestations_directeur'),
-
+    path('imprimer_bulletins_directeur', views.imprimer_bulletins_directeur, name='imprimer_bulletins_directeur'),
+    path('archive_documents_attestation', views.archive_documents_attestation, name='archive_documents_attestation'),
+    
 
 ]
