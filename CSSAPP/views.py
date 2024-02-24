@@ -8,6 +8,8 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth import logout
 import csv
+from django.core.paginator import Paginator
+
 from datetime import date
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
@@ -653,8 +655,15 @@ def liste_bulletinsf(request):
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
     bulletins = Bulletin.objects.all()
+    paginator = Paginator(bulletins, 10)
 
-    return render(request, 'liste_documents/bulletins.html', {'bulletins': bulletins , 'user_data': user_data})
+    # Récupérer le numéro de la page à afficher, par défaut 1
+    page_number = request.GET.get('page')
+    
+    # Récupérer les objets attestations pour la page donnée
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'liste_documents/bulletins.html', {'bulletins': bulletins , 'user_data': user_data, 'page_obj': page_obj})
 
 
 
