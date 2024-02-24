@@ -206,16 +206,16 @@
                 <i class="fa fa-dashboard"></i> <span>Tableau de Bord</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li class="active"><a href="index.html"><i class="fa fa-circle-o"></i>Accueil</a></li>
+                <li class="active"><a href="{% url 'Home_Directeur' %}"><i class="fa fa-circle-o"></i>Accueil</a></li>
               </ul>
             </li>
-            <li class="treeview">
+            <li class="treeview active">
               <a href="#">
                 <i class="fa fa-user"></i> <span>profile</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="{% url 'Profiles_directeur' %}"><i class="fa fa-circle-o"></i>Voir Profile</a></li>
+                <li><a href="{% url 'Profiles_directeur' %}" class="active"><i class="fa fa-circle-o"></i>Voir Profile</a></li>
                 <li><a href="{% url 'profile_details_directeur' %}"><i class="fa fa-circle-o"></i>Modifier Profile</a></li>
               </ul>
             </li>

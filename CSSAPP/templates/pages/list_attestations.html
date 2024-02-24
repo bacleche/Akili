@@ -84,228 +84,91 @@
           </a>
           <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
-              <!-- Messages: style can be found in dropdown.less-->
-              <li class="dropdown messages-menu">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <i class="fa fa-envelope-o"></i>
-                  <span class="label label-success">4</span>
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="header">You have 4 messages</li>
-                  <li>
-                    <!-- inner menu: contains the actual data -->
-                    <ul class="menu">
-                      <li><!-- start message -->
-                        <a href="#">
-                          <div class="pull-left">
-                            <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
-                          </div>
-                          <h4>
-                            Support Team
-                            <small><i class="fa fa-clock-o"></i> 5 mins</small>
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li><!-- end message -->
-                      <li>
-                        <a href="#">
-                          <div class="pull-left">
-                            <img src="dist/img/user3-128x128.jpg" class="img-circle" alt="user image"/>
-                          </div>
-                          <h4>
-                            AdminLTE Design Team
-                            <small><i class="fa fa-clock-o"></i> 2 hours</small>
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <div class="pull-left">
-                            <img src="dist/img/user4-128x128.jpg" class="img-circle" alt="user image"/>
-                          </div>
-                          <h4>
-                            Developers
-                            <small><i class="fa fa-clock-o"></i> Today</small>
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <div class="pull-left">
-                            <img src="dist/img/user3-128x128.jpg" class="img-circle" alt="user image"/>
-                          </div>
-                          <h4>
-                            Sales Department
-                            <small><i class="fa fa-clock-o"></i> Yesterday</small>
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <div class="pull-left">
-                            <img src="dist/img/user4-128x128.jpg" class="img-circle" alt="user image"/>
-                          </div>
-                          <h4>
-                            Reviewers
-                            <small><i class="fa fa-clock-o"></i> 2 days</small>
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li class="footer"><a href="#">See All Messages</a></li>
-                </ul>
-              </li>
-              <!-- Notifications: style can be found in dropdown.less -->
               <li class="dropdown notifications-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <i class="fa fa-bell-o"></i>
-                  <span class="label label-warning">10</span>
+                    <i class="fa fa-envelope"></i> <!-- Icône par défaut -->
+                    <!-- Ajoutez d'autres styles ou classes CSS pour l'icône ici -->
+                    {% if notifications_non_lues %}
+                        <span class="badge">{{ notifications_non_lues.count }}</span>
+                    {% endif %}
                 </a>
                 <ul class="dropdown-menu">
-                  <li class="header">You have 10 notifications</li>
-                  <li>
-                    <!-- inner menu: contains the actual data -->
-                    <ul class="menu">
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the page and may cause design problems
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-users text-red"></i> 5 new members joined
-                        </a>
-                      </li>
-
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-user text-red"></i> You changed your username
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li class="footer"><a href="#">View all</a></li>
+                    <li class="header">
+                        {% if notifications_non_lues %}
+                            You have {{ notifications_non_lues.count }} new notifications
+                        {% else %}
+                            No notifications
+                        {% endif %}
+                    </li>
+                    <li>
+                        <!-- inner menu: contains the actual data -->
+                        <ul class="menu">
+                            {% for notification in notifications_non_lues %}
+                                <li class="text-center"><!-- start notification -->
+                                    <a href="#" data-toggle="modal" data-target="#notificationModal{{ notification.id }}">
+                                        <div class="pull-left">
+                                            <i class="fa fa-users text-aqua"></i>
+                                        </div>
+                                        <div class="pull-left">
+                                            <h4>
+                                                {{ notification.titre }}
+                                                <br>
+                                                <small><i class="fa fa-clock-o"></i> {{ notification.date_creation }}</small>
+                                            </h4>
+                                            <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ notification.contenu }}</p>
+                                        </div>
+                                    </a>
+                                </li><!-- end notification -->
+                            {% endfor %}
+                            {% for notification in notifications_lues %}
+                                <li class="text-center"><!-- start notification -->
+                                    <a href="#">
+                                        <div class="pull-left">
+                                            <i class="fa fa-users text-aqua"></i>
+                                        </div>
+                                        <div class="pull-left">
+                                            <h4>
+                                                {{ notification.titre }}
+                                                <br>
+                                                <small><i class="fa fa-clock-o"></i> {{ notification.date_creation }}</small>
+                                            </h4>
+                                            <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ notification.contenu }}</p>
+                                        </div>
+                                    </a>
+                                </li><!-- end notification -->
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="footer"><a href="#">See All Notifications</a></li>
                 </ul>
               </li>
-              <!-- Tasks: style can be found in dropdown.less -->
-              <li class="dropdown tasks-menu">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <i class="fa fa-flag-o"></i>
-                  <span class="label label-danger">9</span>
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="header">You have 9 tasks</li>
-                  <li>
-                    <!-- inner menu: contains the actual data -->
-                    <ul class="menu">
-                      <li><!-- Task item -->
-                        <a href="#">
-                          <h3>
-                            Design some buttons
-                            <small class="pull-right">20%</small>
-                          </h3>
-                          <div class="progress xs">
-                            <div class="progress-bar progress-bar-aqua" style="width: 20%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                              <span class="sr-only">20% Complete</span>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end task item -->
-                      <li><!-- Task item -->
-                        <a href="#">
-                          <h3>
-                            Create a nice theme
-                            <small class="pull-right">40%</small>
-                          </h3>
-                          <div class="progress xs">
-                            <div class="progress-bar progress-bar-green" style="width: 40%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                              <span class="sr-only">40% Complete</span>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end task item -->
-                      <li><!-- Task item -->
-                        <a href="#">
-                          <h3>
-                            Some task I need to do
-                            <small class="pull-right">60%</small>
-                          </h3>
-                          <div class="progress xs">
-                            <div class="progress-bar progress-bar-red" style="width: 60%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                              <span class="sr-only">60% Complete</span>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end task item -->
-                      <li><!-- Task item -->
-                        <a href="#">
-                          <h3>
-                            Make beautiful transitions
-                            <small class="pull-right">80%</small>
-                          </h3>
-                          <div class="progress xs">
-                            <div class="progress-bar progress-bar-yellow" style="width: 80%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                              <span class="sr-only">80% Complete</span>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end task item -->
-                    </ul>
-                  </li>
-                  <li class="footer">
-                    <a href="#">View all tasks</a>
-                  </li>
-                </ul>
-              </li>
+              
+              
+              
+              
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <img src="{{ user_data.imagesprofiles }}" class="user-image" alt="User Image"/>
+                  <img src="{{ imagesprofiles }}" class="user-image" alt="User Image"/>
                   <span class="hidden-xs">{{ nom }}</span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
-                    <img src="{{ user_data.imagesprofiles }}" class="img-circle" alt="User Image" />
+                    <img src="{{ imagesprofiles }}" class="img-circle" alt="User Image" />
                     <p>
-                      {{ user_data.nom }} - {{user_data.role|upper}}
-                      <small>Member since Nov. 2012</small>
+                      {{ nom }} - {{role}}
                     </p>
                   </li>
                   <!-- Menu Body -->
-                  <li class="user-body">
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Followers</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Sales</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Friends</a>
-                    </div>
-                  </li>
+                 
                   <!-- Menu Footer-->
                   <li class="user-footer">
                     <div class="pull-left">
                       <a href="#" class="btn btn-default btn-flat">Profile</a>
                     </div>
                     <div class="pull-right">
-                      <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                      <a href="{% url 'deconnexion' %}" class="btn btn-default btn-flat">Sign out</a>
                     </div>
                   </li>
                 </ul>
@@ -330,24 +193,17 @@
             </div>
           </div>
           <!-- search form -->
-          <form action="#" method="get" class="sidebar-form">
-            <div class="input-group">
-              <input type="text" name="q" class="form-control" placeholder="Search..."/>
-              <span class="input-group-btn">
-                <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
-              </span>
-            </div>
-          </form>
+         
           <!-- /.search form -->
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class="header">MAIN NAVIGATION</li>
-            <li class="active treeview">
+            <li class="treeview">
               <a href="#">
                 <i class="fa fa-dashboard"></i> <span>Tableau de Bord</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li class="active"><a href="index.html"><i class="fa fa-circle-o"></i>Accueil</a></li>
+                <li><a href="{% url 'cssWork' %}"><i class="fa fa-circle-o"></i>Accueil</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -357,9 +213,9 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/charts/morris.html"><i class="fa fa-circle-o"></i> Morris</a></li>
-                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> Flot</a></li>
-                <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li>
+                <li><a href="{% url 'stat_morris' %}"><i class="fa fa-circle-o"></i>Demandes</a></li>
+                <li><a href="{% url 'taux_etudiants' %}"><i class="fa fa-circle-o"></i> Etudiants</a></li>
+                {% comment %} <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li> {% endcomment %}
               </ul>
             </li>
             <li class="treeview">
@@ -369,10 +225,11 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/UI/general.html"><i class="fa fa-circle-o"></i>LICENCE-INFO</a></li>
+                {% comment %} <li><a href="pages/UI/general.html"><i class="fa fa-circle-o"></i>LICENCE-INFO</a></li>
                 <li><a href="pages/UI/icons.html"><i class="fa fa-circle-o"></i> DUT-INFO</a></li>
                 <li><a href="pages/UI/buttons.html"><i class="fa fa-circle-o"></i> LICENCE-AP</a></li>
-                <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> DUT-AP</a></li>
+                <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> DUT-AP</a></li> {% endcomment %}
+                <li><a href="{% url 'liste_etudiant_classifications' %}"><i class="fa fa-circle-o"></i> Listes des ETudiants</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -385,36 +242,27 @@
                 <li><a href="{% url 'update_profile' %}"><i class="fa fa-circle-o"></i>Modifier Profile</a></li>
               </ul>
             </li>
-            <li class="treeview">
+            <li class="active treeview">
               <a href="#">
                 <i class="fa fa-table"></i> <span>Registre de demandes</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/tables/simple.html"><i class="fa fa-circle-o"></i>Attestations</a></li>
-                <li><a href="pages/tables/data.html"><i class="fa fa-circle-o"></i>Bulletins</a></li>
+                <li><a class="active" href="{% url 'list_demandes' %}"><i class="fa fa-circle-o"></i>Attestations</a></li>
+                <li><a href="{% url 'list_bulletin_demandes' %}"><i class="fa fa-circle-o"></i>Bulletins</a></li>
+                <li><a href="{% url 'historique_demandes' %}"><i class="fa fa-circle-o"></i>Historiques</a></li>
+
               </ul>
             </li>
            
-            <li>
-              <a href="pages/mailbox/mailbox.html">
-                <i class="fa fa-envelope"></i> <span>Messagerie</span>
-                <small class="label pull-right bg-yellow">12</small>
-              </a>
-            </li>
             <li class="treeview">
               <a href="#">
-                <i class="fa fa-folder"></i> <span>Examples</span>
+                <i class="fa fa-folder"></i> <span>Elements adminstratifs</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/examples/invoice.html"><i class="fa fa-circle-o"></i> Invoice</a></li>
-                <li><a href="pages/examples/login.html"><i class="fa fa-circle-o"></i> Login</a></li>
-                <li><a href="pages/examples/register.html"><i class="fa fa-circle-o"></i> Register</a></li>
-                <li><a href="pages/examples/lockscreen.html"><i class="fa fa-circle-o"></i> Lockscreen</a></li>
-                <li><a href="pages/examples/404.html"><i class="fa fa-circle-o"></i> 404 Error</a></li>
-                <li><a href="pages/examples/500.html"><i class="fa fa-circle-o"></i> 500 Error</a></li>
-                <li><a href="pages/examples/blank.html"><i class="fa fa-circle-o"></i> Blank Page</a></li>
+                <li><a href="{% url 'liste_Attestations' %}"><i class="fa fa-circle-o"></i>Classeur attestations</a></li>
+                <li><a href="{% url 'liste_bulletinsf' %}"><i class="fa fa-circle-o"></i> Classeur Bulletins</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -453,60 +301,9 @@
 
         <!-- Main content -->
         <section class="content">
-          <!-- Small boxes (Stat box) -->
+          
           <div class="row">
-            <div class="col-lg-3 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-aqua">
-                <div class="inner">
-                  <h3>150</h3>
-                  <p>New Orders</p>
-                </div>
-                <div class="icon">
-                  <i class="ion ion-bag"></i>
-                </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-              </div>
-            </div><!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-green">
-                <div class="inner">
-                  <h3>53<sup style="font-size: 20px">%</sup></h3>
-                  <p>Bounce Rate</p>
-                </div>
-                <div class="icon">
-                  <i class="ion ion-stats-bars"></i>
-                </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-              </div>
-            </div><!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-yellow">
-                <div class="inner">
-                  <h3>44</h3>
-                  <p>User Registrations</p>
-                </div>
-                <div class="icon">
-                  <i class="ion ion-person-add"></i>
-                </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-              </div>
-            </div><!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-red">
-                <div class="inner">
-                  <h3>65</h3>
-                  <p>Unique Visitors</p>
-                </div>
-                <div class="icon">
-                  <i class="ion ion-pie-graph"></i>
-                </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-              </div>
-            </div><!-- ./col -->
+            <h3>Listes des demandes - Attestations</h3>
           </div><!-- /.row -->
           <!-- Main row -->
           <div class="container mt-6">
@@ -613,7 +410,30 @@
                 {% endif %}
               </div>
          
-
+              {% for notification in notifications_non_lues %}
+          <!-- Modal -->
+            <div class="modal fade" id="notificationModal{{ notification.id }}" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="notificationModalLabel">{{ notification.titre }}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="contenu">{{ notification.contenu }}</p>
+                        </div>
+                        <div class="modal-footer">
+                            {% comment %} <button type="button" class="btn btn-primary" onclick="accepterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Accepter {{notification.expediteur.id}}</button> {% endcomment %}
+                            {% comment %} <button type="button" class="btn btn-danger" onclick="rejeterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Rejeter</button> {% endcomment %}
+                            <button type="button" class="btn btn-warning" onclick="compriS({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Compris</button>
+        
+                        </div>
+                    </div>
+                </div>
+            </div>
+          {% endfor %}
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
       <footer class="main-footer">
@@ -660,5 +480,30 @@
 
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="{% static 'assets_dash/dist/js/pages/dashboard.js' %}" type="text/javascript"></script>
+
+    <script>
+      
+      function compriS(notificationId) {
+        var url = "{% url 'marquer_notification_lue' 0 %}".replace('0', notificationId);
+        $.ajax({
+          type: 'POST',
+          url: url,
+          data: {
+              'action': 'compris',
+              'csrfmiddlewaretoken': '{{ csrf_token }}',
+          },
+          success: function (data) {
+              console.log('reponse compris');
+              // Logique pour créer une nouvelle notification à l'expéditeur
+              $('#notificationModal' + notificationId).modal('hide');
+          },
+          error: function (error) {
+              console.error('Erreur lors de la comprehension  de la reponse:', error);
+              console.log('Erreur détaillée:', error.responseText);
+          }
+      });
+        
+      }
+    </script>
   </body>
 </html>

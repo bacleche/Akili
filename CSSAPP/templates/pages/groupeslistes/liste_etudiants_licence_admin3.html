@@ -277,16 +277,15 @@
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <img src="{{ imagesprofiles }}" class="user-image" alt="User Image"/>
-                  <span class="hidden-xs">{{ nom }}</span>
+                  <img src="{{ user_data.imagesprofiles }}" class="user-image" alt="User Image"/>
+                  <span class="hidden-xs">{{ user_data.nom }}</span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
-                    <img src="{{ imagesprofiles }}" class="img-circle" alt="User Image" />
+                    <img src="{{ user_data.imagesprofiles }}" class="img-circle" alt="User Image" />
                     <p>
-                      {{ nom }} - Chef de la Scolarité
-                      <small>Member since Nov. 2012</small>
+                      {{ user_data.nom }} - {{user_data.role}}
                     </p>
                   </li>
                   <!-- Menu Body -->
@@ -332,14 +331,7 @@
             </div>
           </div>
           <!-- search form -->
-          <form action="#" method="get" class="sidebar-form">
-            <div class="input-group">
-              <input type="text" name="q" class="form-control" placeholder="Search..."/>
-              <span class="input-group-btn">
-                <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
-              </span>
-            </div>
-          </form>
+        
           <!-- /.search form -->
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
@@ -445,8 +437,10 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            Tableau De Bord
-            <small>Panneau de Control</small>
+            Tableau De Bord 
+            <small>Panneau de Control | {{user_data.role|upper}}</small>
+
+
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Liste d'etudiant - Classifications</a></li>
@@ -456,60 +450,8 @@
 
         <!-- Main content -->
         <section class="content">
-          <!-- Small boxes (Stat box) -->
           <div class="row">
-            <div class="col-lg-3 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-aqua">
-                <div class="inner">
-                  <h3>150</h3>
-                  <p>New Orders</p>
-                </div>
-                <div class="icon">
-                  <i class="ion ion-bag"></i>
-                </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-              </div>
-            </div><!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-green">
-                <div class="inner">
-                  <h3>53<sup style="font-size: 20px">%</sup></h3>
-                  <p>Bounce Rate</p>
-                </div>
-                <div class="icon">
-                  <i class="ion ion-stats-bars"></i>
-                </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-              </div>
-            </div><!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-yellow">
-                <div class="inner">
-                  <h3>44</h3>
-                  <p>User Registrations</p>
-                </div>
-                <div class="icon">
-                  <i class="ion ion-person-add"></i>
-                </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-              </div>
-            </div><!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-red">
-                <div class="inner">
-                  <h3>65</h3>
-                  <p>Unique Visitors</p>
-                </div>
-                <div class="icon">
-                  <i class="ion ion-pie-graph"></i>
-                </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-              </div>
-            </div><!-- ./col -->
+            <h3>Listes des Etudiants - LICENCE ADMINISTRATION 3</h3>
           </div><!-- /.row -->
           <!-- Main row -->
             <div class="row">

@@ -199,17 +199,17 @@
                 <i class="fa fa-dashboard"></i> <span>Tableau de Bord</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li class="active"><a href="index.html"><i class="fa fa-circle-o"></i>Accueil</a></li>
+                <li class="active"><a href="{% url 'Home_Directeur' %}"><i class="fa fa-circle-o"></i>Accueil</a></li>
               </ul>
             </li>
-            <li class="treeview">
+            <li class="treeview active">
               <a href="#">
                 <i class="fa fa-user"></i> <span>profile</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
                 <li><a href="{% url 'Profiles_directeur' %}"><i class="fa fa-circle-o"></i>Voir Profile</a></li>
-                <li><a href="{% url 'profile_details_directeur' %}"><i class="fa fa-circle-o"></i>Modifier Profile</a></li>
+                <li><a href="{% url 'profile_details_directeur' %}" class="active"><i class="fa fa-circle-o"></i>Modifier Profile</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -221,21 +221,6 @@
                 <li><a href="{% url 'liste_Attestations_directeur' %}"><i class="fa fa-circle-o"></i>Attestations</a></li>
                 <li><a href="{% url 'liste_Bulletins_directeur' %}"><i class="fa fa-circle-o"></i>Bulletins</a></li>
 
-              </ul>
-            </li>
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-folder"></i> <span>Examples</span>
-                <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="pages/examples/invoice.html"><i class="fa fa-circle-o"></i> Invoice</a></li>
-                <li><a href="pages/examples/login.html"><i class="fa fa-circle-o"></i> Login</a></li>
-                <li><a href="pages/examples/register.html"><i class="fa fa-circle-o"></i> Register</a></li>
-                <li><a href="pages/examples/lockscreen.html"><i class="fa fa-circle-o"></i> Lockscreen</a></li>
-                <li><a href="pages/examples/404.html"><i class="fa fa-circle-o"></i> 404 Error</a></li>
-                <li><a href="pages/examples/500.html"><i class="fa fa-circle-o"></i> 500 Error</a></li>
-                <li><a href="pages/examples/blank.html"><i class="fa fa-circle-o"></i> Blank Page</a></li>
               </ul>
             </li>
             <li class="treeview">

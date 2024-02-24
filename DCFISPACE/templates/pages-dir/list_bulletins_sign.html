@@ -152,29 +152,20 @@
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <img src="{{ imagesprofiles }}" class="user-image" alt="User Image"/>
-                  <span class="hidden-xs">{{ nom }}</span>
+                  <img src="{{ user_data.imagesprofiles }}" class="user-image" alt="User Image"/>
+                  <span class="hidden-xs">{{ user_data.nom }}</span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
-                    <img src="{{ imagesprofiles }}" class="img-circle" alt="User Image" />
+                    <img src="{{ user_data.imagesprofiles }}" class="img-circle" alt="User Image" />
                     <p>
-                      {{ nom }} - {{role}}
-                      <small>Member since Nov. 2012</small>
+                      {{ user_data.nom }} - {{user_data.role}}
                     </p>
                   </li>
                   <!-- Menu Body -->
                   <li class="user-body">
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Followers</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Sales</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Friends</a>
-                    </div>
+                    
                   </li>
                   <!-- Menu Footer-->
                   <li class="user-footer">
@@ -182,7 +173,7 @@
                       <a href="#" class="btn btn-default btn-flat">Profile</a>
                     </div>
                     <div class="pull-right">
-                      <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                      <a href="{% url 'deconnexion' %}" class="btn btn-default btn-flat">Sign out</a>
                     </div>
                   </li>
                 </ul>
@@ -212,12 +203,12 @@
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class="header">MAIN NAVIGATION</li>
-            <li class="active treeview">
+            <li class="treeview">
               <a href="#">
                 <i class="fa fa-dashboard"></i> <span>Tableau de Bord</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li class="active"><a href="index.html"><i class="fa fa-circle-o"></i>Accueil</a></li>
+                <li class="active"><a href="{% url 'Home_Directeur' %}"><i class="fa fa-circle-o"></i>Accueil</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -230,30 +221,15 @@
                 <li><a href="{% url 'profile_details_directeur' %}"><i class="fa fa-circle-o"></i>Modifier Profile</a></li>
               </ul>
             </li>
-            <li class="treeview">
+            <li class="treeview active">
              <a href="#">
                 <i class="fa fa-table"></i> <span>Registres Administratif</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
                 <li><a href="{% url 'liste_Attestations_directeur' %}"><i class="fa fa-circle-o"></i>Attestations</a></li>
-                <li><a href="{% url 'liste_Bulletins_directeur' %}"><i class="fa fa-circle-o"></i>Bulletins</a></li>
+                <li><a href="{% url 'liste_Bulletins_directeur' %}" class="active"><i class="fa fa-circle-o"></i>Bulletins</a></li>
 
-              </ul>
-            </li>
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-folder"></i> <span>Examples</span>
-                <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="pages/examples/invoice.html"><i class="fa fa-circle-o"></i> Invoice</a></li>
-                <li><a href="pages/examples/login.html"><i class="fa fa-circle-o"></i> Login</a></li>
-                <li><a href="pages/examples/register.html"><i class="fa fa-circle-o"></i> Register</a></li>
-                <li><a href="pages/examples/lockscreen.html"><i class="fa fa-circle-o"></i> Lockscreen</a></li>
-                <li><a href="pages/examples/404.html"><i class="fa fa-circle-o"></i> 404 Error</a></li>
-                <li><a href="pages/examples/500.html"><i class="fa fa-circle-o"></i> 500 Error</a></li>
-                <li><a href="pages/examples/blank.html"><i class="fa fa-circle-o"></i> Blank Page</a></li>
               </ul>
             </li>
             <li class="treeview">
