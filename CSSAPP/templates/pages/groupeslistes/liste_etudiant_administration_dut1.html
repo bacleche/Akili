@@ -336,12 +336,12 @@
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class="header">MAIN NAVIGATION</li>
-            <li class="active treeview">
+            <li class="treeview">
               <a href="#">
                 <i class="fa fa-dashboard"></i> <span>Tableau de Bord</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li class="active"><a href="index.html"><i class="fa fa-circle-o"></i>Accueil</a></li>
+                <li><a href="{% url 'cssWork' %}"><i class="fa fa-circle-o"></i>Accueil</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -351,12 +351,11 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="pages/charts/morris.html"><i class="fa fa-circle-o"></i> Morris</a></li>
-                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> Flot</a></li>
-                <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li>
+                <li><a href="{% url 'stat_morris' %}"><i class="fa fa-circle-o"></i> Demandes</a></li>
+                <li><a href="{% url 'taux_etudiants' %}"><i class="fa fa-circle-o"></i> Etudiants</a></li>
               </ul>
             </li>
-            <li class="treeview">
+            <li class="active teeview">
               <a href="#">
                 <i class="fa fa-laptop"></i>
                 <span>Centre de Vision</span>
@@ -367,7 +366,7 @@
                 <li><a href="pages/UI/icons.html"><i class="fa fa-circle-o"></i> DUT-INFO</a></li>
                 <li><a href="pages/UI/buttons.html"><i class="fa fa-circle-o"></i> LICENCE-AP</a></li>
                 <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> DUT-AP</a></li> {% endcomment %}
-                <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> Listes des ETudiants</a></li>
+                <li><a class="active" href="{% url 'liste_etudiant_classifications' %}"><i class="fa fa-circle-o"></i> Listes des ETudiants</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -390,28 +389,7 @@
                 <li><a href="{% url 'list_bulletin_demandes' %}"><i class="fa fa-circle-o"></i>Bulletins</a></li>
               </ul>
             </li>
-           
-            <li>
-              <a href="pages/mailbox/mailbox.html">
-                <i class="fa fa-envelope"></i> <span>Messagerie</span>
-                <small class="label pull-right bg-yellow">12</small>
-              </a>
-            </li>
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-folder"></i> <span>Examples</span>
-                <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="pages/examples/invoice.html"><i class="fa fa-circle-o"></i> Invoice</a></li>
-                <li><a href="pages/examples/login.html"><i class="fa fa-circle-o"></i> Login</a></li>
-                <li><a href="pages/examples/register.html"><i class="fa fa-circle-o"></i> Register</a></li>
-                <li><a href="pages/examples/lockscreen.html"><i class="fa fa-circle-o"></i> Lockscreen</a></li>
-                <li><a href="pages/examples/404.html"><i class="fa fa-circle-o"></i> 404 Error</a></li>
-                <li><a href="pages/examples/500.html"><i class="fa fa-circle-o"></i> 500 Error</a></li>
-                <li><a href="pages/examples/blank.html"><i class="fa fa-circle-o"></i> Blank Page</a></li>
-              </ul>
-            </li>
+         
             <li class="treeview">
               <a href="#">
                 <i class="fa fa-share"></i> <span>Transfert Administratif</span>

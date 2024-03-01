@@ -2,6 +2,8 @@ from django.shortcuts import render , redirect
 from CSSAPP.data_models.css import CSS
 from CSSAPP.data_models.documents import Attestation , Bulletin
 from EtudiantApp.data_models.demande import Demande
+from EtudiantApp.data_models.notifications import Notification
+
 from EtudiantApp.data_models.etudiant import Etudiant
 from django.db.models import Q
 from datetime import datetime
@@ -646,15 +648,23 @@ def liste_Attestations(request):
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
     attestations = Attestation.objects.filter(is_signed=True, is_transfer_css=True)
+    paginator = Paginator(attestations, 10)
 
-    return render(request, 'liste_documents/attestations.html', {'attestations': attestations , 'user_data': user_data})
+    # Récupérer le numéro de la page à afficher, par défaut 1
+    page_number = request.GET.get('page')
+    
+    # Récupérer les objets attestations pour la page donnée
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'liste_documents/attestations.html', {'attestations': attestations , 'user_data': user_data, 'page_obj':page_obj})
 
 
 def liste_bulletinsf(request):
     
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
-    bulletins = Bulletin.objects.all()
+    bulletins = Bulletin.objects.filter(is_signed=True, is_transfer_css=True)
+    print(bulletins)
     paginator = Paginator(bulletins, 10)
 
     # Récupérer le numéro de la page à afficher, par défaut 1
@@ -668,6 +678,85 @@ def liste_bulletinsf(request):
 
 
 
+
+
+def recherche_Bulletins_css(request):
+    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+    q = request.GET.get('q')
+    date = request.GET.get('date')
+
+    # Filtrer les attestations en fonction de la recherche
+    if q:
+        bulletins = Bulletin.objects.filter(
+            Q(etudiant__user__first_name__icontains=q) | Q(etudiant__user__last_name__icontains=q)
+        )
+    elif date:
+        bulletins = Bulletin.objects.filter(date_register=date)
+    else:
+        bulletins = Bulletin.objects.all()
+
+    return render(request, 'liste_documents/bulletins.html', {'bulletins': bulletins, 'user_data': user_data})
+
+
+
+
+def recherche_attestation_css(request):
+    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+    q = request.GET.get('q')
+    date = request.GET.get('date')
+
+    # Filtrer les attestations en fonction de la recherche
+    if q:
+        attestations = Attestation.objects.filter(
+            Q(etudiant__user__first_name__icontains=q) | Q(etudiant__user__last_name__icontains=q)
+        )
+    elif date:
+        attestations = Attestation.objects.filter(date_register=date)
+    else:
+        attestations = Attestation.objects.all()
+
+    return render(request, 'liste_documents/attestations.html', {'attestations': attestations, 'user_data': user_data})
+
+
+
+def signaler_css_attestation_etudiant(request, attestation_id):
+    attestation = Attestation.objects.get(id=attestation_id)
+    attestation.is_transfer_etudiant = True
+    # attestation.save()
+    date_poste = date.today()
+
+    titre_poste = "Attestation Signé"  
+    contenu_notification = f"{attestation.profile_directeur.user.last_name} {attestation.profile_directeur.user.first_name} vient d'appliquer une action  : {titre_poste}."
+    date_creation = date_poste
+    notification = Notification(destinataire_css=attestation.profiles_css, expediteur_dir=attestation.profile_directeur ,  contenu=contenu_notification, date_creation=date_creation )
+    print('est arrivé')
+    notification.save()
+    print(notification)
+    attestation.save()
+    print('fifi')
+
+    return redirect('liste_Attestations_directeur')
+
+def signaler_css_bulletin_etudiant(request, bulletin_id):
+    bulletin = Bulletin.objects.get(id=bulletin_id)
+    bulletin.is_transfer_etudiant = True
+    date_poste = date.today()
+
+    titre_poste = "Bulletin Signé"  
+    contenu_notification = f"{bulletin.profile_directeur.user.last_name} {bulletin.profile_directeur.user.first_name} vient d'appliquer une action  : {titre_poste}."
+    date_creation = date_poste
+    notification = Notification(destinataire_css=bulletin.profiles_css, expediteur_dir=bulletin.profile_directeur ,  contenu=contenu_notification, date_creation=date_creation )
+    print('est arrivé')
+    notification.save()
+    print(notification)
+    bulletin.save()
+    print('fifi')
+    return redirect('liste_Bulletins_directeur')
+
+
+
+
+
 def custom_logout(request):
     logout(request)
-    return redirect('SignInView')
+    return redirect('SignInView')  

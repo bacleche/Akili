@@ -87,194 +87,68 @@
           </a>
           <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
-              <!-- Messages: style can be found in dropdown.less-->
-              <li class="dropdown messages-menu">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <i class="fa fa-envelope-o"></i>
-                  <span class="label label-success">4</span>
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="header">You have 4 messages</li>
-                  <li>
-                    <!-- inner menu: contains the actual data -->
-                    <ul class="menu">
-                      <li><!-- start message -->
-                        <a href="#">
-                          <div class="pull-left">
-                            <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
-                          </div>
-                          <h4>
-                            Support Team
-                            <small><i class="fa fa-clock-o"></i> 5 mins</small>
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li><!-- end message -->
-                      <li>
-                        <a href="#">
-                          <div class="pull-left">
-                            <img src="dist/img/user3-128x128.jpg" class="img-circle" alt="user image"/>
-                          </div>
-                          <h4>
-                            AdminLTE Design Team
-                            <small><i class="fa fa-clock-o"></i> 2 hours</small>
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <div class="pull-left">
-                            <img src="dist/img/user4-128x128.jpg" class="img-circle" alt="user image"/>
-                          </div>
-                          <h4>
-                            Developers
-                            <small><i class="fa fa-clock-o"></i> Today</small>
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <div class="pull-left">
-                            <img src="dist/img/user3-128x128.jpg" class="img-circle" alt="user image"/>
-                          </div>
-                          <h4>
-                            Sales Department
-                            <small><i class="fa fa-clock-o"></i> Yesterday</small>
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <div class="pull-left">
-                            <img src="dist/img/user4-128x128.jpg" class="img-circle" alt="user image"/>
-                          </div>
-                          <h4>
-                            Reviewers
-                            <small><i class="fa fa-clock-o"></i> 2 days</small>
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li class="footer"><a href="#">See All Messages</a></li>
-                </ul>
-              </li>
-              <!-- Notifications: style can be found in dropdown.less -->
               <li class="dropdown notifications-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <i class="fa fa-bell-o"></i>
-                  <span class="label label-warning">10</span>
+                    <i class="fa fa-envelope"></i> <!-- Icône par défaut -->
+                    <!-- Ajoutez d'autres styles ou classes CSS pour l'icône ici -->
+                    {% if notifications_non_lues %}
+                        <span class="badge">{{ notifications_non_lues.count }}</span>
+                    {% endif %}
                 </a>
                 <ul class="dropdown-menu">
-                  <li class="header">You have 10 notifications</li>
-                  <li>
-                    <!-- inner menu: contains the actual data -->
-                    <ul class="menu">
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the page and may cause design problems
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-users text-red"></i> 5 new members joined
-                        </a>
-                      </li>
-
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-user text-red"></i> You changed your username
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li class="footer"><a href="#">View all</a></li>
+                    <li class="header">
+                        {% if notifications_non_lues %}
+                            You have {{ notifications_non_lues.count }} new notifications
+                        {% else %}
+                            No notifications
+                        {% endif %}
+                    </li>
+                    <li>
+                        <!-- inner menu: contains the actual data -->
+                        <ul class="menu">
+                            {% for notification in notifications_non_lues %}
+                                <li class="text-center"><!-- start notification -->
+                                    <a href="#" data-toggle="modal" data-target="#notificationModal{{ notification.id }}">
+                                        <div class="pull-left">
+                                            <i class="fa fa-users text-aqua"></i>
+                                        </div>
+                                        <div class="pull-left">
+                                            <h4>
+                                                {{ notification.titre }}
+                                                <br>
+                                                <small><i class="fa fa-clock-o"></i> {{ notification.date_creation }}</small>
+                                            </h4>
+                                            <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ notification.contenu }}</p>
+                                        </div>
+                                    </a>
+                                </li><!-- end notification -->
+                            {% endfor %}
+                            {% for notification in notifications_lues %}
+                                <li class="text-center"><!-- start notification -->
+                                    <a href="#">
+                                        <div class="pull-left">
+                                            <i class="fa fa-users text-aqua"></i>
+                                        </div>
+                                        <div class="pull-left">
+                                            <h4>
+                                                {{ notification.titre }}
+                                                <br>
+                                                <small><i class="fa fa-clock-o"></i> {{ notification.date_creation }}</small>
+                                            </h4>
+                                            <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ notification.contenu }}</p>
+                                        </div>
+                                    </a>
+                                </li><!-- end notification -->
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="footer"><a href="#">See All Notifications</a></li>
                 </ul>
               </li>
-              <!-- Tasks: style can be found in dropdown.less -->
-              <li class="dropdown tasks-menu">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <i class="fa fa-flag-o"></i>
-                  <span class="label label-danger">9</span>
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="header">You have 9 tasks</li>
-                  <li>
-                    <!-- inner menu: contains the actual data -->
-                    <ul class="menu">
-                      <li><!-- Task item -->
-                        <a href="#">
-                          <h3>
-                            Design some buttons
-                            <small class="pull-right">20%</small>
-                          </h3>
-                          <div class="progress xs">
-                            <div class="progress-bar progress-bar-aqua" style="width: 20%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                              <span class="sr-only">20% Complete</span>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end task item -->
-                      <li><!-- Task item -->
-                        <a href="#">
-                          <h3>
-                            Create a nice theme
-                            <small class="pull-right">40%</small>
-                          </h3>
-                          <div class="progress xs">
-                            <div class="progress-bar progress-bar-green" style="width: 40%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                              <span class="sr-only">40% Complete</span>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end task item -->
-                      <li><!-- Task item -->
-                        <a href="#">
-                          <h3>
-                            Some task I need to do
-                            <small class="pull-right">60%</small>
-                          </h3>
-                          <div class="progress xs">
-                            <div class="progress-bar progress-bar-red" style="width: 60%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                              <span class="sr-only">60% Complete</span>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end task item -->
-                      <li><!-- Task item -->
-                        <a href="#">
-                          <h3>
-                            Make beautiful transitions
-                            <small class="pull-right">80%</small>
-                          </h3>
-                          <div class="progress xs">
-                            <div class="progress-bar progress-bar-yellow" style="width: 80%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                              <span class="sr-only">80% Complete</span>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end task item -->
-                    </ul>
-                  </li>
-                  <li class="footer">
-                    <a href="#">View all tasks</a>
-                  </li>
-                </ul>
-              </li>
+              
+              
+              
+              
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -290,24 +164,14 @@
                     </p>
                   </li>
                   <!-- Menu Body -->
-                  <li class="user-body">
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Followers</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Sales</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Friends</a>
-                    </div>
-                  </li>
+                  
                   <!-- Menu Footer-->
                   <li class="user-footer">
                     <div class="pull-left">
                       <a href="#" class="btn btn-default btn-flat">Profile</a>
                     </div>
                     <div class="pull-right">
-                      <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                      <a href="{% url 'deconnexion' %}" class="btn btn-default btn-flat">Sign out</a>
                     </div>
                   </li>
                 </ul>
@@ -458,11 +322,11 @@
             </div>
         {% endif %}
 
-        <div class="container mt-6">
+        <div class="container-fluid">
           <div class="row">
               <div class="col-md-6 offset-md-6">
-                <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'recherche_Attestations_directeur' %}">
-                  <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Rechercher" name="q">
+                <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'recherche_Bulletins_css' %}">
+                  <input id="searchBar" class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Rechercher" name="q">
                   {% comment %} <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="startSpeechRecognition()">Recherche vocale</button> {% endcomment %}
                   <input class="form-control mr-sm-2" type="date" name="date" placeholder="Date">
                   <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
@@ -471,7 +335,7 @@
               </div>
           </div>
           <div class="table-responsive overflow-y">
-            {% if attestations %}
+            {% if bulletins %}
                 <table class="table">
                     <thead class="thead-dark">
                         <tr>
@@ -491,7 +355,7 @@
                         {% for bulletin in bulletins %}
                             <tr>
                                 <th scope="row">{{ forloop.counter }}</th>
-                                <td>{{attestation.etudiant}}</td>
+                                <td>{{bulletin.etudiant}}</td>
                                 <td>{{bulletin.etudiant}}</td>
                                 <td>{{bulletin.etudiant.cycle}}</td>
                                 <td>{{bulletin.etudiant.niveaux}}</td>
@@ -504,7 +368,7 @@
                                 </td>
                                 <td>
                                   {% if not bulletin.is_transfer_etudiant %}
-                                    <a href="#" class="btn btn-success">Signaler {{bulletin.etudiant.user.last_name}} </a>
+                                    <a href="{% url 'signaler_css_bulletin_etudiant' %}" class="btn btn-success">Notifier {{bulletin.etudiant.user.last_name}} </a>
                                   {% elif  bulletin.is_transfer_etudiant %}
                                     <p style="color:green;">Déjà Signalé</p>
                                   {% endif %}
@@ -529,7 +393,7 @@
                 <p>Aucune donnée correspondante.</p>
             {% endif %}
           </div>
-        </div>
+        <p id="noResultsMessage" style="display: none; left : 50px;">Aucun donnée correspondante.</p>
             
       </div>
       <!-- Ajoutez des boutons pour la pagination -->
@@ -559,7 +423,7 @@
         </div>
       {% endfor %}
 
-      <div class="row">
+      <div class="container-fluid">
         <div class="col-md-6">
             <a href="{% url 'imprimer_attestations_directeur' %}" class="btn btn-primary">Sauvegarder et Imprimer</a>
             {% comment %} <a href="{% url 'archive_documents_attestation' %}" class="btn btn-primary">Archiver</a> {% endcomment %}
@@ -620,8 +484,72 @@
     
   </script>
   
+  <script>
+      
+    function compriS(notificationId) {
+      var url = "{% url 'marquer_notification_lue' 0 %}".replace('0', notificationId);
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+            'action': 'compris',
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function (data) {
+            console.log('reponse compris');
+            // Logique pour créer une nouvelle notification à l'expéditeur
+            $('#notificationModal' + notificationId).modal('hide');
+        },
+        error: function (error) {
+            console.error('Erreur lors de la comprehension  de la reponse:', error);
+            console.log('Erreur détaillée:', error.responseText);
+        }
+    });
+      
+    }
+  </script>
     
-    
+  <script>
+
+    function removeAccents(str) {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+
+        $(document).ready(function() {
+          // Utilisation de l'écouteur de saisie sur le champ de recherche
+          $('#searchBar').on('keyup', function() {
+              var searchText = removeAccents($(this).val().toLowerCase());
+              var searchTerms = searchText.split(/\s+/); // Séparer le texte entré en termes individuels
+              var anyMatchFound = false; 
+              $('.table-responsive').each(function() {
+                  var productName = removeAccents($(this).find('tr').text().toLowerCase());
+                  var productMatches = false;
+      
+                  // Vérifier si le nom du produit contient au moins l'un des termes de recherche
+                  $.each(searchTerms, function(index, term) {
+                      if (productName.indexOf(term) !== -1) {
+                          productMatches = true;
+                          anyMatchFound = true; 
+                          return false; // Sortir de la boucle each si un terme correspond
+                      }
+                  });
+      
+                  // Afficher ou masquer le produit en fonction des correspondances
+                  if (productMatches) {
+                      $(this).show(); // Afficher le produit si au moins un terme correspond
+                  } else {
+                      $(this).hide(); // Masquer le produit sinon
+                  }
+              });
+              if (!anyMatchFound) {
+                  $('#noResultsMessage').show();
+              } else {
+                  $('#noResultsMessage').hide();
+              }
+          });
+      });
+</script>
+
 
   </body>
 </html>

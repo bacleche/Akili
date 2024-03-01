@@ -42,6 +42,7 @@ def create_attestation_notification(sender, instance, created, **kwargs):
             date_creation=date_creation
         )
         notification.save()
+        print('notif marché')
 
 
 class Bulletin(models.Model):
@@ -75,3 +76,5 @@ def create_bulletin_notification(sender, instance, created, **kwargs):
             date_creation=date_creation
         )
         notification.save()
+        print('notif bulletin')
+

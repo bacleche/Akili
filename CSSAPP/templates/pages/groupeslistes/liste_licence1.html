@@ -204,8 +204,9 @@
               <a href="#">
                 <i class="fa fa-dashboard"></i> <span>Tableau de Bord</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
-              <ul class="treeview-menu">
-                <li><a href="index.html"><i class="fa fa-circle-o"></i>Accueil</a></li>
+              <ul class="treeview-menu"> 
+                <li><a href="{% url 'cssWork' %}"><i class="fa fa-circle-o"></i>Accueil</a></li>
+
               </ul>
             </li>
             <li class="treeview">
@@ -215,8 +216,8 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="{% urn'stat_morris' %}"><i class="fa fa-circle-o"></i> Demandes</a></li>
-                <li><a href="{%  url ''  %}"><i class="fa fa-circle-o"></i> Etudiants</a></li>
+                <li><a href="{% url 'stat_morris' %}"><i class="fa fa-circle-o"></i> Demandes</a></li>
+                <li><a href="{% url 'taux_etudiants' %}"><i class="fa fa-circle-o"></i> Etudiants</a></li>
               </ul>
             </li>
             <li class="active teeview">
@@ -253,13 +254,7 @@
                 <li><a href="{% url 'list_bulletin_demandes' %}"><i class="fa fa-circle-o"></i>Bulletins</a></li>
               </ul>
             </li>
-           
-            <li>
-              <a href="pages/mailbox/mailbox.html">
-                <i class="fa fa-envelope"></i> <span>Messagerie</span>
-                <small class="label pull-right bg-yellow">12</small>
-              </a>
-            </li>
+         
             <li class="treeview">
               <a href="#">
                 <i class="fa fa-share"></i> <span>Transfert Administratif</span>

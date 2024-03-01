@@ -355,16 +355,20 @@
                                     <td>Bulletin</td>
                                     <td>{{bulletin.file}}</td>
                                     <td>{{bulletin.date_register}}</td>
-                                    <td>{% if attestation.is_signed %}Signé{% else %}Non signé{% endif %}</td>
+                                    <td>{% if bulletin.is_signed %}Signé{% else %}Non signé{% endif %}</td>
                                     <td>
-                                      <a href="{{ attestation.file.url }}" target="_blank" class="btn btn-primary">Visualiser PDF</a>
+                                      <a href="{{ bulletin.file.url }}" target="_blank" class="btn btn-primary">Visualiser PDF</a>
                                     </td>
+                                    
                                     <td>
                                       {% if not bulletin.is_signed %}
                                         <input type="hidden" id="attestation-id" value="{{ bulletin.id }}">
                                         <input type="hidden" id="directeur-id" value="{{ directeur.id }}">
                                         <a href="{% url 'signer_buletins' bulletin.id  %}" class="btn btn-success">Signer</a>
-                                      
+                                      {% elif not bulletin.is_transfer_css %}
+                                        <a href="{% url 'signaler_css_bulletin_directeur' bulletin.id %}" class="btn btn-success">Signaler {{bulletin.profiles_css.user.last_name}} </a>
+                                      {% elif  bulletin.is_transfer_css %}
+                                        <p style="color:green;">Déjà Signalé</p>
                                       {% endif %}
                                     </td>
                                 </tr>

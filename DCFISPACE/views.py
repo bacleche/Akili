@@ -187,9 +187,36 @@ def liste_Bulletins_directeur(request):
 def signaler_css_attestation_directeur(request, attestation_id):
     attestation = Attestation.objects.get(id=attestation_id)
     attestation.is_transfer_css = True
+    # attestation.save()
+    date_poste = date.today()
+
+    titre_poste = "Attestation Signé"  
+    contenu_notification = f"{attestation.profile_directeur.user.last_name} {attestation.profile_directeur.user.first_name} vient d'appliquer une action  : {titre_poste}."
+    date_creation = date_poste
+    notification = Notification(destinataire_css=attestation.profiles_css, expediteur_dir=attestation.profile_directeur ,  contenu=contenu_notification, date_creation=date_creation )
+    print('est arrivé')
+    notification.save()
+    print(notification)
     attestation.save()
+    print('fifi')
 
     return redirect('liste_Attestations_directeur')
+
+def signaler_css_bulletin_directeur(request, bulletin_id):
+    bulletin = Bulletin.objects.get(id=bulletin_id)
+    bulletin.is_transfer_css = True
+    date_poste = date.today()
+
+    titre_poste = "Bulletin Signé"  
+    contenu_notification = f"{bulletin.profile_directeur.user.last_name} {bulletin.profile_directeur.user.first_name} vient d'appliquer une action  : {titre_poste}."
+    date_creation = date_poste
+    notification = Notification(destinataire_css=bulletin.profiles_css, expediteur_dir=bulletin.profile_directeur ,  contenu=contenu_notification, date_creation=date_creation )
+    print('est arrivé')
+    notification.save()
+    print(notification)
+    bulletin.save()
+    print('fifi')
+    return redirect('liste_Bulletins_directeur')
 
 
 def signer_attestation(request, attestation_id):
@@ -405,6 +432,11 @@ def archive_documents_attestation(request):
         attestation.is_archived = True
         attestation.save()
     return HttpResponse("Tous les documents ont été archivés avec succès.")
+
+
+
+
+
 
 
 

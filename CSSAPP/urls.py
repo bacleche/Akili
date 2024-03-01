@@ -45,6 +45,13 @@ urlpatterns = [
     path('create_document_dut2_info/<int:etudiant_id>', creationsdocuments.create_document_dut2_info, name='create_document_dut2_info'),
     path('liste_Attestations', views.liste_Attestations, name='liste_Attestations'),
     path('liste_bulletinsf', views.liste_bulletinsf, name='liste_bulletinsf'),
+    path('recherche_attestation_css', views.recherche_attestation_css, name='recherche_attestation_css'),
+    path('recherche_Bulletins_css', views.recherche_Bulletins_css, name='recherche_Bulletins_css'),
+    path('signaler_css_bulletin_etudiant', views.signaler_css_bulletin_etudiant, name='signaler_css_bulletin_etudiant'),
+    path('signaler_css_attestation_etudiant', views.signaler_css_attestation_etudiant, name='signaler_css_attestation_etudiant'),
+
+
+
 
 
     #EN BAS UR DE DECONNEXION

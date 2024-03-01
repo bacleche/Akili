@@ -73,7 +73,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'EtudiantApp.context_processors.notifications_non_lues',
-                'EtudiantApp.context_processors.notifications_non_lues_dir',
             ],
             
         },
