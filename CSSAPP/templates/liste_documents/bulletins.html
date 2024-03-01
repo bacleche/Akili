@@ -368,7 +368,7 @@
                                 </td>
                                 <td>
                                   {% if not bulletin.is_transfer_etudiant %}
-                                    <a href="{% url 'signaler_css_bulletin_etudiant' %}" class="btn btn-success">Notifier {{bulletin.etudiant.user.last_name}} </a>
+                                    <a href="{% url 'signaler_css_bulletin_etudiant' bulletin.id %}" class="btn btn-success">Notifier {{bulletin.etudiant.user.last_name}} </a>
                                   {% elif  bulletin.is_transfer_etudiant %}
                                     <p style="color:green;">Déjà Signalé</p>
                                   {% endif %}

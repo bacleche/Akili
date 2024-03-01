@@ -368,8 +368,10 @@
                                     <td>
                                       {% if not attestation.is_signed %}
                                         <p style="color:red;">impossible de signaler</p>
-                                      {% elif  attestation.is_signed %}
-                                        <a href="{% url 'signaler_css_attestation_etudiant' %}" class="btn btn-success">Notifier {{attestation.etudiant.user.last_name}} </a>
+                                      {% elif  not attestation.is_transfer_etudiant %}
+                                        <a href="{% url 'signaler_css_attestation_etudiant' attestation.id %}" class="btn btn-success">Notifier {{attestation.etudiant.user.last_name}} </a>
+                                      {% elif   attestation.is_transfer_etudiant %}
+                                        <p style="color:green;">Déjà Signalé</p>
                                       {% endif %}
                                     </td>
                                 </tr>

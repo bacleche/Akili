@@ -47,8 +47,8 @@ urlpatterns = [
     path('liste_bulletinsf', views.liste_bulletinsf, name='liste_bulletinsf'),
     path('recherche_attestation_css', views.recherche_attestation_css, name='recherche_attestation_css'),
     path('recherche_Bulletins_css', views.recherche_Bulletins_css, name='recherche_Bulletins_css'),
-    path('signaler_css_bulletin_etudiant', views.signaler_css_bulletin_etudiant, name='signaler_css_bulletin_etudiant'),
-    path('signaler_css_attestation_etudiant', views.signaler_css_attestation_etudiant, name='signaler_css_attestation_etudiant'),
+    path('signaler_css_bulletin_etudiant/<int:bulletin_id>', views.signaler_css_bulletin_etudiant, name='signaler_css_bulletin_etudiant'),
+    path('signaler_css_attestation_etudiant/<int:attestation_id>', views.signaler_css_attestation_etudiant, name='signaler_css_attestation_etudiant'),
 
 
 

@@ -314,11 +314,11 @@
         </style>
         
         <div class="horizontal-align">
-            <p>En attente</p>
-            <p>En cours de traitement</p>
-            <p>Acceptées</p>
-            <p>Terminée</p>
-            <p>Refusée</p>
+            <p style="background: gray;">En attente</p>
+            <p style="background: #f0ad4e;">En cours de traitement</p>
+            <p style="background: #f0ad22;">Acceptées</p>
+            <p style="background: #20ad4e;">Terminée</p>
+            <p style="background: #d9534f;">Refusée</p>
 
         </div>
         
@@ -404,10 +404,11 @@
             { label: 'Refusées', value: {{ demandes_refusées|default:0 }} }
         ],
         resize: true,
-        colors: ['#5cb85c', '#f0ad4e', '#d9534f', '#5bc0de', '#428bca']
+        colors: ['#f0ad22', 'gray', '#20ad4e', '#f0ad4e ', '#d9534f']
     });
     
   </script>
+  #
 
   <script>
       

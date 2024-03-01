@@ -735,7 +735,7 @@ def signaler_css_attestation_etudiant(request, attestation_id):
     attestation.save()
     print('fifi')
 
-    return redirect('liste_Attestations_directeur')
+    return redirect('liste_Attestations')
 
 def signaler_css_bulletin_etudiant(request, bulletin_id):
     bulletin = Bulletin.objects.get(id=bulletin_id)
@@ -751,7 +751,7 @@ def signaler_css_bulletin_etudiant(request, bulletin_id):
     print(notification)
     bulletin.save()
     print('fifi')
-    return redirect('liste_Bulletins_directeur')
+    return redirect('liste_bulletinsf')
 
 
 
