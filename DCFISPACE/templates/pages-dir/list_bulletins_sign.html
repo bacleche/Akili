@@ -366,7 +366,7 @@
                                         <input type="hidden" id="directeur-id" value="{{ directeur.id }}">
                                         <a href="{% url 'signer_buletins' bulletin.id  %}" class="btn btn-success">Signer</a>
                                       {% elif not bulletin.is_transfer_css %}
-                                        <a href="{% url 'signaler_css_bulletin_directeur' bulletin.id %}" class="btn btn-success">Signaler {{bulletin.profiles_css.user.last_name}} </a>
+                                        <a href="{% url 'signaler_css_bulletin_directeur' bulletin.id %}" class="btn btn-success">Signaler {{bulletin.profiles_css.user.last_name}} <i class="fa fa-share"></i></a>
                                       {% elif  bulletin.is_transfer_css %}
                                         <p style="color:green;">Déjà Signalé</p>
                                       {% endif %}

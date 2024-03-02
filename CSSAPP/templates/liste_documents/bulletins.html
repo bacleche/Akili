@@ -368,7 +368,7 @@
                                 </td>
                                 <td>
                                   {% if not bulletin.is_transfer_etudiant %}
-                                    <a href="{% url 'signaler_css_bulletin_etudiant' bulletin.id %}" class="btn btn-success">Notifier {{bulletin.etudiant.user.last_name}} </a>
+                                    <a href="{% url 'signaler_css_bulletin_etudiant' bulletin.id %}" class="btn btn-success">Notifier {{bulletin.etudiant.user.last_name}} <i class="fa fa-share"></i></a>
                                   {% elif  bulletin.is_transfer_etudiant %}
                                     <p style="color:green;">Déjà Signalé</p>
                                   {% endif %}
@@ -425,7 +425,7 @@
 
       <div class="container-fluid">
         <div class="col-md-6">
-            <a href="{% url 'imprimer_attestations_directeur' %}" class="btn btn-primary">Sauvegarder et Imprimer</a>
+            <a href="{% url 'imprimer_bulletin_css_doc' %}" class="btn btn-primary">Sauvegarder et Imprimer</a>
             {% comment %} <a href="{% url 'archive_documents_attestation' %}" class="btn btn-primary">Archiver</a> {% endcomment %}
 
         </div>

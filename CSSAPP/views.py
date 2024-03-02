@@ -756,6 +756,70 @@ def signaler_css_bulletin_etudiant(request, bulletin_id):
 
 
 
+#--------impression-document-------------------
+
+
+
+def imprimer_attestations_css_doc(request):
+    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+
+    # Récupérer toutes les attestations à imprimer
+    attestations = Attestation.objects.all()  # Assurez-vous de remplacer VotreModele par votre propre modèle
+    datey = date.today()
+    # Charger le template HTML
+    template_path = 'pages/imprimer_attestation_css_doc.html'
+    template = get_template(template_path)
+    
+    # Remplir le template avec les données des attestations
+    context = {'attestations': attestations, 'user_data': user_data , 'datey':datey}
+    html = template.render(context)
+
+    # Générer le PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="liste_attestations_doc.pdf"'
+    
+    # Convertir le HTML en PDF
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    
+    # Vérifier si la conversion s'est bien déroulée
+    if pisa_status.err:
+        return HttpResponse('Erreur lors de la génération du PDF', status=500)
+    
+    return response
+
+
+
+def imprimer_bulletins_css_doc(request):
+    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+
+    # Récupérer toutes les attestations à imprimer
+    bulletins = Bulletin.objects.all()  # Assurez-vous de remplacer VotreModele par votre propre modèle
+    print(bulletins)
+    datey = date.today()
+    # Charger le template HTML
+    template_path = 'pages/imprimer_bulletins_css_doc.html'
+    template = get_template(template_path)
+    
+    # Remplir le template avec les données des attestations
+    context = {'bulletins': bulletins, 'user_data': user_data , 'datey':datey}
+    html = template.render(context)
+
+    # Générer le PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="liste_bulletins_doc.pdf"'
+    
+    # Convertir le HTML en PDF
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    
+    # Vérifier si la conversion s'est bien déroulée
+    if pisa_status.err:
+        return HttpResponse('Erreur lors de la génération du PDF', status=500)
+    
+    return response
+
+#-------------FIn
+
+
 
 def custom_logout(request):
     logout(request)

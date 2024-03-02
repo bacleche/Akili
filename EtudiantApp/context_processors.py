@@ -25,9 +25,16 @@ def notifications_non_lues(request):
             directeur_connecte = Directeur.objects.get(matricule=user_data['matricule'])
             notifications = Notification.objects.filter(destinataire_dir=directeur_connecte, est_lue=False)
             notifications2 = Notification.objects.filter(destinataire_dir=directeur_connecte, est_lue=True)
-            print("******************************")
+            print("********************direct**********")
         except ObjectDoesNotExist:
-            pass
+            directeur_connecte = None
+            try:
+                css_connecte = CSS.objects.get(matricule=user_data['matricule'])
+                notifications = Notification.objects.filter(destinataire_css=css_connecte, est_lue=False)
+                notifications2 = Notification.objects.filter(destinataire_css=css_connecte, est_lue=True)
+                print("**********************css*****")
+            except ObjectDoesNotExist:
+                pass
 
        
     return {

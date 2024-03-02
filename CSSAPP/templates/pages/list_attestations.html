@@ -149,15 +149,15 @@
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <img src="{{ imagesprofiles }}" class="user-image" alt="User Image"/>
-                  <span class="hidden-xs">{{ nom }}</span>
+                  <img src="{{ user_data.imagesprofiles }}" class="user-image" alt="User Image"/>
+                  <span class="hidden-xs">{{ user_data.nom }}</span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
-                    <img src="{{ imagesprofiles }}" class="img-circle" alt="User Image" />
+                    <img src="{{ user_data.imagesprofiles }}" class="img-circle" alt="User Image" />
                     <p>
-                      {{ nom }} - {{role}}
+                      {{ user_data.nom }} - {{user_data.role}}
                     </p>
                   </li>
                   <!-- Menu Body -->
@@ -263,19 +263,6 @@
               <ul class="treeview-menu">
                 <li><a href="{% url 'liste_Attestations' %}"><i class="fa fa-circle-o"></i>Classeur attestations</a></li>
                 <li><a href="{% url 'liste_bulletinsf' %}"><i class="fa fa-circle-o"></i> Classeur Bulletins</a></li>
-              </ul>
-            </li>
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-share"></i> <span>Transfert Administratif</span>
-                <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="#"><i class="fa fa-circle-o"></i>DCFI</a></li>
-                <li>
-                  <a href="#"><i class="fa fa-circle-o"></i>ETUDIANTS</a>
-                </li>
-                
               </ul>
             </li>
             <li><a href="{% url 'deconnexion' %}"><i class="fa fa-sign-out"></i> Se Deconnecter</a></li>

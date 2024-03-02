@@ -339,7 +339,7 @@
                                         {% comment %} <a class="hidden" href="{% url 'signaler_css_attestation_directeur' attestation.id %}" class="btn btn-success">Signaler {{attestation.profiles_css.user.last_name}} </a> {% endcomment %}
 
                                       {% elif not attestation.is_transfer_css %}
-                                        <a href="{% url 'signaler_css_attestation_directeur' attestation.id %}" class="btn btn-success">Signaler {{attestation.profiles_css.user.last_name}} </a>
+                                        <a href="{% url 'signaler_css_attestation_directeur' attestation.id %}" class="btn btn-success">Signaler {{attestation.profiles_css.user.last_name}} <i class="fa fa-share"></i> </a>
                                       {% elif  attestation.is_transfer_css %}
                                         <p style="color:green;">Déjà Signalé</p>
                                       {% endif %}
