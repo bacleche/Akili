@@ -17,6 +17,7 @@ urlpatterns = [
     path('imprimer_attestations_directeur', views.imprimer_attestations_directeur, name='imprimer_attestations_directeur'),
     path('imprimer_bulletins_directeur', views.imprimer_bulletins_directeur, name='imprimer_bulletins_directeur'),
     path('archive_documents_attestation', views.archive_documents_attestation, name='archive_documents_attestation'),
+    path('supprimer_bulletin_directeur', views.supprimer_bulletin_directeur, name='supprimer_bulletin_directeur'),
     
 
 ]

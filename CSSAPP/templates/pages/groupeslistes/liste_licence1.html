@@ -309,7 +309,18 @@
                 </div>
               </div>
             {% endif %}
-              <div class="table-responsive overflow-y">
+            <div class="container mt-6">
+                <div class="row">
+                    <div class="col-md-6 offset-md-6">
+                      <form class="form-inline my-2 my-lg-0" method="GET">
+                        <input id="searchBar" class="form-control mr-sm-2" type="search" placeholder="Rechercher *Nom , *Prenoms " aria-label="Rechercher" name="q">
+                        {% comment %} <input class="form-control mr-sm-2" type="date" name="date" placeholder="Date"> {% endcomment %}
+                        {% comment %} <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button> {% endcomment %}
+                    </form>
+                    
+                    </div>
+                </div>
+              <div class="table-responsive">
                 {% if etudiants_licence %}
                     <table class="table">
                         <thead class="thead-dark">
@@ -422,11 +433,37 @@
                     <p>Aucune donnée correspondante.</p>
                 {% endif %}
               </div>
+                <p id="noResultsMessage" style="display: none; left : 50px;">Aucun donnée correspondante.</p>
+
             </div>
-                <a href="" class="btn btn-warning"> <i class="fa fa-print-o"></i>Imprimer la liste</a>
           </div>
+                <a href="" class="btn btn-warning"> <i class="fa fa-print-o"></i>Imprimer la liste</a>
           
-        
+          
+                {% for notification in notifications_non_lues %}
+                <!-- Modal -->
+                  <div class="modal fade" id="notificationModal{{ notification.id }}" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <h5 class="modal-title" id="notificationModalLabel">{{ notification.titre }}</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                              <div class="modal-body">
+                                  <p id="contenu">{{ notification.contenu }}</p>
+                              </div>
+                              <div class="modal-footer">
+                                  {% comment %} <button type="button" class="btn btn-primary" onclick="accepterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Accepter {{notification.expediteur.id}}</button> {% endcomment %}
+                                  {% comment %} <button type="button" class="btn btn-danger" onclick="rejeterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Rejeter</button> {% endcomment %}
+                                  <button type="button" class="btn btn-warning" onclick="compriS({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Compris</button>
+              
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                {% endfor %}
 
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
@@ -608,6 +645,48 @@
     }
   </script>
     
+  <script>
+
+    function removeAccents(str) {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+
+  $(document).ready(function() {
+    $('#searchBar').on('keyup', function() {
+        var searchText = removeAccents($(this).val().toLowerCase());
+        var searchTerms = searchText.split(/\s+/);
+        var anyMatchFound = false; 
+        $('.table-responsive').each(function() {
+            var container = $(this);
+            container.find('tbody tr').each(function() {
+                var rowText = removeAccents($(this).text().toLowerCase());
+                var rowMatches = true;
+
+                $.each(searchTerms, function(index, term) {
+                    if (rowText.indexOf(term) === -1) {
+                        rowMatches = false;
+                        return false;
+                    }
+                });
+
+                if (rowMatches) {
+                    $(this).show();
+                    anyMatchFound = true;
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        if (!anyMatchFound) {
+            $('#noResultsMessage').show();
+        } else {
+            $('#noResultsMessage').hide();
+        }
+    });
+});
+
+</script>
 
   </body>
 </html>

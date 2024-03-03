@@ -3,16 +3,9 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>AKILI - CSS</title>
+    <title>AKILI - ETUDIANT</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
-
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
     <!-- Bootstrap 3.3.2 -->
-    <!-- Inclure la bibliothèque Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <link href="{% static 'assets_dash/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />    
     <!-- FontAwesome 4.3.0 -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -137,25 +130,26 @@
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <img src="{{ imagesprofiles }}" class="user-image" alt="User Image"/>
-                  <span class="hidden-xs">{{ nom }}</span>
+                  <img src="{{ user_data.imagesprofiles }}" class="user-image" alt="User Image"/>
+                  <span class="hidden-xs">{{ user_data.nom }}</span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
-                    <img src="{{ imagesprofiles }}" class="img-circle" alt="User Image" />
+                    <img src="{{ user_data.imagesprofiles }}" class="img-circle" alt="User Image" />
                     <p>
-                      {{ nom }} - {{role}}
+                      {{ user_data.nom }} - {{user_data.role}}
+                      <small>Numero d'identification : {{user_data.Identification}}</small>
+
                     </p>
+                   
                   </li>
                   <!-- Menu Body -->
-                  <li class="user-body">
                  
-                  </li>
                   <!-- Menu Footer-->
                   <li class="user-footer">
                     <div class="pull-left">
-                      <a href="{% url 'Profiles_css' %}" class="btn btn-default btn-flat">Profile</a>
+                      <a href="{% url 'Profiles_etudiant' %}" class="btn btn-default btn-flat">Profile</a>
                     </div>
                     <div class="pull-right">
                       <a href="{% url 'deconnexion' %}" class="btn btn-default btn-flat">Deconnexion</a>
@@ -174,16 +168,24 @@
           <!-- Sidebar user panel -->
           <div class="user-panel">
             <div class="pull-left image">
-              <img src="{{ imagesprofiles }}" class="img-circle" alt="User Image" />
+              <img src="{{ user_data.imagesprofiles }}" class="img-circle" alt="User Image" />
             </div>
             <div class="pull-left info">
-              <p>{{nom}}</p>
+              <p>{{user_data.nom}}</p>
 
               <a href="#"><i class="fa fa-circle text-success"></i> En Ligne</a>
+             
             </div>
           </div>
           <!-- search form -->
-          
+          <form action="#" method="get" class="sidebar-form">
+            <div class="input-group">
+              <input type="text" name="q" class="form-control" placeholder="Search..."/>
+              <span class="input-group-btn">
+                <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+              </span>
+            </div>
+          </form>
           <!-- /.search form -->
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
@@ -193,33 +195,17 @@
                 <i class="fa fa-dashboard"></i> <span>Tableau de Bord</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="{% url 'cssWork' %}"><i class="fa fa-circle-o"></i>Accueil</a></li>
-              </ul>
-            </li>
-            <li class="active treeview">
-              <a href="#">
-                <i class="fa fa-pie-chart"></i>
-                <span>Statistiques</span>
-                <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="{% url 'stat_morris' %}"><i class="fa fa-circle-o"></i>Demandes</a></li>
-                <li><a class="active" href="{% url 'taux_etudiants' %}"><i class="fa fa-circle-o"></i> Etudiants</a></li>
-                {% comment %} <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li> {% endcomment %}
+                <li><a href="{% url 'student_space' %}"><i class="fa fa-circle-o"></i>Accueil</a></li>
               </ul>
             </li>
             <li class="treeview">
               <a href="#">
                 <i class="fa fa-laptop"></i>
-                <span>Centre de Vision</span>
+                <span>Zone de posts</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                {% comment %} <li><a href="pages/UI/general.html"><i class="fa fa-circle-o"></i>LICENCE-INFO</a></li>
-                <li><a href="pages/UI/icons.html"><i class="fa fa-circle-o"></i> DUT-INFO</a></li>
-                <li><a href="pages/UI/buttons.html"><i class="fa fa-circle-o"></i> LICENCE-AP</a></li>
-                <li><a href="pages/UI/sliders.html"><i class="fa fa-circle-o"></i> DUT-AP</a></li> {% endcomment %}
-                <li><a  href="{% url 'liste_etudiant_classifications' %}"><i class="fa fa-circle-o"></i> Listes des ETudiants</a></li>
+                <li><a href="{% url 'poster_memoire' %}"><i class="fa fa-circle-o"></i>Travail de recherche</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -228,8 +214,17 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="{% url 'Profiles_css' %}"><i class="fa fa-circle-o"></i>Voir Profile</a></li>
-                <li><a href="{% url 'update_profile' %}"><i class="fa fa-circle-o"></i>Modifier Profile</a></li>
+                <li><a href="{% url 'Profiles_etudiant' %}"><i class="fa fa-circle-o"></i>Voir Profile</a></li>
+                <li><a href="{% url 'profile_details_etudiant' %}"><i class="fa fa-circle-o"></i>Modifier Profile</a></li>
+              </ul>
+            </li>
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-folder"></i> <span>Formuler une Demande</span>
+                <i class="fa fa-angle-left pull-right"></i>
+              </a>
+              <ul class="treeview-menu">
+                <li><a href="{% url 'creer_demande' %}"><i class="fa fa-circle-o"></i>effectuer une demande</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -238,21 +233,18 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="{% url 'list_demandes' %}"><i class="fa fa-circle-o"></i>Attestations</a></li>
-                <li><a href="{% url 'list_bulletin_demandes' %}"><i class="fa fa-circle-o"></i>Bulletins</a></li>
-                <li><a href="{% url 'historique_demandes' %}"><i class="fa fa-circle-o"></i>Historiques</a></li>
-
+                <li><a href="{% url 'registre_demande' %}"><i class="fa fa-circle-o"></i>Listes</a></li>
               </ul>
             </li>
            
-            <li class="treeview">
+            <li class="active treeview">
               <a href="#">
-                <i class="fa fa-folder"></i> <span>Elements adminstratifs</span>
+                <i class="fa fa-table"></i> <span>Elements administratifs</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="{% url 'liste_Attestations' %}"><i class="fa fa-circle-o"></i>Classeur attestations</a></li>
-                <li><a href="{% url 'liste_bulletinsf' %}"><i class="fa fa-circle-o"></i> Classeur Bulletins</a></li>
+                <li class="active"><a href=""><i class="fa fa-circle-o"></i>Mes Attestations</a></li>
+                <li><a href="{% url 'registre_bulletins' %}"><i class="fa fa-circle-o"></i>Mes Bulletins</a></li>
               </ul>
             </li>
             <li><a href="{% url 'deconnexion' %}"><i class="fa fa-sign-out"></i> Se Deconnecter</a></li>
@@ -268,66 +260,76 @@
         <section class="content-header">
           <h1>
             Tableau De Bord
-            <small>Panneau de Control | {{role|upper}}</small>
+            <small>Panneau de Control | {{user_data.role|upper}} </small>
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
             <li class="active">Tableau de Bord</li>
           </ol>
         </section>
-        <section class="content">
 
+        <!-- Main content -->
+        <section class="content">
+          <!-- Small boxes (Stat box) -->
           <div class="row">
-            <h3>Mes Statistiques - Etudiants</h3>
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="container">
+                <div class="inner">
+                  <h1>Mes Attestations</h1>
+            
+                </div>
+              </div>
+            </div>
           </div><!-- /.row -->
-          {% comment %} <div class="row" style="box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1); /* Ombre initiale */" id="myfirstchart" style="height: 250px;"></div> {% endcomment %}
-          
-          {% comment %} <div class="row" style="box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);" id="graph" style="height: 250px;"></div> {% endcomment %}
-          <canvas id="graph" style="height: 250px;"></canvas>
+
           <style>
-              .horizontal-align {
-                  display: flex;
-                  flex-direction: row;
-                  margin-top: 10px;
-              }
-          
-              .horizontal-align p {
-                  margin-right: 10px;
-              }
-          </style>
-          
-          <div class="horizontal-align">
-              <p>Licence Info</p>
-              <p>Licence Admin</p>
-              <p>DUT Info</p>
-              <p>DUT Admin</p>
-          </div>
-          {% for notification in notifications_non_lues %}
-          <!-- Modal -->
-            <div class="modal fade" id="notificationModal{{ notification.id }}" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="notificationModalLabel">{{ notification.titre }}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p id="contenu">{{ notification.contenu }}</p>
-                        </div>
-                        <div class="modal-footer">
-                            {% comment %} <button type="button" class="btn btn-primary" onclick="accepterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Accepter {{notification.expediteur.id}}</button> {% endcomment %}
-                            {% comment %} <button type="button" class="btn btn-danger" onclick="rejeterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Rejeter</button> {% endcomment %}
-                            <button type="button" class="btn btn-warning" onclick="compriS({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Compris</button>
+            .ombre-te:hover {
+                box-shadow: 8px 15px 20px rgba(0, 0, 0, 0.2); /* Définit l'ombre au survol */
+                transition: box-shadow 0.3s ease; /* Ajoute une transition pour une animation fluide */
+            }
+            .ombre-te {
+              height: 300px;
+              width:400px;
+              padding:15px;
+              border: 2px solid #007bff;
+              border-radius: 5px;
+              /*background-color: #007bff; Couleur bleue */
+              /*filter: blur(1px);  Effet de flou */
+            }
+        </style>
         
-                        </div>
+          <!-- Main row -->
+          {% if attestations %}
+          <div class="row">
+            {% for attestation in attestations %}
+            <div class="col-md-4 mb-4">
+                <div class="card ombre-te">
+                    <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.02VL_2TJCAoHIwlPpwsGuQHaHm%26pid%3DApi%26h%3D160&f=1&ipt=f50affa753aa12dcaf7bd7e211613bdd9504b437f74aa5863ba1dffdf023bc5e&ipo=images" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Titre de la carte</h5>
+                        <p class="card-text">Description rapide du contenu de la carte.</p>
+                        <a href="{{ attestation.file.url }}" target="_blank" class="btn btn-primary">Visualiser PDF</a>
+                        <a href="{{ attestation.file.url }}" download="attestation_for{{attestation.etudiant}}.pdf" class="btn btn-primary">Télécharger PDF</a>
+
                     </div>
                 </div>
             </div>
-          {% endfor %}
+            
+            {% endfor %}
+           
+          </div>
+          <div class="container" style="padding:25px;">
+            <a href="#" class="btn btn-warning" >Archiver</a>
+          </div>
+          {% else %}
+            <p style="padding: 52px;">Pas de Attestations ! Veuillez patienter la fin de traitemant de vos requetes  Soit passez en presentiel. </p>
+          {% endif %}
+         
+     
         
-        </section>
+
+        </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
       <footer class="main-footer">
         <div class="pull-right hidden-xs">
@@ -373,51 +375,5 @@
 
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="{% static 'assets_dash/dist/js/pages/dashboard.js' %}" type="text/javascript"></script>
-    <script>
-      var ctx = document.getElementById('graph').getContext('2d');
-      var myChart = new Chart(ctx, {
-          type: 'bar',
-          data: {
-              labels: ['Licence Info', 'Licence Admin', 'DUT Info', 'DUT Admin'],
-              datasets: [{
-                  data: [{{ licence_info_taux|default:0 }}, {{ licence_admin_taux|default:0 }}, {{ dut_info_taux|default:0 }}, {{ dut_admin_taux|default:0 }}],
-                  backgroundColor: ['#5cb85c', '#f0ad4e', '#d9534f', '#428bca']
-              }]
-          },
-          options: {
-              scales: {
-                  y: {
-                      beginAtZero: true
-                  }
-              }
-          }
-      });
-    </script>
-  
-    <script>
-      
-      function compriS(notificationId) {
-        var url = "{% url 'marquer_notification_lue' 0 %}".replace('0', notificationId);
-        $.ajax({
-          type: 'POST',
-          url: url,
-          data: {
-              'action': 'compris',
-              'csrfmiddlewaretoken': '{{ csrf_token }}',
-          },
-          success: function (data) {
-              console.log('reponse compris');
-              // Logique pour créer une nouvelle notification à l'expéditeur
-              $('#notificationModal' + notificationId).modal('hide');
-          },
-          error: function (error) {
-              console.error('Erreur lors de la comprehension  de la reponse:', error);
-              console.log('Erreur détaillée:', error.responseText);
-          }
-      });
-        
-      }
-    </script>
-  
   </body>
 </html>

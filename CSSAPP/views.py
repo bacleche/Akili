@@ -21,15 +21,21 @@ from xhtml2pdf import pisa
 # Create your views here.
 
 def cssWork(request):
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
     return render(request, 'pages/index-css.html', user_data)
 
 def Profiles_css(request):
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
     return render(request, 'pages/profile-css.html', user_data)
 
 
 def profile_details(request):
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
     user_data['civilite_choices'] = CSS._meta.get_field('civilite').choices
     return render(request, 'pages/profile-modify.html', user_data)
@@ -95,6 +101,8 @@ def mis_a_jour_css(request):
 
 def list_demandes(request):
     user = request.user
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
 
     attestation_types = ['attestation_frequentation', 'attestation_reussite']  # Adjust these based on your actual types
@@ -116,6 +124,8 @@ def list_demandes(request):
 
 def list_bulletin_demandes(request):
     user = request.user
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
   
     if user_data.get('role') == 'Etudiant':
@@ -275,6 +285,8 @@ def recherche_demande_par_etudiant_attestations(request):
 
 
 def liste_etudiant_classifications(request):
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
     return render(request, 'pages/liste_etudiant_classifications.html', user_data)
 
@@ -290,7 +302,8 @@ Debut  Fonction liste ----------------------------------------------------------
 
 
 def liste_etudiants_licence(request):
-    
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
     etudiants_licence = Etudiant.objects.filter(cycle='licence', niveaux='licence1', filiere='informatique', statut='En Fréquentation')
@@ -300,7 +313,8 @@ def liste_etudiants_licence(request):
 
 
 def liste_etudiants_licence_info2(request):
-    
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
     etudiants_licence = Etudiant.objects.filter(cycle='licence', niveaux='licence2',  filiere='informatique', statut='En Fréquentation')
@@ -309,7 +323,8 @@ def liste_etudiants_licence_info2(request):
 
 
 def liste_etudiants_licence_info3(request):
-    
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
     etudiants_licence = Etudiant.objects.filter(cycle='licence', niveaux='licence3' , filiere='informatique',  statut='En Fréquentation')
@@ -322,7 +337,8 @@ def liste_etudiants_licence_info3(request):
 #-----------------DUT INFORMATIQUE- --------------------------------------
 
 def liste_etudiants_dut_info1(request):
-    
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
     etudiants_dut = Etudiant.objects.filter(cycle='dut', niveaux='dut1' , filiere='informatique', statut='En Fréquentation')
@@ -331,7 +347,8 @@ def liste_etudiants_dut_info1(request):
 
 
 def liste_etudiants_dut_info2(request):
-    
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
     etudiants_dut = Etudiant.objects.filter(cycle='dut', niveaux='dut2' ,  filiere='informatique', statut='En Fréquentation')
@@ -343,7 +360,8 @@ def liste_etudiants_dut_info2(request):
 #-----------------DUT ADMINISTRATION- --------------------------------------
 
 def liste_etudiants_administration_dut1(request):
-    
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
     etudiants_dut = Etudiant.objects.filter(cycle='dut', niveaux='dut2' ,  filiere='administration', statut='En Fréquentation')
@@ -353,7 +371,8 @@ def liste_etudiants_administration_dut1(request):
 
 
 def liste_etudiants_administration_dut2(request):
-    
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
     etudiants_dut = Etudiant.objects.filter(cycle='dut', niveaux='dut2' ,  filiere='administration', statut='En Fréquentation')
@@ -368,17 +387,19 @@ def liste_etudiants_administration_dut2(request):
 
 
 def liste_etudiants_licence_admin1(request):
-    
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
     etudiants_licence = Etudiant.objects.filter(cycle='licence', niveaux='licence1', filiere='administration', statut='En Fréquentation')
 
-    return render(request, 'pages/groupeslistes/liste_licence_admin1.html', {'etudiants_licence': etudiants_licence , 'user_data': user_data})
+    return render(request, 'pages/groupeslistes/liste_etudiants_licence_admin1.html', {'etudiants_licence': etudiants_licence , 'user_data': user_data})
 
 
 
 def liste_etudiants_licence_admin2(request):
-    
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
     etudiants_licence = Etudiant.objects.filter(cycle='licence', niveaux='licence2',  filiere='administration', statut='En Fréquentation')
@@ -387,7 +408,8 @@ def liste_etudiants_licence_admin2(request):
 
 
 def liste_etudiants_licence_admin3(request):
-    
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
     etudiants_licence = Etudiant.objects.filter(cycle='licence', niveaux='licence3' , filiere='administration',  statut='En Fréquentation')
@@ -530,6 +552,8 @@ def changer_etat_demande_bulletin(request, demande_id, action):
 
 # views.py
 def historique_demandes(request):
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
 
     # Récupérez toutes les demandes depuis la base de données (ajustez selon votre modèle)
@@ -571,6 +595,8 @@ def historique_demandes(request):
 
 
 def stat_morris(request):
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
     
     demandes_acceptees = Demande.objects.filter(etat='Acceptée').count()
@@ -593,6 +619,8 @@ def stat_morris(request):
 
 
 def taux_etudiants(request):
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
     licence_info_taux = Etudiant.objects.filter(cycle__startswith='licence', filiere='informatique').count()
@@ -644,7 +672,8 @@ def taux_etudiants(request):
 
 
 def liste_Attestations(request):
-    
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
     attestations = Attestation.objects.filter(is_signed=True, is_transfer_css=True)
@@ -672,7 +701,8 @@ def liste_bulletinsf(request):
     
     # Récupérer les objets attestations pour la page donnée
     page_obj = paginator.get_page(page_number)
-
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     return render(request, 'liste_documents/bulletins.html', {'bulletins': bulletins , 'user_data': user_data, 'page_obj': page_obj})
 
 
@@ -818,7 +848,6 @@ def imprimer_bulletins_css_doc(request):
     return response
 
 #-------------FIn
-
 
 
 def custom_logout(request):

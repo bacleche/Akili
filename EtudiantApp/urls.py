@@ -14,5 +14,11 @@ urlpatterns = [
     path('imprimer_demande/<int:demande_id>/', views.imprimer_demande, name='imprimer_demande'),
     path('supprimer_demande/<int:demande_id>/', views.supprimer_demande, name='supprimer_demande'),
     path('modifier_demande/<int:demande_id>/', views.modifier_demande, name='modifier_demande'),
+    path('registre_bulletins', views.registre_bulletins, name='registre_bulletins'),
+    path('registre_attestations', views.registre_attestations, name='registre_attestations'),
+    path('archive_documentsbulletins', views.archive_documentsbulletins, name='archive_documentsbulletins'),
+    path('recherche_demande_de_etudiant', views.recherche_demande_de_etudiant, name='recherche_demande_de_etudiant'),
+
+
 
 ]

@@ -287,10 +287,10 @@
                   <!-- Menu Footer-->
                   <li class="user-footer">
                     <div class="pull-left">
-                      <a href="#" class="btn btn-default btn-flat">Profile</a>
+                      <a href="{% url 'Profiles_etudiant' %}" class="btn btn-default btn-flat">Profile</a>
                     </div>
                     <div class="pull-right">
-                      <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                      <a href="{% url 'deconnexion' %}" class="btn btn-default btn-flat">Deconnexion</a>
                     </div>
                   </li>
                 </ul>
@@ -328,12 +328,12 @@
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class="header">MAIN NAVIGATION</li>
-            <li class="active treeview">
+            <li class="treeview">
               <a href="#">
                 <i class="fa fa-dashboard"></i> <span>Tableau de Bord</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li class="active"><a href="{% url 'student_space' %}"><i class="fa fa-circle-o"></i>Accueil</a></li>
+                <li><a href="{% url 'student_space' %}"><i class="fa fa-circle-o"></i>Accueil</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -365,30 +365,23 @@
                 <li><a href="{% url 'creer_demande' %}"><i class="fa fa-circle-o"></i>effectuer une demande</a></li>
               </ul>
             </li>
-            <li class="treeview">
+            <li class="active treeview">
               <a href="#">
                 <i class="fa fa-table"></i> <span>Registre de demandes</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="{% url 'registre_demande' %}"><i class="fa fa-circle-o"></i>Listes</a></li>
+                <li class="active"><a href="{% url 'registre_demande' %}"><i class="fa fa-circle-o"></i>Listes</a></li>
               </ul>
             </li>
            
-            <li>
-              <a href="pages/mailbox/mailbox.html">
-                <i class="fa fa-envelope"></i> <span>Messagerie</span>
-                <small class="label pull-right bg-yellow">12</small>
-              </a>
-            </li>
-            
             <li class="treeview">
               <a href="#">
-                <i class="fa fa-share"></i> <span>Transfert Administratif</span>
+                <i class="fa fa-table"></i> <span>Elements administratifs</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="#"><i class="fa fa-circle-o"></i>La scolarité</a></li>
+                <li><a href=""><i class="fa fa-circle-o"></i>Mes supports</a></li>
               </ul>
             </li>
             <li><a href="{% url 'deconnexion' %}"><i class="fa fa-sign-out"></i> Se Deconnecter</a></li>

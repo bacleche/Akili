@@ -19,7 +19,7 @@
     <!-- iCheck -->
     <link href="{% static 'assets_dash/plugins/iCheck/flat/blue.css' %}" rel="stylesheet" type="text/css" />
     <!-- Morris chart -->
-    <link href="{% static 'assets_dash/plugins/morris/morris.css' %}" rel="stylesheet" type="text/css" />
+    {% comment %} <link href="{% static 'assets_dash/plugins/morris/morris.css' %}" rel="stylesheet" type="text/css" /> {% endcomment %}
     <!-- jvectormap -->
     <link href="{% static 'assets_dash/plugins/jvectormap/jquery-jvectormap-1.2.2.css' %}" rel="stylesheet" type="text/css" />
     <!-- Date Picker -->
@@ -32,27 +32,37 @@
 
   </head>
   <style>
-    .main-footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
+    .content-wrapper {
+      min-height: 100vh; /* ou une hauteur minimale appropriée */
   }
-  .content-wrapper {
-    min-height: 100vh; /* ou une hauteur minimale appropriée */
-}
-
-    #logo-img {
-      width: 300px;  /* Largeur souhaitée */
-      height: 43px;  /* Hauteur automatique pour maintenir le ratio d'aspect */
+  
+      #logo-img {
+        width: 200px;  /* Largeur souhaitée */
+        height: 33px;  /* Hauteur automatique pour maintenir le ratio d'aspect */
+    }
+  
+    @media (max-width: 767px) {
+      /* Styles spécifiques aux petits écrans ici */
+      .btn-block {
+         width: 100%;
+      }
+   }
+  
+    .responsive-image {
+      max-width: 100%; /* L'image ne sera jamais plus large que son conteneur */
+      height: auto; /* L'hauteur est calculée proportionnellement à la largeur */
+      display: block; /* Pour enlever l'espace sous l'image */
+      margin: 0 auto; 
   }
-
-  .responsive-image {
-    max-width: 100%; /* L'image ne sera jamais plus large que son conteneur */
-    height: auto; /* L'hauteur est calculée proportionnellement à la largeur */
-    display: block; /* Pour enlever l'espace sous l'image */
-    margin: 0 auto; 
-}
-
+  
+  .error-message {
+    color: red;
+  }
+  
+  .success-message {
+    color: green;
+  }
+  
 
   </style>
   <body class="skin-blue">
@@ -69,194 +79,68 @@
           </a>
           <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
-              <!-- Messages: style can be found in dropdown.less-->
-              <li class="dropdown messages-menu">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <i class="fa fa-envelope-o"></i>
-                  <span class="label label-success">4</span>
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="header">You have 4 messages</li>
-                  <li>
-                    <!-- inner menu: contains the actual data -->
-                    <ul class="menu">
-                      <li><!-- start message -->
-                        <a href="#">
-                          <div class="pull-left">
-                            <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
-                          </div>
-                          <h4>
-                            Support Team
-                            <small><i class="fa fa-clock-o"></i> 5 mins</small>
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li><!-- end message -->
-                      <li>
-                        <a href="#">
-                          <div class="pull-left">
-                            <img src="dist/img/user3-128x128.jpg" class="img-circle" alt="user image"/>
-                          </div>
-                          <h4>
-                            AdminLTE Design Team
-                            <small><i class="fa fa-clock-o"></i> 2 hours</small>
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <div class="pull-left">
-                            <img src="dist/img/user4-128x128.jpg" class="img-circle" alt="user image"/>
-                          </div>
-                          <h4>
-                            Developers
-                            <small><i class="fa fa-clock-o"></i> Today</small>
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <div class="pull-left">
-                            <img src="dist/img/user3-128x128.jpg" class="img-circle" alt="user image"/>
-                          </div>
-                          <h4>
-                            Sales Department
-                            <small><i class="fa fa-clock-o"></i> Yesterday</small>
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <div class="pull-left">
-                            <img src="dist/img/user4-128x128.jpg" class="img-circle" alt="user image"/>
-                          </div>
-                          <h4>
-                            Reviewers
-                            <small><i class="fa fa-clock-o"></i> 2 days</small>
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li class="footer"><a href="#">See All Messages</a></li>
-                </ul>
-              </li>
-              <!-- Notifications: style can be found in dropdown.less -->
               <li class="dropdown notifications-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <i class="fa fa-bell-o"></i>
-                  <span class="label label-warning">10</span>
+                    <i class="fa fa-envelope"></i> <!-- Icône par défaut -->
+                    <!-- Ajoutez d'autres styles ou classes CSS pour l'icône ici -->
+                    {% if notifications_non_lues %}
+                        <span class="badge">{{ notifications_non_lues.count }}</span>
+                    {% endif %}
                 </a>
                 <ul class="dropdown-menu">
-                  <li class="header">You have 10 notifications</li>
-                  <li>
-                    <!-- inner menu: contains the actual data -->
-                    <ul class="menu">
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the page and may cause design problems
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-users text-red"></i> 5 new members joined
-                        </a>
-                      </li>
-
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-user text-red"></i> You changed your username
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li class="footer"><a href="#">View all</a></li>
+                    <li class="header">
+                        {% if notifications_non_lues %}
+                            You have {{ notifications_non_lues.count }} new notifications
+                        {% else %}
+                            No notifications
+                        {% endif %}
+                    </li>
+                    <li>
+                        <!-- inner menu: contains the actual data -->
+                        <ul class="menu">
+                            {% for notification in notifications_non_lues %}
+                                <li class="text-center"><!-- start notification -->
+                                    <a href="#" data-toggle="modal" data-target="#notificationModal{{ notification.id }}">
+                                        <div class="pull-left">
+                                            <i class="fa fa-users text-aqua"></i>
+                                        </div>
+                                        <div class="pull-left">
+                                            <h4>
+                                                {{ notification.titre }}
+                                                <br>
+                                                <small><i class="fa fa-clock-o"></i> {{ notification.date_creation }}</small>
+                                            </h4>
+                                            <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ notification.contenu }}</p>
+                                        </div>
+                                    </a>
+                                </li><!-- end notification -->
+                            {% endfor %}
+                            {% for notification in notifications_lues %}
+                                <li class="text-center"><!-- start notification -->
+                                    <a href="#">
+                                        <div class="pull-left">
+                                            <i class="fa fa-users text-aqua"></i>
+                                        </div>
+                                        <div class="pull-left">
+                                            <h4>
+                                                {{ notification.titre }}
+                                                <br>
+                                                <small><i class="fa fa-clock-o"></i> {{ notification.date_creation }}</small>
+                                            </h4>
+                                            <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ notification.contenu }}</p>
+                                        </div>
+                                    </a>
+                                </li><!-- end notification -->
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="footer"><a href="#">See All Notifications</a></li>
                 </ul>
               </li>
-              <!-- Tasks: style can be found in dropdown.less -->
-              <li class="dropdown tasks-menu">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <i class="fa fa-flag-o"></i>
-                  <span class="label label-danger">9</span>
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="header">You have 9 tasks</li>
-                  <li>
-                    <!-- inner menu: contains the actual data -->
-                    <ul class="menu">
-                      <li><!-- Task item -->
-                        <a href="#">
-                          <h3>
-                            Design some buttons
-                            <small class="pull-right">20%</small>
-                          </h3>
-                          <div class="progress xs">
-                            <div class="progress-bar progress-bar-aqua" style="width: 20%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                              <span class="sr-only">20% Complete</span>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end task item -->
-                      <li><!-- Task item -->
-                        <a href="#">
-                          <h3>
-                            Create a nice theme
-                            <small class="pull-right">40%</small>
-                          </h3>
-                          <div class="progress xs">
-                            <div class="progress-bar progress-bar-green" style="width: 40%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                              <span class="sr-only">40% Complete</span>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end task item -->
-                      <li><!-- Task item -->
-                        <a href="#">
-                          <h3>
-                            Some task I need to do
-                            <small class="pull-right">60%</small>
-                          </h3>
-                          <div class="progress xs">
-                            <div class="progress-bar progress-bar-red" style="width: 60%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                              <span class="sr-only">60% Complete</span>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end task item -->
-                      <li><!-- Task item -->
-                        <a href="#">
-                          <h3>
-                            Make beautiful transitions
-                            <small class="pull-right">80%</small>
-                          </h3>
-                          <div class="progress xs">
-                            <div class="progress-bar progress-bar-yellow" style="width: 80%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                              <span class="sr-only">80% Complete</span>
-                            </div>
-                          </div>
-                        </a>
-                      </li><!-- end task item -->
-                    </ul>
-                  </li>
-                  <li class="footer">
-                    <a href="#">View all tasks</a>
-                  </li>
-                </ul>
-              </li>
+              
+              
+              
+              
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -268,29 +152,20 @@
                   <li class="user-header">
                     <img src="{{ user_data.imagesprofiles }}" class="img-circle" alt="User Image" />
                     <p>
-                      {{ user_data.nom }} - {{user_data.role |upper}}
-                      <small>Numero d'identification : {{user_data.Identification}}</small>
+                      {{ user_data.nom }} - {{user_data.role}}
+                      <small>Numero d'identification : {{Iuser_data.dentification}}</small>
                     </p>
+                   
                   </li>
                   <!-- Menu Body -->
-                  <li class="user-body">
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Followers</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Sales</a>
-                    </div>
-                    <div class="col-xs-4 text-center">
-                      <a href="#">Friends</a>
-                    </div>
-                  </li>
+                 
                   <!-- Menu Footer-->
                   <li class="user-footer">
                     <div class="pull-left">
-                      <a href="#" class="btn btn-default btn-flat">Profile</a>
+                      <a href="{% url 'Profiles_etudiant' %}" class="btn btn-default btn-flat">Profile</a>
                     </div>
                     <div class="pull-right">
-                      <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                      <a href="{% url 'deconnexion' %}" class="btn btn-default btn-flat">Deconnexion</a>
                     </div>
                   </li>
                 </ul>
@@ -328,12 +203,12 @@
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class="header">MAIN NAVIGATION</li>
-            <li class="active treeview">
+            <li class="treeview">
               <a href="#">
                 <i class="fa fa-dashboard"></i> <span>Tableau de Bord</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li class="active"><a href="{% url 'student_space' %}"><i class="fa fa-circle-o"></i>Accueil</a></li>
+                <li><a href="{% url 'student_space' %}"><i class="fa fa-circle-o"></i>Accueil</a></li>
               </ul>
             </li>
             <li class="treeview">
@@ -365,30 +240,25 @@
                 <li><a href="{% url 'creer_demande' %}"><i class="fa fa-circle-o"></i>effectuer une demande</a></li>
               </ul>
             </li>
-            <li class="treeview">
+            <li class="active treeview">
               <a href="#">
                 <i class="fa fa-table"></i> <span>Registre de demandes</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="{% url 'registre_demande' %}"><i class="fa fa-circle-o"></i>Listes</a></li>
+                <li class="active"><a href="{% url 'registre_demande' %}"><i class="fa fa-circle-o"></i>Listes</a></li>
               </ul>
             </li>
            
-            <li>
-              <a href="pages/mailbox/mailbox.html">
-                <i class="fa fa-envelope"></i> <span>Messagerie</span>
-                <small class="label pull-right bg-yellow">12</small>
-              </a>
-            </li>
-            
             <li class="treeview">
               <a href="#">
-                <i class="fa fa-share"></i> <span>Transfert Administratif</span>
+                <i class="fa fa-table"></i> <span>Elements administratifs</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="#"><i class="fa fa-circle-o"></i>La scolarité</a></li>
+
+                <li><a href=""><i class="fa fa-circle-o"></i>Mes Attestations</a></li>
+                <li><a href="{% url 'registre_bulletins' %}"><i class="fa fa-circle-o"></i>Mes Bulletins</a></li>
               </ul>
             </li>
             <li><a href="{% url 'deconnexion' %}"><i class="fa fa-sign-out"></i> Se Deconnecter</a></li>
@@ -417,87 +287,66 @@
           <!-- Small boxes (Stat box) -->
           <div class="row">
             <div class="col-lg-3 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-aqua">
-                <div class="inner">
-                  <h3>150</h3>
-                  <p>New Orders</p>
-                </div>
-                <div class="icon">
-                  <i class="ion ion-bag"></i>
-                </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-              </div>
+              <h1>Mes Demandes</h1>
             </div><!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-green">
-                <div class="inner">
-                  <h3>53<sup style="font-size: 20px">%</sup></h3>
-                  <p>Bounce Rate</p>
-                </div>
-                <div class="icon">
-                  <i class="ion ion-stats-bars"></i>
-                </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-              </div>
-            </div><!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-yellow">
-                <div class="inner">
-                  <h3>44</h3>
-                  <p>User Registrations</p>
-                </div>
-                <div class="icon">
-                  <i class="ion ion-person-add"></i>
-                </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-              </div>
-            </div><!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
-              <!-- small box -->
-              <div class="small-box bg-red">
-                <div class="inner">
-                  <h3>65</h3>
-                  <p>Unique Visitors</p>
-                </div>
-                <div class="icon">
-                  <i class="ion ion-pie-graph"></i>
-                </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
-              </div>
-            </div><!-- ./col -->
+
           </div><!-- /.row -->
-          <!-- Main row -->
-          <div class="table-responsive">
-            <table class="table">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Date de Demande</th>
-                        <th scope="col">Responsable </th>
-                        <th scope="col">Action (s)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                  {% for demande in demandes %}
+  
+
+        <div class="container-fluid">
+          <div class="row">
+              <div class="col-md-6 offset-md-6">
+                <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'recherche_demande_de_etudiant' %}">
+                  {% comment %} <input  id="searchBar" class="form-control mr-sm-2" type="search" placeholder="Rechercher object" aria-label="Rechercher" name="q"> {% endcomment %}
+                  <input  id="searchBar" class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Rechercher" name="q">
+                  {% comment %} <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="startSpeechRecognition()">Recherche vocale</button> {% endcomment %}
+                  <input  class="form-control mr-sm-2" type="date" name="date" placeholder="Date">
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
+                </form>
+              
+              </div>
+          </div>
+          <div class="table-responsive overflow-y">
+            {% if demandes %}
+                <table class="table">
+                    <thead class="thead-dark">
                       <tr>
-                          <th scope="row"></th>
-                          <td>{{ demande.date_poste_demande }}</td>
-                          <td>{{ demande.identite_receptioniste }}</td>
-                          <td>
-                              <a href="{% url 'supprimer_demande' demande_id=demande.id %}">Supprimer</a> |
-                              <a href="{% url 'modifier_demande' demande_id=demande.id %}">Modifier</a> |
-                              <a href="{% url 'imprimer_demande' demande_id=demande.id %}">Imprimer</a>
-                          </td>
+                          <th scope="col">#</th>
+                          <th scope="col">Moi</th>
+                          <th scope="col">Date de Demande</th>
+                          <th scope="col">Objet de Demande</th>
+                          <th scope="col">Responsable </th>
+                          <th scope="col">Action (s)</th>
                       </tr>
-                  {% endfor %}
-              </tbody>
-            </table>
+                  </thead>
+                    <tbody>
+                        
+                  {% for demande in demandes %}
+                  <tr>
+                      <th scope="row"></th>
+                      <td>{{ demande.etudiant }}</td>
+                      <td>{{ demande.date_poste_demande }}</td>
+                      <td>{{ demande.objet_demande }}</td>
+                      <td>{{ demande.identite_receptioniste }}</td>
+                      <td>
+                          <a class="btn btn-danger" href="{% url 'supprimer_demande' demande_id=demande.id %}">Supprimer</a> |
+                          <a class="btn btn-warning" href="{% url 'modifier_demande' demande_id=demande.id %}">Modifier</a> |
+                          <a class="btn btn-primary" href="{% url 'imprimer_demande' demande_id=demande.id %}">Imprimer</a>
+                      </td>
+                  </tr>
+              {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Aucune donnée correspondante.</p>
+            {% endif %}
+
+          </div>
+          
+          <p id="noResultsMessage" style="display: none; left : 50px;">Aucun donnée correspondante.</p>
         </div>
         
-
+      </div>
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
       <footer class="main-footer">
@@ -507,42 +356,79 @@
         <strong>Copyright &copy; 2023-2024 <a href="https://schadrac-dev.odoo.com">Akili-dev</a>.</strong> Tous les droits sont reservés.
       </footer>
     </div>
-
-    <!-- jQuery 2.1.3 -->
-    <script src="{% static 'assets_dash/plugins/jQuery/jQuery-2.1.3.min.js' %}"></script>
-    <!-- jQuery UI 1.11.2 -->
-    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
-    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<!-- jQuery 2.1.3 -->
+<script src="{% static 'assets_dash/plugins/jQuery/jQuery-2.1.3.min.js' %}"></script>
+<!-- jQuery UI 1.11.2 -->
+<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+  $.widget.bridge('uibutton', $.ui.button);
+</script>
+<script src="{% static 'assets_dash/bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>    
+<!-- Morris.js charts -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+{% comment %} <script src="{% static 'assets_dash/plugins/morris/morris.min.js' %}" type="text/javascript"></script> {% endcomment %}
+<!-- Sparkline -->
+<script src="{% static 'assets_dash/plugins/sparkline/jquery.sparkline.min.js' %}" type="text/javascript"></script>
+<!-- jvectormap -->
+<script src="{% static 'assets_dash/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'assets_dash/plugins/jvectormap/jquery-jvectormap-world-mill-en.js' %}" type="text/javascript"></script>
+<!-- jQuery Knob Chart -->
+<script src="{% static 'assets_dash/plugins/knob/jquery.knob.js' %}" type="text/javascript"></script>
+<!-- daterangepicker -->
+<script src="{% static 'assets_dash/plugins/daterangepicker/daterangepicker.js' %}" type="text/javascript"></script>
+<!-- datepicker -->
+<script src="{% static 'assets_dash/plugins/datepicker/bootstrap-datepicker.js' %}" type="text/javascript"></script>
+<!-- Bootstrap WYSIHTML5 -->
+<script src="{% static 'assets_dash/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js' %}" type="text/javascript"></script>
+<!-- iCheck -->
+<script src="{% static 'assets_dash/plugins/iCheck/icheck.min.js' %}" type="text/javascript"></script>
+<!-- Slimscroll -->
+<script src="{% static 'assets_dash/plugins/slimScroll/jquery.slimscroll.min.js' %}" type="text/javascript"></script>
+<!-- FastClick -->
+<script src="{% static 'assets_dash/plugins/fastclick/fastclick.min.js' %}" ></script>
+<!-- AdminLTE App -->
+<script src="{% static 'assets_dash/dist/js/app.min.js' %}" type="text/javascript"></script>
     <script>
-      $.widget.bridge('uibutton', $.ui.button);
-    </script>
-    <script src="{% static 'assets_dash/bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>    
-    <!-- Morris.js charts -->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-    <script src="{% static 'assets_dash/plugins/morris/morris.min.js' %}" type="text/javascript"></script>
-    <!-- Sparkline -->
-    <script src="{% static 'assets_dash/plugins/sparkline/jquery.sparkline.min.js' %}" type="text/javascript"></script>
-    <!-- jvectormap -->
-    <script src="{% static 'assets_dash/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js' %}" type="text/javascript"></script>
-    <script src="{% static 'assets_dash/plugins/jvectormap/jquery-jvectormap-world-mill-en.js' %}" type="text/javascript"></script>
-    <!-- jQuery Knob Chart -->
-    <script src="{% static 'assets_dash/plugins/knob/jquery.knob.js' %}" type="text/javascript"></script>
-    <!-- daterangepicker -->
-    <script src="{% static 'assets_dash/plugins/daterangepicker/daterangepicker.js' %}" type="text/javascript"></script>
-    <!-- datepicker -->
-    <script src="{% static 'assets_dash/plugins/datepicker/bootstrap-datepicker.js' %}" type="text/javascript"></script>
-    <!-- Bootstrap WYSIHTML5 -->
-    <script src="{% static 'assets_dash/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js' %}" type="text/javascript"></script>
-    <!-- iCheck -->
-    <script src="{% static 'assets_dash/plugins/iCheck/icheck.min.js' %}" type="text/javascript"></script>
-    <!-- Slimscroll -->
-    <script src="{% static 'assets_dash/plugins/slimScroll/jquery.slimscroll.min.js' %}" type="text/javascript"></script>
-    <!-- FastClick -->
-    <script src="{% static 'assets_dash/plugins/fastclick/fastclick.min.js' %}" ></script>
-    <!-- AdminLTE App -->
-    <script src="{% static 'assets_dash/dist/js/app.min.js' %}" type="text/javascript"></script>
 
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="{% static 'assets_dash/dist/js/pages/dashboard.js' %}" type="text/javascript"></script>
+      function removeAccents(str) {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+  
+          $(document).ready(function() {
+            // Utilisation de l'écouteur de saisie sur le champ de recherche
+            $('#searchBar').on('keyup', function() {
+              console.log("salut petit");
+                var searchText = removeAccents($(this).val().toLowerCase());
+                var searchTerms = searchText.split(/\s+/); // Séparer le texte entré en termes individuels
+                var anyMatchFound = false; 
+                $('.table-responsive').each(function() {
+                    var productName = removeAccents($(this).find('tr').text().toLowerCase());
+                    var productMatches = false;
+        
+                    // Vérifier si le nom du produit contient au moins l'un des termes de recherche
+                    $.each(searchTerms, function(index, term) {
+                        if (productName.indexOf(term) !== -1) {
+                            productMatches = true;
+                            anyMatchFound = true; 
+                            return false; // Sortir de la boucle each si un terme correspond
+                        }
+                    });
+        
+                    // Afficher ou masquer le produit en fonction des correspondances
+                    if (productMatches) {
+                        $(this).show(); // Afficher le produit si au moins un terme correspond
+                    } else {
+                        $(this).hide(); // Masquer le produit sinon
+                    }
+                });
+                if (!anyMatchFound) {
+                    $('#noResultsMessage').show();
+                } else {
+                    $('#noResultsMessage').hide();
+                }
+            });
+        });
+  </script>
   </body>
 </html>

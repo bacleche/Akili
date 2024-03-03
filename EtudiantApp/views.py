@@ -1,5 +1,12 @@
 from django.shortcuts import render , redirect
 from EtudiantApp.data_models.etudiant import Etudiant
+from CSSAPP.data_models.documents import *
+import os
+import shutil
+from django.conf import settings
+from django.db.models import Q
+from datetime import datetime
+
 from .forms import *
 from django.contrib import messages
 from Utilisateur.data_models.utilisateur import Utilisateur
@@ -19,21 +26,29 @@ from xhtml2pdf import pisa
 
 
 def EtudiantSPACE(request):
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification' , 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
     print(user_data)
     return render(request, 'pages/index.html', user_data)
 
 def Profiles_etudiant(request):
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification' , 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
     return render(request, 'pages/profile-etudiant.html', user_data)
 
 def profile_details_etudiant(request):
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification' , 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
     user_data['civilite_choices'] = Etudiant._meta.get_field('civilite').choices
     return render(request, 'pages/profile-modify-etudiant.html', user_data)
 
 
 def mis_a_jour_etudiant(request):
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     # Récupérez l'utilisateur actuel (CSS dans ce cas)
     user = Etudiant.objects.get(matricule=request.session.get('matricule'))
     
@@ -103,6 +118,8 @@ def mis_a_jour_etudiant(request):
 #     return render(request, 'pages/memoire-posts.html', {'form': form, 'user_data': user_data})
 
 def poster_memoire(request):
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles' , 'cycle', 'filiere' , 'niveaux']}
     
     if request.method == 'POST':
@@ -264,6 +281,8 @@ def creer_nouvelle_notification(request):
 
 
 def registre_demande(request):
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
     user = request.user
     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
 
@@ -333,3 +352,103 @@ def modifier_demande(request, demande_id):
 
     context = {'form': form, 'demande': demande , 'user_data':user_data}
     return render(request, 'pages/modifier_demande.html', context)
+
+
+
+def registre_bulletins(request):
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
+    user = request.user
+    user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
+
+    if user_data.get('role') == 'Etudiant':
+        bulletins = Bulletin.objects.filter(etudiant__user=user, is_transfer_etudiant=True , is_signed=True)
+    else:
+        # Gérez le cas où le type d'utilisateur n'est pas défini correctement
+        bulletins = []
+
+    context = {'user_data': user_data, 'bulletins': bulletins}
+    return render(request, 'pages/support-bulletins.html', context)
+
+
+def registre_attestations(request):
+    if not request.user.is_authenticated:
+        return redirect('SignInView') 
+    user = request.user
+    user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
+
+    if user_data.get('role') == 'Etudiant':
+        attestations = Attestation.objects.filter(etudiant__user=user , is_transfer_etudiant=True , is_signed=True)
+    else:
+        # Gérez le cas où le type d'utilisateur n'est pas défini correctement
+        attestations = []
+
+    context = {'user_data': user_data, 'attestations': attestations}
+    return render(request, 'pages/support-attestations.html', context)
+
+
+
+
+
+def archive_documentsbulletins(request):
+    # Récupérer l'utilisateur actuel
+   
+    user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
+
+    if user_data.get('role') == 'Etudiant':
+        bulletins = Bulletin.objects.filter(etudiant__matricule=user_data['matricule'] ,  is_archived=False)
+         # Chemin d'accès au répertoire d'archives
+        archive_dir = os.path.join(settings.MEDIA_ROOT, 'archives-bulletins')
+        # Créer le répertoire d'archives s'il n'existe pas déjà
+        if not os.path.exists(archive_dir):
+            os.makedirs(archive_dir)
+        # Parcourir toutes les attestations et les archiver
+        for bulletin in bulletins:
+            # Chemin du fichier source
+            source_path = bulletin.file.path
+            # Chemin du fichier de destination dans le dossier d'archives
+            destination_path = os.path.join(archive_dir, os.path.basename(source_path))
+            # Copier le fichier vers le dossier d'archives
+            shutil.copy2(source_path, destination_path)
+            # Mettre à jour le chemin du document dans la base de données
+            bulletin.file = os.path.relpath(destination_path, settings.MEDIA_ROOT)
+            # Marquer le document comme archivé dans la base de données
+            bulletin.is_archived = True
+            bulletin.save()
+        return HttpResponse("Tous les documents ont été archivés avec succès.")
+
+
+    else:
+        return HttpResponse("Tous les documents ont été archivés avec succès.")
+
+   
+
+def recherche_demande_de_etudiant(request):
+    user = request.user
+    user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
+    attestation_types = ['attestation_frequentation', 'attestation_reussite']  # Adjust these based on your actual types
+
+    # Get the query and date parameters from the request
+    query = request.GET.get('q')
+    date_param = request.GET.get('date')
+
+    # Start with the base queryset
+    demandes = Demande.objects.filter(objet_demande__in=attestation_types)
+
+    # Apply filters based on query and date parameters
+    if query:
+        demandes = demandes.filter(
+            Q(objet_demande__icontains=query) 
+        )
+
+    if date_param:
+        # Convert the date parameter to a date object
+        date_obj = datetime.strptime(date_param, '%Y-%m-%d').date()
+        demandes = demandes.filter(date_poste_demande=date_obj)
+
+    # The rest of your logic for rendering the model to the view
+    # ...
+
+    context = {'demandes': demandes, 'user_data': user_data}
+    return render(request, 'pages/registre_demande.html', context)
+

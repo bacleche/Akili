@@ -295,54 +295,175 @@
             <h3>Listes des Etudiants - DUT INFO 1</h3>
           </div><!-- /.row -->
           <!-- Main row -->
-            <div class="row">
-             
-              <div class="table-responsive overflow-y">
-                {% if etudiants_dut %}
-                    <table class="table">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Nom(s)</th>
-                                <th scope="col"> Prenom(s)</th>
-                                <th scope="col">N° D'identification </th>
-                                <th scope="col">Niveaux </th>
-                                <th scope="col">Cycle</th>
-                                <th scope="col">Filière</th>
-                                <th scope="col">Statut</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for etudiant in etudiants_dut %}
-                                <tr>
-                                    <th scope="row"></th>
-                                    <td>{{ etudiant.user.last_name }}</td>
-                                    <td>{{ etudiant.user.first_name }}</td>
-                                    <td>{{ etudiant.Identification }}</td>
-                                    <td>{{ etudiant.niveaux }}</td>
-                                    <td>{{ etudiant.cycle }}</td>
-                                    <td>{{ etudiant.filiere }}</td>
-                                    <td>{{ etudiant.statut }}</td>
-                                    <td>
-                                        {% comment %} <a href="{% url 'supprimer_demande' demande_id=demande.id %}">Supprimer</a> |
-                                        <a href="{% url 'modifier_demande' demande_id=demande.id %}">Modifier</a> |
-                                        <a href="{% url 'imprimer_demande_css' demande_id=demande.id %}">Imprimer</a> |
-                                        <a href="{% url 'generer_fichier_csv' demande_id=demande.id %}">Generer CSV</a> {% endcomment %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                {% else %}
-                    <p>Aucune donnée correspondante.</p>
-                {% endif %}
+          <div class="row">
+
+            {% if messages %}
+            <div class="container">
+                <div class="alert alert-success">
+                  <ul class="messages">
+                    {% for message in messages %}
+                      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
               </div>
+            {% endif %}
+          <div class="container mt-6">
+              <div class="row">
+                  <div class="col-md-6 offset-md-6">
+                    <form class="form-inline my-2 my-lg-0" method="GET">
+                      <input id="searchBar" class="form-control mr-sm-2" type="search" placeholder="Rechercher *Nom , *Prenoms " aria-label="Rechercher" name="q">
+                      {% comment %} <input class="form-control mr-sm-2" type="date" name="date" placeholder="Date"> {% endcomment %}
+                      {% comment %} <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button> {% endcomment %}
+                  </form>
+                  
+                  </div>
+              </div>
+            <div class="table-responsive">
+              {% if etudiants_licence %}
+                  <table class="table">
+                      <thead class="thead-dark">
+                          <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">Nom(s)</th>
+                              <th scope="col"> Prenom(s)</th>
+                              <th scope="col">N° D'identification </th>
+                              <th scope="col">Niveaux </th>
+                              <th scope="col">Cycle</th>
+                              <th scope="col">Filière</th>
+                              <th scope="col">Statut</th>
+                              
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for etudiant in etudiants_licence %}
+                              <tr>
+                                  <th scope="row"></th>
+                                  <td>{{ etudiant.user.last_name }}</td>
+                                  <td>{{ etudiant.user.first_name }}</td>
+                                  <td>{{ etudiant.Identification }}</td>
+                                  <td>{{ etudiant.niveaux }}</td>
+                                  <td>{{ etudiant.cycle }}</td>
+                                  <td>{{ etudiant.filiere }}</td>
+                                  <td>{{ etudiant.statut }}</td>
+                                  <td>
+                                    <button type="button"  class="btn btn-success" data-toggle="modal" data-target="#createDocumentModal{{ etudiant.id }}">
+                                      <i class="fa fa-plus"></i> Créer
+                                    </button>
+
+
+                                    <div class="modal fade" id="createDocumentModal{{ etudiant.id }}" tabindex="-1" role="dialog" aria-labelledby="createDocumentModalLabel" aria-hidden="true">
+                                      <div class="modal-dialog" role="document">
+                                          <div class="modal-content">
+                                              <div class="modal-header">
+                                                  <h5 class="modal-title" id="createDocumentModalLabel">Créer un document pour l'Etudiant {{etudiant.user.first_name}} </h5>
+                                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                      <span aria-hidden="true">&times;</span>
+                                                  </button>
+                                              </div>
+                                              <div class="modal-body">
+                                                <div id="successMessage" style="display: none;"></div>
+
+                                                  <!-- Formulaire de création de document -->
+                                                  <form method="POST" action="{% url 'create_document' etudiant.id %}" enctype="multipart/form-data">
+                                                      {% csrf_token %}
+                                                      <label for="nom">Etudiant :</label>
+                                                      <input type="text" readonly name="etudiant" value="{{etudiant.user.last_name}} {{etudiant.user.first_name}}" class="form-control"/>
+                                                      <label for="nom">Date :</label>
+                                                      <input type="date"  class="hidden" name="date_register" />
+                                                      <label for="document">Type de document :</label>
+                                                      <select name="document" id="documentSelect" class="form-control">
+                                                          <option value="attestation">Attestation</option>
+                                                          <option value="bulletin">Bulletin</option>
+                                                      </select>
+                                                      <label for="type_attestation">Type attestation :</label>
+                                                      <select name="type_attestation" id="typeAttestation"  class="form-control">
+                                                          <option value="attestation_frequntation">Attestation de fréquentation</option>
+                                                          <option value="attestation_dde_reussite">Attestation de réussite</option>
+                                                      </select>
+                                                      <br>
+                                                      <input type="file" name="docs" class="form-control" />
+                                                      <br>
+                                                      <!-- ... autres champs ... -->
+                                  
+                                                      <button  class="btn btn-primary submit-form">Créer</button>
+                                                  </form>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmationModal{{ etudiant.id }}">
+                                      <i class="fa fa-arrow-right"></i> Ancien
+                                    </button>
+                                    
+
+                                    <!-- Modal de confirmation -->
+                                        <div class="modal fade" id="confirmationModal{{ etudiant.id }}" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                                          <div class="modal-dialog" role="document">
+                                              <div class="modal-content">
+                                                  <div class="modal-header">
+                                                      <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                          <span aria-hidden="true">&times;</span>
+                                                      </button>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                      Voulez-vous basculer cet étudiant  {{etudiant.user.last_name}} à un statut ancien ?
+                                                  </div>
+                                                  <form method="POST" action="{% url 'update_etudiant_statut' etudiant.id %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="statut" value="Ancien étudiant">
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                                        <button type="submit" class="btn btn-primary" id="confirmBtn">Oui</button>
+                                                    </div>
+                                                </form>
+                                                
+                                              </div>
+                                          </div>
+                                        </div>
+
+                                  </td>
+                              </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+              {% else %}
+                  <p>Aucune donnée correspondante.</p>
+              {% endif %}
             </div>
-            <a href="" class="btn btn-warning"> <i class="fa fa-print-o"></i>Imprimer la liste</a>
+              <p id="noResultsMessage" style="display: none; left : 50px;">Aucun donnée correspondante.</p>
+
           </div>
+        </div>
+            <a href="" class="btn btn-warning"> <i class="fa fa-print-o"></i>Imprimer la liste</a>
+
           
         
-
+            {% for notification in notifications_non_lues %}
+            <!-- Modal -->
+              <div class="modal fade" id="notificationModal{{ notification.id }}" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                          <div class="modal-header">
+                              <h5 class="modal-title" id="notificationModalLabel">{{ notification.titre }}</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                              </button>
+                          </div>
+                          <div class="modal-body">
+                              <p id="contenu">{{ notification.contenu }}</p>
+                          </div>
+                          <div class="modal-footer">
+                              {% comment %} <button type="button" class="btn btn-primary" onclick="accepterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Accepter {{notification.expediteur.id}}</button> {% endcomment %}
+                              {% comment %} <button type="button" class="btn btn-danger" onclick="rejeterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Rejeter</button> {% endcomment %}
+                              <button type="button" class="btn btn-warning" onclick="compriS({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Compris</button>
+          
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            {% endfor %}
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
       <footer class="main-footer">
@@ -364,7 +485,7 @@
     <script src="{% static 'assets_dash/bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>    
     <!-- Morris.js charts -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-    <script src="{% static 'assets_dash/plugins/morris/morris.min.js' %}" type="text/javascript"></script>
+    {% comment %} <script src="{% static 'assets_dash/plugins/morris/morris.min.js' %}" type="text/javascript"></script> {% endcomment %}
     <!-- Sparkline -->
     <script src="{% static 'assets_dash/plugins/sparkline/jquery.sparkline.min.js' %}" type="text/javascript"></script>
     <!-- jvectormap -->
@@ -386,32 +507,180 @@
     <script src="{% static 'assets_dash/plugins/fastclick/fastclick.min.js' %}" ></script>
     <!-- AdminLTE App -->
     <script src="{% static 'assets_dash/dist/js/app.min.js' %}" type="text/javascript"></script>
-
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="{% static 'assets_dash/dist/js/pages/dashboard.js' %}" type="text/javascript"></script>
+   
     <script>
+      console.log("Script is running");
+  
+      $(document).ready(function () {
+          // Gérer le clic sur le bouton "Ancien"
+          $('.btn-danger').click(function () {
+              // Récupérer l'ID de l'étudiant associé au bouton cliqué
+              var etudiantId = $(this).closest('tr').find('td:eq(2)').text(); // Adapter le sélecteur selon votre structure HTML
+              console.log('salut mon petit');
+              
+              // Afficher la modal de confirmation correspondante
+              $('#confirmationModal' + etudiantId).modal('show');
+              
+              // Mettre à jour l'ID de l'étudiant dans le formulaire de confirmation
+              $('#etudiantIdInput').val(etudiantId);
+          });
+  
+          // Gérer le clic sur le bouton de confirmation dans la modal
+          $('#confirmBtn').click(function () {
+              // Récupérer l'ID de l'étudiant depuis le formulaire de confirmation
+              var etudiantId = $('#etudiantIdInput').val();
+              console.log(etudiantId);
+  
+              // Faire une requête AJAX pour mettre à jour le statut de l'étudiant
+              $.ajax({
+                  url: '/update_etudiant_statut/' + etudiantId + '/',
+                  type: 'POST',
+                  data: {
+                      statut: 'Ancien étudiant'
+                  },
+                  success: function (response) {
+                      if (response.success) {
+                          // Mettre à jour l'affichage ou effectuer d'autres actions si nécessaire
+                          // Fermer la modal de confirmation
+
+                          
+                          $('#confirmationModal' + etudiantId).modal('hide');
+                          console.log('La mise à jour du statut a réussi !');
+  
+                          // Recharger la page
+                          window.location.reload();
+                      } else {
+                          console.error('Erreur lors de la mise à jour du statut.');
+                      }
+                  },
+                  error: function (error) {
+                      console.log(error);
+                      // Gérer les erreurs si nécessaire
+                  }
+              });
+          });
+      });
+  </script>
+
+  <script>
+    // JavaScript pour ouvrir la modal de création de document
+    function openCreateDocumentModal() {
+        $('#createDocumentModal').modal('show');
+    }
+
+    const documentSelect = document.getElementById('documentSelect');
+    const typeAttestation = document.getElementById('typeAttestation');
+    documentSelect.addEventListener('change', function() {
+        if (documentSelect.value === 'attestation') {
+            typeAttestation.disabled = false;
+            typeAttestation.classList.remove('hidden');
+        } else {
+            typeAttestation.disabled = true;
+            typeAttestation.classList.add('hidden');
+        }
+    });
+
+    $('.submit-form').submit(function (event) {
+      event.preventDefault();
+      console.log('SLUT LES ALERTS');
       
-      function compriS(notificationId) {
-        var url = "{% url 'marquer_notification_lue' 0 %}".replace('0', notificationId);
-        $.ajax({
+      $.ajax({
           type: 'POST',
-          url: url,
-          data: {
-              'action': 'compris',
-              'csrfmiddlewaretoken': '{{ csrf_token }}',
-          },
+          url: '/create_document/' + etudiantId + '/',
+          data: new FormData(this),
+          processData: false,
+          contentType: false,
           success: function (data) {
-              console.log('reponse compris');
-              // Logique pour créer une nouvelle notification à l'expéditeur
-              $('#notificationModal' + notificationId).modal('hide');
+              if (data.success) {
+                  // Afficher le message de succès dans le formulaire
+                 $('#successMessage').text(data.message).show();
+                 // console.log('salut je veux me recharger ');
+                 // location.reload();
+                 setTimeout(function() {
+                  window.location.replace(data.redirect);
+              }, 3000);
+
+              } else {
+                  // Gérer d'autres cas si nécessaire
+              }
           },
           error: function (error) {
-              console.error('Erreur lors de la comprehension  de la reponse:', error);
-              console.log('Erreur détaillée:', error.responseText);
+              console.log('Erreur lors de la soumission du formulaire AJAX:', error);
+              console.log('ECHEC');
+              console.log(data.redirect);  
           }
       });
-        
+  });
+  
+</script>
+
+<script>
+    
+  function compriS(notificationId) {
+    var url = "{% url 'marquer_notification_lue' 0 %}".replace('0', notificationId);
+    $.ajax({
+      type: 'POST',
+      url: url,
+      data: {
+          'action': 'compris',
+          'csrfmiddlewaretoken': '{{ csrf_token }}',
+      },
+      success: function (data) {
+          console.log('reponse compris');
+          // Logique pour créer une nouvelle notification à l'expéditeur
+          $('#notificationModal' + notificationId).modal('hide');
+      },
+      error: function (error) {
+          console.error('Erreur lors de la comprehension  de la reponse:', error);
+          console.log('Erreur détaillée:', error.responseText);
       }
-    </script>
-  </body>
+  });
+    
+  }
+</script>
+  
+<script>
+
+  function removeAccents(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+$(document).ready(function() {
+  $('#searchBar').on('keyup', function() {
+      var searchText = removeAccents($(this).val().toLowerCase());
+      var searchTerms = searchText.split(/\s+/);
+      var anyMatchFound = false; 
+      $('.table-responsive').each(function() {
+          var container = $(this);
+          container.find('tbody tr').each(function() {
+              var rowText = removeAccents($(this).text().toLowerCase());
+              var rowMatches = true;
+
+              $.each(searchTerms, function(index, term) {
+                  if (rowText.indexOf(term) === -1) {
+                      rowMatches = false;
+                      return false;
+                  }
+              });
+
+              if (rowMatches) {
+                  $(this).show();
+                  anyMatchFound = true;
+              } else {
+                  $(this).hide();
+              }
+          });
+      });
+
+      if (!anyMatchFound) {
+          $('#noResultsMessage').show();
+      } else {
+          $('#noResultsMessage').hide();
+      }
+  });
+});
+
+</script>
+
+</body>
 </html>

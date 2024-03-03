@@ -437,6 +437,10 @@ def archive_documents_attestation(request):
 
 
 
+def supprimer_bulletin_directeur(request):
 
+    user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
 
-
+    bulletin = Bulletin.objects.all().delete()
+    context = {'user_data':user_data}
+    return redirect('liste_Bulletins_directeur')

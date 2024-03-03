@@ -164,10 +164,10 @@
                   <!-- Menu Footer-->
                   <li class="user-footer">
                     <div class="pull-left">
-                      <a href="#" class="btn btn-default btn-flat">Profile</a>
+                      <a href="{% url 'Profiles_css' %}" class="btn btn-default btn-flat">Profile</a>
                     </div>
                     <div class="pull-right">
-                      <a href="{% url 'deconnexion' %}" class="btn btn-default btn-flat">Sign out</a>
+                      <a href="{% url 'deconnexion' %}" class="btn btn-default btn-flat">Deconnexion</a>
                     </div>
                   </li>
                 </ul>
@@ -297,7 +297,7 @@
             <div class="row">
                 <div class="col-md-6 offset-md-6">
                     <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'recherche_demande_par_etudiant' %}">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Rechercher" name="q">
+                        <input id="searchBar" class="form-control mr-sm-2" type="search" placeholder="Rechercher" aria-label="Rechercher" name="q">
                         <input class="form-control mr-sm-2" type="date" name="date" placeholder="Date">
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button>
                         {% comment %} <div class="input-group-append">
@@ -473,5 +473,46 @@
         
       }
     </script>
+
+    <script>
+
+      function removeAccents(str) {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+  
+          $(document).ready(function() {
+            // Utilisation de l'écouteur de saisie sur le champ de recherche
+            $('#searchBar').on('keyup', function() {
+                var searchText = removeAccents($(this).val().toLowerCase());
+                var searchTerms = searchText.split(/\s+/); // Séparer le texte entré en termes individuels
+                var anyMatchFound = false; 
+                $('.table-responsive').each(function() {
+                    var productName = removeAccents($(this).find('tr').text().toLowerCase());
+                    var productMatches = false;
+        
+                    // Vérifier si le nom du produit contient au moins l'un des termes de recherche
+                    $.each(searchTerms, function(index, term) {
+                        if (productName.indexOf(term) !== -1) {
+                            productMatches = true;
+                            anyMatchFound = true; 
+                            return false; // Sortir de la boucle each si un terme correspond
+                        }
+                    });
+        
+                    // Afficher ou masquer le produit en fonction des correspondances
+                    if (productMatches) {
+                        $(this).show(); // Afficher le produit si au moins un terme correspond
+                    } else {
+                        $(this).hide(); // Masquer le produit sinon
+                    }
+                });
+                if (!anyMatchFound) {
+                    $('#noResultsMessage').show();
+                } else {
+                    $('#noResultsMessage').hide();
+                }
+            });
+        });
+  </script>
   </body>
 </html>
