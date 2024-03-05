@@ -182,14 +182,7 @@
             </div>
           </div>
           <!-- search form -->
-          <form action="#" method="get" class="sidebar-form">
-            <div class="input-group">
-              <input type="text" name="q" class="form-control" placeholder="Search..."/>
-              <span class="input-group-btn">
-                <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
-              </span>
-            </div>
-          </form>
+          
           <!-- /.search form -->
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
@@ -247,7 +240,7 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href=""><i class="fa fa-circle-o"></i>Mes Attestations</a></li>
+                <li><a href="{% url 'registre_attestations' %}"><i class="fa fa-circle-o"></i>Mes Attestations</a></li>
                 <li><a href="{% url 'registre_bulletins' %}"><i class="fa fa-circle-o"></i>Mes Bulletins</a></li>
               </ul>
             </li>
@@ -309,8 +302,10 @@
           <div class="row">
             <img src="{% static 'assets_dash/AKILI.png' %}" class="responsive-image" />
           </div><!-- /.row (main row) -->
-
+          
         </section><!-- /.content -->
+
+
       </div><!-- /.content-wrapper -->
       <footer class="main-footer">
         <div class="pull-right hidden-xs">
@@ -320,6 +315,160 @@
       </footer>
     </div>
 
+    
+    {% for notification in notifications_non_lues %}
+    <!-- Modal -->
+    <div class="modal fade" id="notificationModal{{ notification.id }}" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="notificationModalLabel">{{ notification.titre }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="contenu">{{ notification.contenu }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="accepterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Accepter {{notification.expediteur.id}}</button>
+                    <button type="button" class="btn btn-danger" onclick="rejeterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Rejeter</button>
+                    <button type="button" class="btn btn-warning" onclick="compriS({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Compris</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+    <!-- jQuery 2.1.3 -->
+    <script src="{% static 'assets_dash/plugins/jQuery/jQuery-2.1.3.min.js' %}"></script>
+
+    <script>
+
+      let contenu = $('#contenu').text();
+      console.log(contenu)
+      if(contenu.includes("refusé") || contenu.includes("accepté")) {
+        $('.btn-primary').hide();
+        $('.btn-danger').hide();
+
+      } else {
+        $('.btn-warning').hide()
+      }
+     
+      function accepterNotification(notificationId) {
+        var url = "{% url 'marquer_notification_lue' 0 %}".replace('0', notificationId);
+        var url2 = "{% url 'creer_nouvelle_notification' %}";
+        var expo = $('#notificationModal' + notificationId).find('.btn-primary').data('expediteur');
+        var desti = $('#notificationModal' + notificationId).find('.btn-primary').data('destinataire');
+        console.log(expo + ' ' + desti);
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {
+                'action': 'accepter',
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function (data) {
+                console.log('Notification acceptée avec succès');
+                // Logique pour créer une nouvelle notification à l'expéditeur
+                $.ajax({
+                    type: 'POST',
+                    url: url2,
+                    data: {
+                        'expediteurId': desti,
+                        'destinataireId': expo ,
+                        'message': 'Votre destinataire a accepté la notification.',
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    success: function (data) {
+                        console.log('Nouvelle notification à l\'expéditeur créée avec succès');
+                    },
+                    error: function (error) {
+                        console.error('Erreur lors de la création de la nouvelle notification à l\'expéditeur:', error);
+                        console.log('Erreur détaillée:', error.responseText);
+                    }
+                });
+    
+                $('#notificationModal' + notificationId).modal('hide');
+                
+            },
+            error: function (error) {
+                console.error('Erreur lors de l\'acceptation de la notification:', error);
+                console.log('Erreur détaillée:', error.responseText);
+            }
+        });
+    }
+    
+    function rejeterNotification(notificationId) {
+        var url = "{% url 'marquer_notification_lue' 0 %}".replace('0', notificationId);
+        var url2 = "{% url 'creer_nouvelle_notification' %}";
+        var expo = $('#notificationModal' + notificationId).find('.btn-primary').data('expediteur');
+        var desti = $('#notificationModal' + notificationId).find('.btn-primary').data('destinataire');
+        console.log(expo + ' ' + desti);
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {
+                'action': 'rejeter',
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success: function (data) {
+                console.log('Notification rejetée avec succès');
+                // Logique pour créer une nouvelle notification à l'expéditeur
+                $.ajax({
+                    type: 'POST',
+                    url: url2,
+                    data: {
+                        'expediteurId': desti,
+                        'destinataireId': expo,
+                        'message': 'Votre destinataire a refusé la notification.',
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    success: function (data) {
+                        console.log('Nouvelle notification à l\'expéditeur créée avec succès');
+                    },
+                    error: function (error) {
+                        console.error('Erreur lors de la création de la nouvelle notification à l\'expéditeur:', error);
+                        console.log('Erreur détaillée:', error.responseText);
+                        console.log('Erreur détaillée:', data);
+
+                    }
+                });
+    
+                $('#notificationModal' + notificationId).modal('hide');
+            },
+            error: function (error) {
+                console.error('Erreur lors du rejet de la notification:', error);
+                console.log('Erreur détaillée:', error.responseText);
+            }
+        });
+    }
+    
+
+    function compriS(notificationId) {
+      var url = "{% url 'marquer_notification_lue' 0 %}".replace('0', notificationId);
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+            'action': 'compris',
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        success: function (data) {
+            console.log('reponse compris');
+            // Logique pour créer une nouvelle notification à l'expéditeur
+            $('#notificationModal' + notificationId).modal('hide');
+        },
+        error: function (error) {
+            console.error('Erreur lors de la comprehension  de la reponse:', error);
+            console.log('Erreur détaillée:', error.responseText);
+        }
+    });
+      
+    }
+  </script>
     <!-- jQuery 2.1.3 -->
     <script src="{% static 'assets_dash/plugins/jQuery/jQuery-2.1.3.min.js' %}"></script>
     <!-- jQuery UI 1.11.2 -->

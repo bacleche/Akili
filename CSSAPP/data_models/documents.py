@@ -15,7 +15,7 @@ class Attestation(models.Model):
     is_transfer_directeur = models.BooleanField(default=False)
     is_transfer_css = models.BooleanField(default=False)
     is_transfer_etudiant = models.BooleanField(default=False)
-    file = models.ImageField(upload_to='attestations/',max_length=500) 
+    file = models.FileField(upload_to='attestations/',max_length=500) 
     profile_directeur = models.ForeignKey(Directeur , on_delete=models.DO_NOTHING , default=1)
     profiles_css = models.ForeignKey(CSS , on_delete=models.DO_NOTHING , default=1)
     is_archived = models.BooleanField(default=False)
@@ -52,7 +52,7 @@ class Bulletin(models.Model):
     is_transfer_directeur = models.BooleanField(default=False)
     is_transfer_css = models.BooleanField(default=False)
     is_transfer_etudiant = models.BooleanField(default=False)
-    file = models.ImageField(upload_to='bulletins/',max_length=500) 
+    file = models.FileField(upload_to='bulletins/',max_length=500) 
     profile_directeur = models.ForeignKey(Directeur , on_delete=models.DO_NOTHING, default=1)
     profiles_css = models.ForeignKey(CSS , on_delete=models.DO_NOTHING, default=1)
     is_archived = models.BooleanField(default=False)
@@ -78,3 +78,23 @@ def create_bulletin_notification(sender, instance, created, **kwargs):
         notification.save()
         print('notif bulletin')
 
+
+
+class Archives(models.Model):
+    etudiant = models.ForeignKey(Etudiant, on_delete=models.DO_NOTHING)
+    date_archivage = models.DateField(auto_now_add=True)
+    file = models.FileField(upload_to='archives/', max_length=500)
+    is_archived = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Archives de {self.etudiant.user.first_name} {self.etudiant.user.last_name}"
+
+
+class Archives_bulletins(models.Model):
+    etudiant = models.ForeignKey(Etudiant, on_delete=models.DO_NOTHING)
+    date_archivage = models.DateField(auto_now_add=True)
+    file = models.FileField(upload_to='archives-bulletins/', max_length=500)
+    is_archived = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Archives de {self.etudiant.user.first_name} {self.etudiant.user.last_name}"

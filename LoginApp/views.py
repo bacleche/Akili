@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from EtudiantApp.data_models.etudiant import Etudiant
 from CSSAPP.data_models.css import CSS
 from DCFISPACE.data_models.directeur import Directeur
-
+from django.http import HttpResponse
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from Utilisateur.data_models.utilisateur import Utilisateur
@@ -11,6 +11,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
+from django.core.exceptions import ObjectDoesNotExist
 
 # def sign_in(request):
 #     error_message = None  
@@ -116,6 +117,7 @@ def sign_in(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('your_pass')
+        # remember_me_cookies = request.POST.get('remember-me')
 
         try:
             # Essayez de récupérer un étudiant ou un CSS avec l'email donné
@@ -136,6 +138,13 @@ def sign_in(request):
                 
         # Vérifiez le mot de passe en utilisant la méthode check_password
         if utilisateur.user.check_password(password):
+            # if remember_me_cookies:
+            #     response = HttpResponse() 
+            #     remember_me(request, response, utilisateur.user)
+            #     response.set_cookie('matricule', utilisateur)
+            #     return response  
+              
+                
             if utilisateur.first_login:
                 request.session['user_to_change_password'] = utilisateur.user.id
                 request.session['email'] = utilisateur.user.email
@@ -200,6 +209,43 @@ def sign_in(request):
             error_message = "Email et/ou Mot de passe Incorrect ! réessayez."
 
     return render(request, 'login.html', {'error_message': error_message})
+
+
+
+# def remember_me(request, response, user):
+#     if request.POST.get('remember-me'):
+#         # Définir un cookie de "Remember Me" avec une durée de validité plus longue
+#         response.set_cookie('remember_me', user.id, max_age=604800)  # Exemple : 1 semaine (en secondes)
+#         # Enregistrer également le type de profil dans le cookie pour la récupération dans auto_login
+#         response.set_cookie('user_profile', user.__class__.__name__, max_age=604800)
+#         return response
+
+
+# def auto_login(request):
+#     if 'remember_me' in request.COOKIES:
+#         user_id = request.COOKIES['remember_me']
+#         user_profile = request.COOKIES['user_profile']
+        
+#         try:
+#             # Utiliser le type de profil récupéré pour obtenir le bon modèle utilisateur
+#             if user_profile == 'Etudiant':
+#                 user = Etudiant.objects.get(id=user_id).user
+#                 return redirect('student_space')  # Redirection vers l'espace étudiant
+#             elif user_profile == 'CSS':
+#                 user = CSS.objects.get(id=user_id).user
+#                 return redirect('cssWork')  # Redirection vers l'espace CSS
+#             elif user_profile == 'Directeur':
+#                 user = Directeur.objects.get(id=user_id).user
+#                 return redirect('Home_Directeur')  # Redirection vers l'espace Directeur
+            
+#             login(request, user)
+#         except ObjectDoesNotExist:
+#             # Gérer le cas où l'utilisateur n'est pas trouvé dans la base de données
+#             # Vous pouvez afficher un message d'erreur ou effectuer d'autres actions nécessaires
+#             print("L'utilisateur n'a pas été trouvé dans la base de données.")
+
+#     # Rediriger vers la page de connexion si la connexion automatique n'est pas réussie
+#     return redirect('SignInView')
 
 
 # def change_password(request):

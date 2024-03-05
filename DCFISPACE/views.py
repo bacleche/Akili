@@ -410,37 +410,14 @@ def imprimer_bulletins_directeur(request):
 
 
 
-def archive_documents_attestation(request):
-    # Récupérer toutes les attestations non archivées
-    attestations = Attestation.objects.filter(is_archived=False)
-    # Chemin d'accès au répertoire d'archives
-    archive_dir = os.path.join(settings.MEDIA_ROOT, 'archives')
-    # Créer le répertoire d'archives s'il n'existe pas déjà
-    if not os.path.exists(archive_dir):
-        os.makedirs(archive_dir)
-    # Parcourir toutes les attestations et les archiver
-    for attestation in attestations:
-        # Chemin du fichier source
-        source_path = attestation.file.path
-        # Chemin du fichier de destination dans le dossier d'archives
-        destination_path = os.path.join(archive_dir, os.path.basename(source_path))
-        # Copier le fichier vers le dossier d'archives
-        shutil.copy2(source_path, destination_path)
-        # Mettre à jour le chemin du document dans la base de données
-        attestation.file = os.path.relpath(destination_path, settings.MEDIA_ROOT)
-        # Marquer le document comme archivé dans la base de données
-        attestation.is_archived = True
-        attestation.save()
-    return HttpResponse("Tous les documents ont été archivés avec succès.")
 
 
 
 
+# def supprimer_bulletin_directeur(request):
 
-def supprimer_bulletin_directeur(request):
+#     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
 
-    user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
-
-    bulletin = Bulletin.objects.all().delete()
-    context = {'user_data':user_data}
-    return redirect('liste_Bulletins_directeur')
+#     bulletin = Bulletin.objects.all().delete()
+#     context = {'user_data':user_data}
+#     return redirect('liste_Bulletins_directeur')

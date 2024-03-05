@@ -3,16 +3,15 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Akili - 404</title>
+    <title>Akili - 500</title>
 </head>
-
 
 <style>
     *, :before, :after {
         box-sizing: border-box;
-      }
-      
-      body {
+    }
+    
+    body {
         display: flex;
         align-items: center;
         background: #E3F2FD;
@@ -22,41 +21,41 @@
         overflow: hidden;
         color: #138FF2;
         font-family: Roboto;
-      }
-      
-      .wrapper {
+    }
+    
+    .wrapper {
         flex-grow: 2;
         width: 40vw;
         max-width: 500px;
         margin: 0 auto;
-      }
-      
-      h1 {
+    }
+    
+    h1 {
         margin: 0;
         font-size: 6em;
         font-weight: 100;
-      }
-      
-      p {
+    }
+    
+    p {
         width: 95%;
         font-size: 1.5em;
         line-height: 1.4;
-      }
-      
-      .buttons {
+    }
+    
+    .buttons {
         white-space: nowrap;
         display: inline-block;
-      }
-      
-      span {
+    }
+    
+    span {
         display: block;
         text-transform: uppercase;
         color: #B9DDFB;
         letter-spacing: 1.5px;
         text-align: center;
-      }
-      
-      a {
+    }
+    
+    a {
         display: inline-block;
         padding: 0.8em 1em;
         margin-right: 1em;
@@ -70,14 +69,14 @@
         position: relative;
         overflow: hidden;
         transition: 0.3s;
-      }
-      a:hover {
+    }
+    a:hover {
         color: #E3F2FD;
-      }
-      a:hover:before {
+    }
+    a:hover:before {
         top: 0;
-      }
-      a:before {
+    }
+    a:before {
         content: "";
         background: #138FF2;
         height: 100%;
@@ -87,9 +86,9 @@
         left: 0;
         transition: 0.3s;
         z-index: -1;
-      }
-      
-      .space {
+    }
+    
+    .space {
         width: 75px;
         height: calc(50vh + 37.5px);
         border-top-left-radius: 37.5px;
@@ -99,9 +98,9 @@
         position: relative;
         pointer-events: none;
         -webkit-transform: translateZ(0);
-      }
-      
-      .blackhole {
+    }
+    
+    .blackhole {
         border: 5px solid #1674D1;
         height: 75px;
         width: 75px;
@@ -109,8 +108,8 @@
         position: absolute;
         top: 0;
         left: 0;
-      }
-      .blackhole:after {
+    }
+    .blackhole:after {
         content: "";
         height: calc(100% + 10px);
         width: calc(100% + 10px);
@@ -123,9 +122,9 @@
         left: -5px;
         z-index: 5;
         transform: rotate(45deg);
-      }
-      
-      .ship {
+    }
+    
+    .ship {
         height: 150px;
         width: 55px;
         margin-left: 10px;
@@ -133,39 +132,34 @@
         animation: blackhole 4s infinite linear;
         position: absolute;
         bottom: -150px;
-      }
-      
-      @keyframes blackhole {
+    }
+    
+    @keyframes blackhole {
         to {
-          transform: translateY(-100vh);
+            transform: translateY(-100vh);
         }
-      }
-      @media (max-width: 600px) {
+    }
+    @media (max-width: 600px) {
         body {
-          margin: 0 5vw;
+            margin: 0 5vw;
         }
-      }
+    }
 </style>
 <body>
     <div class="container">
-
         <div class="content">
-        
             <!-- top container -->
             <div class="inner-wrapper">
-            <h2>Oh! 404 </h2>
-                  <img src="{% static 'assets_dash/AKILI.png' %}" class="responsive-image" />
+                <h2>Oh! 500 </h2>
+                <img src="{% static 'assets_dash/AKILI.png' %}" class="responsive-image" />
             </div>
-        
             <!-- bottom-tagline -->
             <p class="blurb">
-                La page que vous cherchez n'a pas été trouvée.<br />
-                Retournez à la page d'acceuil
+                Une erreur interne du serveur s'est produite.<br />
+                Veuillez réessayer plus tard.
             </p>
-
-            <a href="{% url 'home_index' %}">Acceuil</a>
+            <a href="{% url 'home_index' %}">Accueil</a>
         </div>
-        
-        </div>
+    </div>
 </body>
 </html>

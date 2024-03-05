@@ -32,15 +32,9 @@
 
   </head>
   <style>
-    .main-footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-  }
   .content-wrapper {
     min-height: 100vh; /* ou une hauteur minimale appropriée */
 }
-
     #logo-img {
       width: 300px;  /* Largeur souhaitée */
       height: 43px;  /* Hauteur automatique pour maintenir le ratio d'aspect */
@@ -182,14 +176,7 @@
             </div>
           </div>
           <!-- search form -->
-          <form action="#" method="get" class="sidebar-form">
-            <div class="input-group">
-              <input type="text" name="q" class="form-control" placeholder="Search..."/>
-              <span class="input-group-btn">
-                <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
-              </span>
-            </div>
-          </form>
+         
           <!-- /.search form -->
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
@@ -247,7 +234,8 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href=""><i class="fa fa-circle-o"></i>Mes supports</a></li>
+                <li><a href="{% url 'registre_attestations' %}"><i class="fa fa-circle-o"></i>Mes Attestations</a></li>
+                <li><a href="{% url 'registre_bulletins' %}"><i class="fa fa-circle-o"></i>Mes Bulletins</a></li>
               </ul>
             </li>
             <li><a href="{% url 'deconnexion' %}"><i class="fa fa-sign-out"></i> Se Deconnecter</a></li>

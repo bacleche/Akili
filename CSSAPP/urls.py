@@ -51,6 +51,11 @@ urlpatterns = [
     path('signaler_css_attestation_etudiant/<int:attestation_id>', views.signaler_css_attestation_etudiant, name='signaler_css_attestation_etudiant'),
     path('imprimer_attestation_css_doc', views.imprimer_attestations_css_doc, name='imprimer_attestation_css_doc'),
     path('imprimer_bulletin_css_doc', views.imprimer_bulletins_css_doc, name='imprimer_bulletin_css_doc'),
+    path('archive_documents_attestation', views.archive_documents_attestation, name='archive_documents_attestation'),
+    path('archive_documents_bulletins', views.archive_documents_bulletins, name='archive_documents_bulletins'),
+    path('supprimer_bulletin_css', views.supprimer_bulletin_css, name='supprimer_bulletin_css'),
+    path('supprimer_attestation_css', views.supprimer_attestation_css, name='supprimer_attestation_css'),
+
 
 
 

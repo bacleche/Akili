@@ -268,19 +268,6 @@
                 <li><a href="{% url 'liste_bulletinsf' %}"><i class="fa fa-circle-o"></i> Classeur Bulletins</a></li>
               </ul>
             </li>
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-share"></i> <span>Transfert Administratif</span>
-                <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="#"><i class="fa fa-circle-o"></i>DCFI</a></li>
-                <li>
-                  <a href="#"><i class="fa fa-circle-o"></i>ETUDIANTS</a>
-                </li>
-                
-              </ul>
-            </li>
             <li><a href="{% url 'deconnexion' %}"><i class="fa fa-sign-out"></i> Se Deconnecter</a></li>
             
           </ul>
@@ -428,7 +415,8 @@
       <div class="container-fluid">
         <div class="col-md-6">
             <a href="{% url 'imprimer_attestation_css_doc' %}" class="btn btn-primary">Sauvegarder et Imprimer</a>
-            {% comment %} <a href="{% url 'archive_documents_attestation' %}" class="btn btn-primary">Archiver</a> {% endcomment %}
+            <a href="{% url 'archive_documents_attestation' %}" class="btn btn-warning">Archiver</a>
+            <a href="{% url 'supprimer_attestation_css' %}" class="btn btn-danger">Supprimer</a>
 
         </div>
       </div>

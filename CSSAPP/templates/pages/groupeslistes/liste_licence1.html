@@ -254,20 +254,19 @@
                 <li><a href="{% url 'list_bulletin_demandes' %}"><i class="fa fa-circle-o"></i>Bulletins</a></li>
               </ul>
             </li>
-         
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-share"></i> <span>Transfert Administratif</span>
-                <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="#"><i class="fa fa-circle-o"></i>DCFI</a></li>
-                <li>
-                  <a href="#"><i class="fa fa-circle-o"></i>ETUDIANTS</a>
-                </li>
-                
-              </ul>
-            </li>
+
+      
+           
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-folder"></i> <span>Elements adminstratifs</span>
+              <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+              <li><a href="{% url 'liste_Attestations' %}"><i class="fa fa-circle-o"></i>Classeur attestations</a></li>
+              <li><a href="{% url 'liste_bulletinsf' %}"><i class="fa fa-circle-o"></i> Classeur Bulletins</a></li>
+            </ul>
+          </li>
             <li><a href="{% url 'deconnexion' %}"><i class="fa fa-sign-out"></i> Se Deconnecter</a></li>
             
           </ul>

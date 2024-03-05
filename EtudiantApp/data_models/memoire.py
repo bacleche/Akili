@@ -76,4 +76,5 @@ class Memoire(models.Model):
             notification.save()
 
             self.binome_notification_envoyee = True
-            self.save(update_fields=['binome_notification_envoyee'])
+            self.is_pubied = True
+            self.save(update_fields=['binome_notification_envoyee', 'is_pubied'])

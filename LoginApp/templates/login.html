@@ -46,14 +46,7 @@
                             <input type="submit" name="signin" id="signin" class="form-submit" value="Log in"/>
                         </div>
                     </form>
-                    <div class="social-login">
-                        <span class="social-label">Or login with</span>
-                        <ul class="socials">
-                            <li><a href="#"><i class="display-flex-center zmdi zmdi-facebook"></i></a></li>
-                            <li><a href="#"><i class="display-flex-center zmdi zmdi-twitter"></i></a></li>
-                            <li><a href="#"><i class="display-flex-center zmdi zmdi-google"></i></a></li>
-                        </ul>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -64,5 +57,36 @@
 
 <script src="{% static 'assets2/vendor/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'assets2/js/main.js' %}"></script>
+
+
+<script>
+  // Fonction pour rediriger l'utilisateur vers le bon tableau de bord
+function redirectToDashboard() {
+    // Récupérer le cookie "remember_me"
+    var rememberMeCookie = getCookie("remember_me");
+
+    // Récupérer le cookie "user_profile"
+    var userProfileCookie = getCookie("user_profile");
+
+    // Vérifier si l'utilisateur est authentifié
+    if (rememberMeCookie && userProfileCookie) {
+        // Rediriger vers la vue de connexion appropriée
+        if (userProfileCookie === "Etudiant") {
+            window.location.href = "{% url 'student_space' %}";
+        } else if (userProfileCookie === "CSS") {
+            window.location.href = "{% url 'cssWork' %}";
+        } else if (userProfileCookie === "Directeur") {
+            window.location.href = "{% url 'Home_Directeur' %}";
+        }
+    } else {
+        // Rediriger vers la page de connexion par défaut
+        window.location.href = "{% url 'SignInView' %}";
+    }
+}
+
+// Déclencher la redirection
+redirectToDashboard();
+
+</script>
 </body>
 </html>
