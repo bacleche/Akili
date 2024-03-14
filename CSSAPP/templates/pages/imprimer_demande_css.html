@@ -65,8 +65,12 @@
                 {{ demande.session_lic }}
             {% endif %}
         </li>
+        <li><span class="details-label">Niveau:</span> {{ demande.niveau }}</li>
     </ul>
 </div>
+
+<p> <br> Imprimer le : {{datey}} <br> Mr   {{user_data.nom|upper}} {{user_data.prenom}}</p>
+
 
 </body>
 </html>

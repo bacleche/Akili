@@ -573,17 +573,23 @@
           $('#createDocumentModal').modal('show');
       }
 
-      const documentSelect = document.getElementById('documentSelect');
-      const typeAttestation = document.getElementById('typeAttestation');
-      documentSelect.addEventListener('change', function() {
-          if (documentSelect.value === 'attestation') {
-              typeAttestation.disabled = false;
-              typeAttestation.classList.remove('hidden');
-          } else {
-              typeAttestation.disabled = true;
-              typeAttestation.classList.add('hidden');
-          }
+      const documentSelects = document.querySelectorAll('#documentSelect');
+      const typeAttestations = document.querySelectorAll('#typeAttestation');
+      
+      documentSelects.forEach(function(documentSelect, index) {
+          const typeAttestation = typeAttestations[index];
+      
+          documentSelect.addEventListener('change', function() {
+              if (documentSelect.value === 'attestation') {
+                  typeAttestation.disabled = false;
+                  typeAttestation.classList.remove('hidden');
+              } else {
+                  typeAttestation.disabled = true;
+                  typeAttestation.classList.add('hidden');
+              }
+          });
       });
+      
 
       $('.submit-form').submit(function (event) {
         event.preventDefault();

@@ -2,6 +2,8 @@ from django.urls import path
 from . import views
 from . import creationsdocuments
 
+#URLS POUR L'APP CSS
+
 urlpatterns = [
     path('css_space', views.cssWork, name='cssWork'),
     path('Profiles_css' , views.Profiles_css , name='Profiles_css'),
@@ -55,8 +57,15 @@ urlpatterns = [
     path('archive_documents_bulletins', views.archive_documents_bulletins, name='archive_documents_bulletins'),
     path('supprimer_bulletin_css', views.supprimer_bulletin_css, name='supprimer_bulletin_css'),
     path('supprimer_attestation_css', views.supprimer_attestation_css, name='supprimer_attestation_css'),
-
-
+    path('generer_toutes_demandes_csv', views.generer_toutes_demandes_csv, name='generer_toutes_demandes_csv'),
+    path('generer_toutes_demandes_csv_bulletins', views.generer_toutes_demandes_csv_bulletins, name='generer_toutes_demandes_csv_bulletins'),
+    path('supprimer_demandes_attestation_sup', views.supprimer_demandes_attestation_sup, name='supprimer_demandes_attestation_sup'),
+    path('confirmer_suppression_demandes_attestation', views.confirmer_suppression_demandes_attestation, name='confirmer_suppression_demandes_attestation'),
+    path('supprimer_demandes_bulletin_sup', views.supprimer_demandes_bulletin_sup, name='supprimer_demandes_bulletin_sup'),
+    path('confirmer_suppression_demandes_bulletin', views.confirmer_suppression_demandes_bulletin, name='confirmer_suppression_demandes_bulletin'),
+    path('imprimer_toutes_les_demandes_bulletin', views.imprimer_toutes_les_demandes_bulletin, name='imprimer_toutes_les_demandes_bulletin'),
+    path('imprimer_toutes_les_demandes_attestations_dem', views.imprimer_toutes_les_demandes_attestations_dem, name='imprimer_toutes_les_demandes_attestations_dem'),
+    
 
 
 

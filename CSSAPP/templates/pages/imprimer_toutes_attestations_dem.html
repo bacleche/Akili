@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impression de demandes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin: 0 auto;
+            width: 80%;
+            padding: 20px;
+        }
+        img {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+            height: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+        .details-list {
+            list-style: none;
+            padding: 0;
+        }
+        .details-list li {
+            margin-bottom: 10px;
+        }
+        .details-label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+{% for demande in demandes %}
+<div class="container">
+    <img src="http://localhost:8000/static/assets_dash/logocfi.png" alt="Logo CFI">
+    <h1>Impression de toutes les demandes d'attestations</h1>
+    <ul class="details-list">
+        <li><span class="details-label">Étudiant:</span> {{ demande.etudiant }}</li>
+        <li><span class="details-label">Date de Naissance:</span> {{ demande.date_nais }}</li>
+        <li><span class="details-label">N° Téléphone:</span> {{ demande.telephone }}</li>
+        <li><span class="details-label">Date de Demande:</span> {{ demande.date_poste_demande }}</li>
+        <li><span class="details-label">Objet de Demande:</span> {{ demande.objet_demande }}</li>
+        <li><span class="details-label">Filière:</span> {{ demande.filiere }}</li>
+        <li><span class="details-label">Cycle:</span> {{ demande.cycle }}</li>
+        <li><span class="details-label">Année académique:</span> {{ demande.annee_academique }}</li>
+        <li><span class="details-label">Mois:</span> {{ demande.mois }}</li>
+        <li><span class="details-label">Session:</span> 
+            {% if demande.session_dut %}
+                {{ demande.session_dut }}
+            {% else %}
+                {{ demande.session_lic }}
+            {% endif %}
+        </li>
+        <li><span class="details-label">Niveau:</span> {{ demande.niveau }}</li>
+    </ul>
+</div>
+{% endfor %}
+<p> <br> Imprimer le : {{datey}} <br> Mr   {{user_data.nom|upper}} {{user_data.prenom}}</p>
+
+</body>
+</html>

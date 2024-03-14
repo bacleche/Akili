@@ -31,6 +31,8 @@
                         </div>
                         {% endif %}
                         <div class="form-group">
+                            <input type="hidden" id="matricule" data-matricule="{{ request.session.matricule }}">
+                            <input type="hidden" id="role" data-role="{{ request.session.role }}">
                             <label for="your_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
                             <input type="email" name="email" id="your_name" placeholder="Votre Email"/>
                         </div>
@@ -60,33 +62,44 @@
 
 
 <script>
-  // Fonction pour rediriger l'utilisateur vers le bon tableau de bord
-function redirectToDashboard() {
-    // Récupérer le cookie "remember_me"
-    var rememberMeCookie = getCookie("remember_me");
-
-    // Récupérer le cookie "user_profile"
-    var userProfileCookie = getCookie("user_profile");
-
-    // Vérifier si l'utilisateur est authentifié
-    if (rememberMeCookie && userProfileCookie) {
-        // Rediriger vers la vue de connexion appropriée
-        if (userProfileCookie === "Etudiant") {
-            window.location.href = "{% url 'student_space' %}";
-        } else if (userProfileCookie === "CSS") {
-            window.location.href = "{% url 'cssWork' %}";
-        } else if (userProfileCookie === "Directeur") {
-            window.location.href = "{% url 'Home_Directeur' %}";
+    // Fonction de redirection vers le tableau de bord spécifique en fonction du rôle
+    function redirectToDashboard(role) {
+        switch (role) {
+            case 'Etudiant':
+                window.location.href = 'Etudiant_Space/student_space';
+                break;
+            case 'CSS':
+                window.location.href = 'Css_Space/css_space';
+                break;
+                
+                
+            case 'Directeur':
+                window.location.href = 'dcfi_space/Home_Directeur';
+                break;
+            default:
+                // Redirection par défaut si le rôle n'est pas reconnu
+                window.location.href = '/Login_akili/sign_in';
         }
-    } else {
-        // Rediriger vers la page de connexion par défaut
-        window.location.href = "{% url 'SignInView' %}";
     }
-}
 
-// Déclencher la redirection
-redirectToDashboard();
+    // Récupérer les valeurs de matricule et role
+    var matricule = document.getElementById('matricule').getAttribute('data-matricule');
+    var role = document.getElementById('role').getAttribute('data-role');
+    console.log(role)
 
+    // Vérifier si la case "Se souvenir de moi" est cochée dans la requête POST
+    {% if "remember-me" in request.POST %}
+        var rememberMeChecked = true;
+    {% else %}
+        var rememberMeChecked = false;
+    {% endif %}
+    
+    // Vérifier si l'utilisateur est connecté et la case "Se souvenir de moi" est cochée
+    if (matricule && role && rememberMeChecked) {
+        redirectToDashboard(role); // Rediriger vers le tableau de bord spécifique
+    }
 </script>
 </body>
 </html>
+
+

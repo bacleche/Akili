@@ -399,6 +399,10 @@
               {% else %}
                       <p>Aucune donnée correspondante.</p>
               {% endif %}
+
+                <a class="btn btn-warning" href="{% url 'imprimer_toutes_les_demandes_bulletin' %}">Imprimer Toutes les demandes</a>
+                <a class="btn btn-danger" href="{% url 'supprimer_demandes_bulletin_sup' %}">supprimer Toutes les demandes</a>
+                <a class="btn btn-success" href="{% url 'generer_toutes_demandes_csv_bulletins' %}">Générer  Tout en CSV</a>
             </div>
         </div>
         

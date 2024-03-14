@@ -395,8 +395,12 @@
                 {% else %}
                         <p>Aucune donnée correspondante.</p>
                 {% endif %}
+
+                <a class="btn btn-warning" href="{% url 'imprimer_toutes_les_demandes_attestations_dem' %}">Imprimer Toutes les demandes</a>
+                <a class="btn btn-danger" href="{% url 'supprimer_demandes_attestation_sup' %}">supprimer Toutes les demandes</a>
+                <a class="btn btn-success" href="{% url 'generer_toutes_demandes_csv' %}">Générer  Tout en CSV</a>
               </div>
-         
+            </div>
               {% for notification in notifications_non_lues %}
           <!-- Modal -->
             <div class="modal fade" id="notificationModal{{ notification.id }}" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">

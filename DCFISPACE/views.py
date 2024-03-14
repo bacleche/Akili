@@ -31,8 +31,22 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from django.urls import reverse
+from django.views.decorators.http import require_http_methods
 
 
+def login_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(reverse('SignInView'))  # Redirige vers la page de connexion si l'utilisateur n'est pas connecté
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
+
+
+@login_required
+@require_http_methods(["GET"])
 def Home_Directeur(request):
     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification' , 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
     print(user_data)
@@ -220,6 +234,8 @@ def signaler_css_bulletin_directeur(request, bulletin_id):
 
 
 def signer_attestation(request, attestation_id):
+    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+
     # Récupérer l'objet Attestation
     attestation = Attestation.objects.get(id=attestation_id)
 
@@ -233,7 +249,7 @@ def signer_attestation(request, attestation_id):
     # Ajouter le texte à chaque page du PDF existant
     for page_number in range(len(existing_pdf.pages)):
         page = existing_pdf.pages[page_number]
-        page_text = "Texte ajouté à l'attestation ✔️"
+        page_text = user_data['nom']+" "+user_data['prenom']+" Texte ajouté à l'attestation ✔️"
         buffer = BytesIO()
         c = canvas.Canvas(buffer, pagesize=letter)
         c.drawString(100, 200, page_text)  # Ajouter le texte à une position spécifique sur chaque page

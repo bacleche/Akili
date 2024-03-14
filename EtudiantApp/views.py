@@ -23,8 +23,22 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from django.urls import reverse
+from django.views.decorators.http import require_http_methods
 
 
+def login_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(reverse('SignInView'))  # Redirige vers la page de connexion si l'utilisateur n'est pas connecté
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
+
+
+@login_required
+@require_http_methods(["GET"])
 def EtudiantSPACE(request):
     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification' , 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
     print(user_data)
@@ -343,12 +357,61 @@ def modifier_demande(request, demande_id):
 
 
 
+# def registre_bulletins(request):
+#     user = request.user
+#     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
+
+#     if user_data.get('role') == 'Etudiant':
+#         bulletins = Bulletin.objects.filter(etudiant__user=user, is_transfer_etudiant=True , is_signed=True)
+#     else:
+#         # Gérez le cas où le type d'utilisateur n'est pas défini correctement
+#         bulletins = []
+
+#     context = {'user_data': user_data, 'bulletins': bulletins}
+#     return render(request, 'pages/support-bulletins.html', context)
+
+
+# def registre_bulletins(request):
+
+#     user = request.user
+#     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
+
+#     if user_data.get('role') == 'Etudiant':
+#         # Récupérer les attestations de l'utilisateur depuis la table Attestation
+#         bulletins = Bulletin.objects.filter(etudiant__user=user, is_transfer_etudiant=True, is_signed=True)
+        
+#         # Vérifier si certaines attestations ont été supprimées ou n'existent plus dans la table Attestation
+#         for bulletin in bulletins:
+#             if not Bulletin.objects.filter(id=bulletin.id).exists():
+#                 # Récupérer les attestations archivées depuis la table Archives
+#                 archive_bulletin = Archives_bulletins.objects.filter(etudiant__user=user, is_archived=True)
+
+#                 print(archive_bulletin)
+#                 # Ajouter les attestations archivées à la liste des attestations à afficher
+#                 bulletins |= archive_bulletin
+    
+#     else:
+#         # Gérez le cas où le type d'utilisateur n'est pas défini correctement
+#         bulletins = []
+
+#     context = {'user_data': user_data, 'bulletins': bulletins}
+#     return render(request, 'pages/support-bulletins.html', context)
+
+
 def registre_bulletins(request):
     user = request.user
     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
 
     if user_data.get('role') == 'Etudiant':
-        bulletins = Bulletin.objects.filter(etudiant__user=user, is_transfer_etudiant=True , is_signed=True)
+        # Récupérer les bulletins de l'utilisateur depuis la table Bulletin
+        bulletins = Bulletin.objects.filter(etudiant__user=user, is_transfer_etudiant=True, is_signed=True)
+        
+        # Récupérer les bulletins archivés de l'utilisateur depuis la table Archives_bulletins
+        archive_bulletins = Archives_bulletins.objects.filter(etudiant__user=user, is_archived=True)
+        
+        # Ajouter les bulletins archivés à la liste des bulletins à afficher
+        bulletins = list(bulletins) + list(archive_bulletins)
+    
     else:
         # Gérez le cas où le type d'utilisateur n'est pas défini correctement
         bulletins = []
@@ -389,7 +452,8 @@ def registre_attestations(request):
                 # Récupérer les attestations archivées depuis la table Archives
                 archive = Archives.objects.filter(etudiant__user=user, is_archived=True)
                 # Ajouter les attestations archivées à la liste des attestations à afficher
-                attestations |= archive
+                attestations = list(attestations) + list(archive)
+
     
     else:
         # Gérez le cas où le type d'utilisateur n'est pas défini correctement

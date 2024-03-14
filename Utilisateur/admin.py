@@ -5,7 +5,7 @@ from EtudiantApp.data_models.demande import Demande
 from EtudiantApp.data_models.memoire import Memoire
 from EtudiantApp.data_models.notifications import Notification
 from CSSAPP.data_models.css import CSS
-from CSSAPP.data_models.documents import Attestation , Bulletin
+from CSSAPP.data_models.documents import Attestation , Bulletin , Archives , Archives_bulletins
 
 from DCFISPACE.data_models.directeur import Directeur
 
@@ -82,3 +82,20 @@ class MemoireAdmin(admin.ModelAdmin):
     list_filter = ('date_poste', 'binome_notification_envoyee')
 
 admin.site.register(Memoire, MemoireAdmin)
+
+
+
+class ArchivesAdmin(admin.ModelAdmin):
+    list_display = ('etudiant','is_archived')
+    search_fields = ('etudiant', 'date_archivage')
+    list_filter = ('is_archived','date_archivage')
+
+admin.site.register(Archives, ArchivesAdmin)
+
+
+class ArchivesBulletinAdmin(admin.ModelAdmin):
+    list_display = ('etudiant','is_archived')
+    search_fields = ('etudiant', 'date_archivage')
+    list_filter = ('is_archived','date_archivage')
+
+admin.site.register(Archives_bulletins, ArchivesBulletinAdmin)

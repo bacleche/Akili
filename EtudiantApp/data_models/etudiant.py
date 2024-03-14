@@ -125,9 +125,16 @@ class Etudiant(Utilisateur):
 
         self.annee_academique = f'{start_year} - {end_year}'
 
+    def clean(self):
+        super().clean()
+        if self.cycle == 'licence' and self.niveaux.startswith('dut'):
+            raise ValidationError("Un étudiant en cycle licence ne peut pas avoir un niveau DUT.")
+        elif self.cycle == 'dut' and self.niveaux.startswith('licence'):
+            raise ValidationError("Un étudiant en cycle DUT ne peut pas avoir un niveau licence.")
+
     
     def __str__(self):
-          return f"{self.user.last_name} {self.user.first_name} {self.cycle}"
+          return f"{self.user.last_name} {self.user.first_name}"
 
 @receiver(pre_save, sender=Etudiant)
 def etudiant_pre_save(sender, instance, **kwargs):

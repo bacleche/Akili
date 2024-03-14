@@ -183,17 +183,18 @@
     <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
         <div class="container">
             <div class="text-center">
-                <h6 class="section-title bg-white text-center text-primary px-3">Testimonial</h6>
-                <h1 class="mb-5">Section des Memoires </h1>
+                <h6 class="section-title bg-white text-center text-primary px-3">Témoignages</h6>
+                <h1 class="mb-5">Section des Mémoires</h1>
             </div>
             <div class="owl-carousel testimonial-carousel position-relative">
-                {% for memoire in memoires %}
+                {% for memoire, etudiant_binome in memoires_etudiants.items %}
                 <div class="testimonial-item text-center">
-                    <img class="border rounded-circle p-2 mx-auto mb-3" src="{{ memoire.image.url }}" style="width: 80px; height: 80px;">
-                    <h5 class="mb-0">{{ memoire.titre }}</h5>
+                    <p>{{ memoire.titre }}</p>
                     <p>{{ memoire.date_poste }}</p>
                     <div class="testimonial-text bg-light text-center p-4">
-                        <p class="mb-0">{{ memoire.identite }} - {{memoire.identite}}</p>
+                        <p class="mb-3">{{ memoire.identite }} </p>
+                        <p class="mb-3">Étudiant binôme : {{ etudiant_binome.user.first_name }} {{ etudiant_binome.user.last_name }}</p>
+                        <p class="mb-3">{{ etudiant_binome.filiere }}</p>
                         <div class="mt-3">
                             <a href="{{ memoire.document.url }}" class="btn btn-primary" download>Télécharger</a>
                             <a href="{{ memoire.document.url }}" class="btn btn-secondary" target="_blank">Visualiser</a>
@@ -201,10 +202,29 @@
                     </div>
                 </div>
                 {% endfor %}
+                
+                <!-- Ajout pour les mémoires sans binôme -->
+                {% for memoire_sans_binome in memoires_sans_binome %}
+                <div class="testimonial-item text-center">
+                    <p>{{ memoire_sans_binome.titre }}</p>
+                    <p>{{ memoire_sans_binome.date_poste }}</p>
+                    <div class="testimonial-text bg-light text-center p-4">
+                        <p class="mb-3">{{ memoire_sans_binome.identite }}</p>
+                        <p class="mb-3">Étudiant sans binôme</p>
+                        <p class="mb-3">{{ memoire_sans_binome.identite.filiere }}</p>
+
+                        <div class="mt-3">
+                            <a href="{{ memoire_sans_binome.document.url }}" class="btn btn-primary" download>Télécharger</a>
+                            <a href="{{ memoire_sans_binome.document.url }}" class="btn btn-secondary" target="_blank">Visualiser</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
-            
         </div>
     </div>
+    
+
     <!-- Testimonial End -->
         
 
@@ -303,6 +323,18 @@
 
     <!-- Template Javascript -->
     <script src="{% static 'assets/js/main.js' %}"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/chemin/vers/service-worker.js').then(function(registration) {
+              console.log('ServiceWorker enregistré avec succès : ', registration);
+            }, function(err) {
+              console.error('Erreur lors de l\'enregistrement du ServiceWorker : ', err);
+            });
+          });
+        }
+      </script>
+      
 </body>
 
 </html>

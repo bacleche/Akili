@@ -19,8 +19,21 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 # Create your views here.
+from django.urls import reverse
+from django.views.decorators.http import require_http_methods
+
+#VUES POUR L'APP CSS
+
+def login_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(reverse('SignInView'))  # Redirige vers la page de connexion si l'utilisateur n'est pas connecté
+        return view_func(request, *args, **kwargs)
+    return wrapper
 
 
+@login_required
+@require_http_methods(["GET"])
 def cssWork(request):
     
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
@@ -174,13 +187,59 @@ def generer_fichier_csv(request, demande_id):
     writer.writerow(['Date d\emission', 'Etudiant', 'Objet' , 'Genre' , 'Telephone','Date de naissance' , 'Session DUT' , 'Session LIC' , 'Année Academique' , 'Mois' ,'Filière' , 'Cycle' , 'Niveau'])  # Remplacez avec les noms de vos champs
 
     # Écrire les données de la demande dans le fichier CSV
-    writer.writerow([demande.date_poste_demande, demande.etudiant, demande.objet_demande , demande.genre , demande.telephone, demande.date_nais, demande.session_dut, demande.session_lic, demande.annee_academique, demande.mois, demande.filiere, demande.niveau])  # Remplacez avec les noms de vos champs
+    writer.writerow([demande.date_poste_demande, demande.etudiant, demande.objet_demande , demande.genre , demande.telephone, demande.date_nais, demande.session_dut, demande.session_lic, demande.annee_academique, demande.mois, demande.filiere, demande.cycle,  demande.niveau])  # Remplacez avec les noms de vos champs
 
     # Vous pouvez ajouter plus de lignes si nécessaire
 
     return response
 
 
+#csv pour toutes les demandes 
+def generer_toutes_demandes_csv(request):
+    # Récupérer toutes les demandes
+    attestation_types_csv = ['attestation_frequentation', 'attestation_reussite']
+    demandes = Demande.objects.filter(objet_demande__in=attestation_types_csv)
+
+    # Créer une réponse avec le type MIME approprié pour CSV
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="toutes_demandes.csv"'
+
+    # Créer un écrivain CSV
+    writer = csv.writer(response)
+
+    # Écrire l'en-tête du fichier CSV
+    writer.writerow(['Date d\emission', 'Etudiant', 'Objet' , 'Genre' , 'Telephone','Date de naissance' , 'Session DUT' , 'Session LIC' , 'Année Academique' , 'Mois' ,'Filière' , 'Cycle' , 'Niveau'])  # Remplacez avec les noms de vos champs
+
+    # Écrire les données de chaque demande dans le fichier CSV
+    for demande in demandes:
+        writer.writerow([demande.date_poste_demande, demande.etudiant, demande.objet_demande , demande.genre , demande.telephone, demande.date_nais, demande.session_dut, demande.session_lic, demande.annee_academique, demande.mois, demande.filiere, demande.cycle,  demande.niveau])  # Remplacez avec les noms de vos champs
+
+    return response
+
+
+
+
+def generer_toutes_demandes_csv_bulletins(request):
+    # Récupérer toutes les demandes
+    attestation_types_csv = ['attestation_frequentation', 'attestation_reussite']
+    demandes = Demande.objects.filter(objet_demande='bulletin')
+
+    # Créer une réponse avec le type MIME approprié pour CSV
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="toutes_demandes.csv"'
+
+    # Créer un écrivain CSV
+    writer = csv.writer(response)
+
+    # Écrire l'en-tête du fichier CSV
+    writer.writerow(['Date d\emission', 'Etudiant', 'Objet' , 'Genre' , 'Telephone','Date de naissance' , 'Session DUT' , 'Session LIC' , 'Année Academique' , 'Mois' ,'Filière' , 'Cycle' , 'Niveau'])  # Remplacez avec les noms de vos champs
+
+    # Écrire les données de chaque demande dans le fichier CSV
+    for demande in demandes:
+        writer.writerow([demande.date_poste_demande, demande.etudiant, demande.objet_demande , demande.genre , demande.telephone, demande.date_nais, demande.session_dut, demande.session_lic, demande.annee_academique, demande.mois, demande.filiere, demande.cycle,  demande.niveau])  # Remplacez avec les noms de vos champs
+
+    return response
+#fin csv pour toutes demandes
 
 # def recherche_demande_par_etudiant(request):
 #     user = request.user
@@ -717,10 +776,10 @@ def signaler_css_attestation_etudiant(request, attestation_id):
     # attestation.save()
     date_poste = date.today()
 
-    titre_poste = "Attestation Signé"  
-    contenu_notification = f"{attestation.profile_directeur.user.last_name} {attestation.profile_directeur.user.first_name} vient d'appliquer une action  : {titre_poste}."
+    titre_poste = "Attestation a été Signé"  
+    contenu_notification = f"Votre : {titre_poste}, veuillez télécharger ou visualiser"
     date_creation = date_poste
-    notification = Notification(destinataire_css=attestation.profiles_css, expediteur_dir=attestation.profile_directeur ,  contenu=contenu_notification, date_creation=date_creation )
+    notification = Notification(destinataire=attestation.etudiant, expediteur_css=attestation.profiles_css ,  contenu=contenu_notification, date_creation=date_creation )
     print('est arrivé')
     notification.save()
     print(notification)
@@ -734,10 +793,10 @@ def signaler_css_bulletin_etudiant(request, bulletin_id):
     bulletin.is_transfer_etudiant = True
     date_poste = date.today()
 
-    titre_poste = "Bulletin Signé"  
-    contenu_notification = f"{bulletin.profile_directeur.user.last_name} {bulletin.profile_directeur.user.first_name} vient d'appliquer une action  : {titre_poste}."
+    titre_poste = "Bulletin a été Signé"  
+    contenu_notification = f"Votre : {titre_poste}, veuillez télécharger ou visualiser"
     date_creation = date_poste
-    notification = Notification(destinataire_css=bulletin.profiles_css, expediteur_dir=bulletin.profile_directeur ,  contenu=contenu_notification, date_creation=date_creation )
+    notification = Notification(destinataire=bulletin.etudiant, expediteur_css=bulletin.profiles_css ,  contenu=contenu_notification, date_creation=date_creation )
     print('est arrivé')
     notification.save()
     print(notification)
@@ -866,6 +925,137 @@ def supprimer_attestation_css(request):
     attestations = Attestation.objects.all().delete()
     context = {'user_data':user_data}
     return redirect('liste_Attestations')
+
+
+
+
+def supprimer_demandes_attestation_sup(request):
+    # Récupérer toutes les demandes avec l'objet "bulletin"
+    user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
+
+    attestation_types = ['attestation_frequentation', 'attestation_reussite']  # Adjust these based on your actual types
+
+    demandes_attestation = Demande.objects.filter(objet_demande__in=attestation_types)
+
+    # Afficher une page de confirmation avec la liste des demandes à supprimer
+    return render(request, 'pages/confirmer_suppression_demandes_attestation.html', {'demandes_attestation': demandes_attestation, 'user_data': user_data})
+
+def confirmer_suppression_demandes_attestation(request):
+    if request.method == 'POST':
+        # Supprimer toutes les demandes avec l'objet "bulletin"
+        attestation_types = ['attestation_frequentation', 'attestation_reussite']  # Adjust these based on your actual types
+        
+        Demande.objects.filter(objet_demande=attestation_types).delete()
+        
+        # Rediriger vers une autre vue après la suppression
+        return redirect('list_demandes')
+    else:
+        # Si la méthode HTTP n'est pas POST, rediriger vers la page de confirmation
+        return redirect('supprimer_demandes_attestation_sup')
+    
+
+
+def supprimer_demandes_bulletin_sup(request):
+    # Récupérer toutes les demandes avec l'objet "bulletin"
+    user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
+    demandes_bulletin = Demande.objects.filter(objet_demande='bulletin')
+
+    # Afficher une page de confirmation avec la liste des demandes à supprimer
+    return render(request, 'pages/confirmer_suppression_demandes_bulletin.html', {'demandes_bulletin': demandes_bulletin, 'user_data': user_data})
+
+def confirmer_suppression_demandes_bulletin(request):
+    if request.method == 'POST':
+        # Supprimer toutes les demandes avec l'objet "bulletin"
+        Demande.objects.filter(objet_demande='bulletin').delete()
+        
+        # Rediriger vers une autre vue après la suppression
+        return redirect('list_bulletin_demandes')
+    else:
+        # Si la méthode HTTP n'est pas POST, rediriger vers la page de confirmation
+        return redirect('supprimer_demandes_bulletin')
+
+
+
+
+
+
+def imprimer_toutes_les_demandes_bulletin(request):
+    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+
+    # Filtrer les demandes dont l'objet est "bulletin"
+    demandes = Demande.objects.filter(objet_demande='bulletin')
+    datey = date.today()
+
+    # Chemin du template HTML à utiliser pour générer le PDF
+    template_path = 'pages/imprimer_toutes_bulletins.html'
+
+    # Initialiser une liste pour stocker les PDF générés
+    pdfs = []
+
+    # Pour chaque demande, générer le PDF et l'ajouter à la liste des PDFs
+    for demande in demandes:
+        context = {'demandes': demandes, 'user_data': user_data, 'datey': datey}
+        template = get_template(template_path)
+        html = template.render(context)
+
+        # Créer un fichier PDF
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="impression_demande_{demande}.pdf"'
+
+        # Générer le PDF
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        
+        # Si le PDF a été généré avec succès, ajoutez-le à la liste des PDFs
+        if not pisa_status.err:
+            pdfs.append(response)
+
+    # Concaténer tous les PDFs en une seule réponse
+    final_pdf = b''.join([pdf.content for pdf in pdfs])
+    response = HttpResponse(final_pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="impression_demandes_bulletin.pdf"'
+    return response
+
+
+
+def imprimer_toutes_les_demandes_attestations_dem(request):
+    user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+    attestation_types = ['attestation_frequentation', 'attestation_reussite']  # Adjust these based on your actual types
+
+    # Filtrer les demandes dont l'objet est "bulletin"
+    demandes = Demande.objects.filter(objet_demande__in=attestation_types)
+    datey = date.today()
+
+    # Chemin du template HTML à utiliser pour générer le PDF
+    template_path = 'pages/imprimer_toutes_attestations_dem.html'
+
+    # Initialiser une liste pour stocker les PDF générés
+    pdfs = []
+
+    # Pour chaque demande, générer le PDF et l'ajouter à la liste des PDFs
+    for demande in demandes:
+        context = {'demandes': demandes, 'user_data': user_data, 'datey': datey}
+        template = get_template(template_path)
+        html = template.render(context)
+
+        # Créer un fichier PDF
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="impression_demande_attestation_{demande}.pdf"'
+
+        # Générer le PDF
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        
+        # Si le PDF a été généré avec succès, ajoutez-le à la liste des PDFs
+        if not pisa_status.err:
+            pdfs.append(response)
+
+    # Concaténer tous les PDFs en une seule réponse
+    final_pdf = b''.join([pdf.content for pdf in pdfs])
+    response = HttpResponse(final_pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="impression_demandes_bulletin.pdf"'
+    return response
+
+
+
 
 def custom_logout(request):
     logout(request)

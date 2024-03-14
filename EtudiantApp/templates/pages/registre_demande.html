@@ -250,7 +250,7 @@
               </a>
               <ul class="treeview-menu">
 
-                <li><a href=""><i class="fa fa-circle-o"></i>Mes Attestations</a></li>
+                <li><a href="{% url 'registre_attestations' %}"><i class="fa fa-circle-o"></i>Mes Attestations</a></li>
                 <li><a href="{% url 'registre_bulletins' %}"><i class="fa fa-circle-o"></i>Mes Bulletins</a></li>
               </ul>
             </li>
@@ -324,7 +324,7 @@
                       <td>
                           <a class="btn btn-danger" href="{% url 'supprimer_demande' demande_id=demande.id %}">Supprimer</a> |
                           <a class="btn btn-warning" href="{% url 'modifier_demande' demande_id=demande.id %}">Modifier</a> |
-                          <a class="btn btn-primary" href="{% url 'imprimer_demande' demande_id=demande.id %}">Imprimer</a>
+                          {% comment %} <a class="btn btn-primary" href="{% url 'imprimer_demande' demande_id=demande.id %}">Imprimer</a> {% endcomment %}
                       </td>
                   </tr>
               {% endfor %}
