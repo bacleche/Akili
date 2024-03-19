@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from . import creationsdocuments
+from . import impression_specialise
+
 
 #URLS POUR L'APP CSS
 
@@ -65,8 +67,21 @@ urlpatterns = [
     path('confirmer_suppression_demandes_bulletin', views.confirmer_suppression_demandes_bulletin, name='confirmer_suppression_demandes_bulletin'),
     path('imprimer_toutes_les_demandes_bulletin', views.imprimer_toutes_les_demandes_bulletin, name='imprimer_toutes_les_demandes_bulletin'),
     path('imprimer_toutes_les_demandes_attestations_dem', views.imprimer_toutes_les_demandes_attestations_dem, name='imprimer_toutes_les_demandes_attestations_dem'),
-    
+    path('imprimer_etudiant_lic1', impression_specialise.imprimer_etudiant_lic1, name='imprimer_etudiant_lic1'),
+    path('imprimer_etudiant_lic2', impression_specialise.imprimer_etudiant_lic2, name='imprimer_etudiant_lic2'),
+    path('imprimer_etudiant_lic3', impression_specialise.imprimer_etudiant_lic3, name='imprimer_etudiant_lic3'),
+    path('imprimer_etudiant_admin1', impression_specialise.imprimer_etudiant_admin1, name='imprimer_etudiant_admin1'),
+    path('imprimer_etudiant_admin2', impression_specialise.imprimer_etudiant_admin2, name='imprimer_etudiant_admin2'),
+    path('imprimer_etudiant_admin3', impression_specialise.imprimer_etudiant_admin3, name='imprimer_etudiant_admin3'),
+    path('imprimer_etudiant_dut_admin1', impression_specialise.imprimer_etudiant_dut_admin1, name='imprimer_etudiant_dut_admin1'),
+    path('imprimer_etudiant_dut_admin2', impression_specialise.imprimer_etudiant_dut_admin2, name='imprimer_etudiant_dut_admin2'),
 
+    path('imprimer_etudiant_dut_informatique1', impression_specialise.imprimer_etudiant_dut_informatique1, name='imprimer_etudiant_dut_informatique1'),
+    path('imprimer_etudiant_dut_informatique2', impression_specialise.imprimer_etudiant_dut_informatique2, name='imprimer_etudiant_dut_informatique2'),
+
+
+
+    
 
 
 

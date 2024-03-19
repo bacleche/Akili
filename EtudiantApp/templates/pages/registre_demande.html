@@ -322,8 +322,15 @@
                       <td>{{ demande.objet_demande }}</td>
                       <td>{{ demande.identite_receptioniste }}</td>
                       <td>
+                        <style>
+                          .btn-warning-sec{
+                            background-color:#f39c12;
+                            color:#fff;
+                          }
+                        </style>
+                        
                           <a class="btn btn-danger" href="{% url 'supprimer_demande' demande_id=demande.id %}">Supprimer</a> |
-                          <a class="btn btn-warning" href="{% url 'modifier_demande' demande_id=demande.id %}">Modifier</a> |
+                          <a class="btn btn-warning-sec" href="{% url 'modifier_demande' demande_id=demande.id %}">Modifier</a> 
                           {% comment %} <a class="btn btn-primary" href="{% url 'imprimer_demande' demande_id=demande.id %}">Imprimer</a> {% endcomment %}
                       </td>
                   </tr>
