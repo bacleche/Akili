@@ -391,6 +391,7 @@
                 });
     
                 $('#notificationModal' + notificationId).modal('hide');
+                reloadPage()
                 
             },
             error: function (error) {
@@ -438,6 +439,8 @@
                 });
     
                 $('#notificationModal' + notificationId).modal('hide');
+                reloadPage()
+
             },
             error: function (error) {
                 console.error('Erreur lors du rejet de la notification:', error);
@@ -460,6 +463,7 @@
             console.log('reponse compris');
             // Logique pour créer une nouvelle notification à l'expéditeur
             $('#notificationModal' + notificationId).modal('hide');
+            reloadPage()
         },
         error: function (error) {
             console.error('Erreur lors de la comprehension  de la reponse:', error);
@@ -467,6 +471,10 @@
         }
     });
       
+    }
+
+    function reloadPage() {
+      location.reload();
     }
   </script>
     <!-- jQuery 2.1.3 -->

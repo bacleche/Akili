@@ -323,17 +323,7 @@
 
     <!-- Template Javascript -->
     <script src="{% static 'assets/js/main.js' %}"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-          window.addEventListener('load', function() {
-            navigator.serviceWorker.register('/chemin/vers/service-worker.js').then(function(registration) {
-              console.log('ServiceWorker enregistré avec succès : ', registration);
-            }, function(err) {
-              console.error('Erreur lors de l\'enregistrement du ServiceWorker : ', err);
-            });
-          });
-        }
-      </script>
+    
       
 </body>
 

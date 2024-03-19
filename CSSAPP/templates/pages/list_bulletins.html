@@ -468,6 +468,7 @@
               console.log('reponse compris');
               // Logique pour créer une nouvelle notification à l'expéditeur
               $('#notificationModal' + notificationId).modal('hide');
+              reloadPage()
           },
           error: function (error) {
               console.error('Erreur lors de la comprehension  de la reponse:', error);
@@ -476,14 +477,18 @@
       });
         
       }
+
+      function reloadPage() {
+        location.reload();
+      }
     </script>
 
     <script>
 
-      function removeAccents(str) {
-        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }
-  
+          function removeAccents(str) {
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        }
+      
           $(document).ready(function() {
             // Utilisation de l'écouteur de saisie sur le champ de recherche
             $('#searchBar').on('keyup', function() {

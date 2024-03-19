@@ -40,10 +40,10 @@
                             <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
                             <input type="password" name="your_pass" id="your_pass" placeholder="Password"/>
                         </div>
-                        <div class="form-group">
+                        {% comment %} <div class="form-group">
                             <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
                             <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
-                        </div>
+                        </div> {% endcomment %}
                         <div class="form-group form-button">
                             <input type="submit" name="signin" id="signin" class="form-submit" value="Log in"/>
                         </div>
@@ -63,41 +63,7 @@
 
 <script>
     // Fonction de redirection vers le tableau de bord spécifique en fonction du rôle
-    function redirectToDashboard(role) {
-        switch (role) {
-            case 'Etudiant':
-                window.location.href = 'Etudiant_Space/student_space';
-                break;
-            case 'CSS':
-                window.location.href = 'Css_Space/css_space';
-                break;
-                
-                
-            case 'Directeur':
-                window.location.href = 'dcfi_space/Home_Directeur';
-                break;
-            default:
-                // Redirection par défaut si le rôle n'est pas reconnu
-                window.location.href = '/Login_akili/sign_in';
-        }
-    }
-
-    // Récupérer les valeurs de matricule et role
-    var matricule = document.getElementById('matricule').getAttribute('data-matricule');
-    var role = document.getElementById('role').getAttribute('data-role');
-    console.log(role)
-
-    // Vérifier si la case "Se souvenir de moi" est cochée dans la requête POST
-    {% if "remember-me" in request.POST %}
-        var rememberMeChecked = true;
-    {% else %}
-        var rememberMeChecked = false;
-    {% endif %}
-    
-    // Vérifier si l'utilisateur est connecté et la case "Se souvenir de moi" est cochée
-    if (matricule && role && rememberMeChecked) {
-        redirectToDashboard(role); // Rediriger vers le tableau de bord spécifique
-    }
+  
 </script>
 </body>
 </html>

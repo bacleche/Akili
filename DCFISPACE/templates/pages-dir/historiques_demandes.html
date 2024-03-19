@@ -639,5 +639,35 @@
 
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="{% static 'assets_dash/dist/js/pages/dashboard.js' %}" type="text/javascript"></script>
+
+    <script>
+      
+      function compriS(notificationId) {
+        var url = "{% url 'marquer_notification_lue' 0 %}".replace('0', notificationId);
+        $.ajax({
+          type: 'POST',
+          url: url,
+          data: {
+              'action': 'compris',
+              'csrfmiddlewaretoken': '{{ csrf_token }}',
+          },
+          success: function (data) {
+              console.log('reponse compris');
+              // Logique pour créer une nouvelle notification à l'expéditeur
+              $('#notificationModal' + notificationId).modal('hide');
+              reloadPage()
+          },
+          error: function (error) {
+              console.error('Erreur lors de la comprehension  de la reponse:', error);
+              console.log('Erreur détaillée:', error.responseText);
+          }
+      });
+        
+      }
+
+      function reloadPage() {
+        location.reload();
+      }
+    </script>
   </body>
 </html>
