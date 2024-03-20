@@ -31,6 +31,8 @@
                         </div>
                         {% endif %}
                         <div class="form-group">
+                            <input type="hidden" id="matricule" data-matricule="{{ request.session.matricule }}">
+                            <input type="hidden" id="role" data-role="{{ request.session.role }}">
                             <label for="your_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
                             <input type="email" name="email" id="your_name" placeholder="Votre Email"/>
                         </div>
@@ -38,22 +40,15 @@
                             <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
                             <input type="password" name="your_pass" id="your_pass" placeholder="Password"/>
                         </div>
-                        <div class="form-group">
+                        {% comment %} <div class="form-group">
                             <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
                             <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
-                        </div>
+                        </div> {% endcomment %}
                         <div class="form-group form-button">
                             <input type="submit" name="signin" id="signin" class="form-submit" value="Log in"/>
                         </div>
                     </form>
-                    <div class="social-login">
-                        <span class="social-label">Or login with</span>
-                        <ul class="socials">
-                            <li><a href="#"><i class="display-flex-center zmdi zmdi-facebook"></i></a></li>
-                            <li><a href="#"><i class="display-flex-center zmdi zmdi-twitter"></i></a></li>
-                            <li><a href="#"><i class="display-flex-center zmdi zmdi-google"></i></a></li>
-                        </ul>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -64,5 +59,13 @@
 
 <script src="{% static 'assets2/vendor/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'assets2/js/main.js' %}"></script>
+
+
+<script>
+    // Fonction de redirection vers le tableau de bord spécifique en fonction du rôle
+  
+</script>
 </body>
 </html>
+
+

@@ -1,0 +1,83 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impression Attestation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin: 0 auto;
+            width: 80%;
+        }
+        table {
+            width: 100%;
+            height: 50px;
+            border-collapse: collapse;
+        }
+        th, td {
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        img {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+  <img src="http://localhost:8000/static/assets_dash/logocfi.png" alt="Logo CFI">
+
+  <br>
+  <h1> Liste Imprimée des attestations traité et en cours de traitements </h1>
+  <br>
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Etudiant</th>
+                    <th>Date de création</th>
+                    <th>Cycle</th>
+                    <th>Niveau</th>
+                    <th>Filière</th>
+                    <th>Type de Document</th>
+                    <th></th>
+                    <th>Etat</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attestation in attestations %}
+                <tr>
+                    <td>{{ attestation.etudiant }}</td>
+                    <td>{{ attestation.date_register }}</td>
+                    <td>{{ attestation.etudiant.cycle }}</td>
+                    <td>{{ attestation.etudiant.niveaux }}</td>
+                    <td>{{ attestation.etudiant.filiere }}</td>
+                    <td>{{ attestation.types_attestation }}</td>
+                    <td></td>
+                    <td>{% if attestation.is_signed %}Signé{% else %}Non signé{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <div style="display: flex; justify-content: space-between;">
+      <p>Impression effectuée le : {{datey}}</p>
+  </div>
+  <p>Mr   {{user_data.nom|upper}} {{user_data.prenom}}</p>
+  
+
+
+
+</body>
+</html>

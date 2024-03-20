@@ -3,14 +3,11 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from Utilisateur.data_models.utilisateur import Utilisateur , UtilisateurManager
 
 
-
-CIVILITE_CHOICES = [
-    ('marié', 'MARIE'),
-    ('veuf(ve)', 'VEUF(VE)'),
-    ('célibataire', 'CELIBATAIRE'),
-]
+class EtudiantManager(UtilisateurManager):
+    pass
 
 NIVEAUX_CHOICES = [
     ('licence1', 'LICENCE1'),
@@ -31,8 +28,8 @@ FILIERE_CHOICES = [
 ]
 
 STATUT_CHOICES = [
-    ('En Frequentation', 'En Fréquentation'),
-    ('Ancien etudiant', 'Ancien étudiant'),
+    ('En Fréquentation', 'En Fréquentation'),
+    ('Ancien étudiant', 'Ancien étudiant'),
 ]
 
 MOIS_CHOICES = [
@@ -60,42 +57,22 @@ ANNEE_ACADEMIQUE_CHOICES = [
     ('2029 - 2030', '2029 - 2030'),
 ]
 
-class Etudiant(models.Model):
-    # Vos autres champs
+class Etudiant(Utilisateur):
 
     matricule = models.CharField(max_length=20, unique=True, blank=True, editable=False)
     Identification = models.CharField(max_length=20 , unique=True , blank=True , editable=False)
-    nom = models.CharField(max_length=255)
-    prenom = models.CharField(max_length=255)
-    telephone = models.CharField(max_length=255)
-    date_nais = models.DateField()
-    civilite = models.CharField(max_length=20, choices=CIVILITE_CHOICES , default='Célibataire')
     cycle = models.CharField(max_length=20, choices=CYCLE_CHOICES , default='licence')
     filiere = models.CharField(max_length=20, choices=FILIERE_CHOICES , default='informatique')
     niveaux = models.CharField(max_length=20, choices=NIVEAUX_CHOICES , default='licence1')
-    statut = models.CharField(max_length=20, choices=STATUT_CHOICES , default='En Frequentation')
-    role = models.CharField(max_length=10, default='etudiant', editable=True)
+    statut = models.CharField(max_length=20, choices=STATUT_CHOICES , default='En Fréquentation')
     mois_debut_annee_academique = models.IntegerField(choices=MOIS_CHOICES, default=9)  # Choisissez le mois de début de l'année académique
     annee_academique = models.CharField(max_length=19, choices=ANNEE_ACADEMIQUE_CHOICES , default='2023 - 2024')  # Champ pour l'année académique au format "AAAA - AAAA"
     annee_frequentation_fin = models.DateField(blank=True, null=True)
-    email = models.EmailField(unique=True , default=None)
-    genre = models.CharField(max_length=10, choices=[('Homme', 'Homme'), ('Femme', 'Femme')] , default='Homme')
-    mot_de_passe = models.CharField(max_length=255 , default=None)
-    confirmer_mot_de_passe = models.CharField(max_length=255 , default=None)
-    imagesprofiles = models.ImageField(upload_to='images/',max_length=500,default='../static/assets_dash/r.jpg') 
+
     
+    objects = EtudiantManager()
 
 
-    def clean(self):
-        # Assurez-vous que les mots de passe ont au moins 8 caractères
-        if len(self.mot_de_passe) < 8:
-            raise ValidationError("Le mot de passe doit comporter au moins 8 caractères.")
-        if len(self.confirmer_mot_de_passe) < 8:
-            raise ValidationError("La confirmation du mot de passe doit comporter au moins 8 caractères.")
-        
-        # Vérifiez que les deux champs de mot de passe sont identiques
-        if self.mot_de_passe != self.confirmer_mot_de_passe:
-            raise ValidationError("Les mots de passe ne correspondent pas.")
         
     def save(self, *args, **kwargs):
         if not self.matricule:
@@ -103,8 +80,6 @@ class Etudiant(models.Model):
             self.Identification = self.generate_identification()
 
         self.clean() 
-        
-        
 
         self.update_annee_academique()
         super(Etudiant, self).save(*args, **kwargs)
@@ -150,9 +125,16 @@ class Etudiant(models.Model):
 
         self.annee_academique = f'{start_year} - {end_year}'
 
+    def clean(self):
+        super().clean()
+        if self.cycle == 'licence' and self.niveaux.startswith('dut'):
+            raise ValidationError("Un étudiant en cycle licence ne peut pas avoir un niveau DUT.")
+        elif self.cycle == 'dut' and self.niveaux.startswith('licence'):
+            raise ValidationError("Un étudiant en cycle DUT ne peut pas avoir un niveau licence.")
+
     
     def __str__(self):
-        return f"{self.nom} {self.prenom} {self.cycle}"
+          return f"{self.user.last_name} {self.user.first_name}"
 
 @receiver(pre_save, sender=Etudiant)
 def etudiant_pre_save(sender, instance, **kwargs):
@@ -165,5 +147,5 @@ def etudiant_pre_save(sender, instance, **kwargs):
     if instance.annee_frequentation_fin is not None:
         current_year = timezone.now().year
         if instance.annee_frequentation_fin == current_year:
-            instance.statut = 'Ancien etudiant'
+            instance.statut = 'Ancien étudiant'
 
