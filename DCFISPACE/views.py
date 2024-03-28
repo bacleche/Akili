@@ -5,6 +5,8 @@ from CSSAPP.data_models.documents import *
 from PyPDF2 import PdfReader
 from PyPDF2 import PdfWriter
 from django.conf import settings
+from PIL import Image, ImageDraw, ImageOps
+
 import os
 from django.db.models import Q
 import shutil
@@ -235,7 +237,7 @@ def signaler_css_bulletin_directeur(request, bulletin_id):
 
 def signer_attestation(request, attestation_id):
     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
-
+    nom = user_data.get('nom')
     # Récupérer l'objet Attestation
     attestation = Attestation.objects.get(id=attestation_id)
 
@@ -249,7 +251,7 @@ def signer_attestation(request, attestation_id):
     # Ajouter le texte à chaque page du PDF existant
     for page_number in range(len(existing_pdf.pages)):
         page = existing_pdf.pages[page_number]
-        page_text = user_data['nom']+" "+user_data['prenom']+" Texte ajouté à l'attestation ✔️"
+        page_text = f"{nom} a signé cette attestation."  
         buffer = BytesIO()
         c = canvas.Canvas(buffer, pagesize=letter)
         c.drawString(100, 200, page_text)  # Ajouter le texte à une position spécifique sur chaque page
@@ -305,9 +307,55 @@ def recherche_Attestations_directeur(request):
 
 
 
+# def signer_buletins(request, bulletin_id):
+#     # Récupérer l'objet Attestation
+#     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles', 'signature']}
+
+#     bulletin = Bulletin.objects.get(id=bulletin_id)
+#     # nom = user_data.get('nom')
+#     directeur = Directeur.objects.get(user=request.user)
+#     signature_image = directeur.signature
+#     # Ouvrir le PDF existant
+#     existing_pdf = PdfReader(bulletin.file.path)
+
+#     # Créer un buffer pour stocker le PDF modifié
+#     output_buffer = BytesIO()
+#     pdf_writer = PdfWriter(output_buffer)
+
+#     # Ajouter le texte à chaque page du PDF existant
+#     for page_number in range(len(existing_pdf.pages)):
+#         page = existing_pdf.pages[page_number]
+#         page_text = f"{nom} a signé ce bulletin."  
+#         buffer = BytesIO()
+#         c = canvas.Canvas(buffer, pagesize=letter)
+#         c.drawString(100, 200, page_text)  # Ajouter le texte à une position spécifique sur chaque page
+#         c.save()
+#         buffer.seek(0)
+#         overlay_pdf = PdfReader(buffer)
+#         page.merge_page(overlay_pdf.pages[0])
+#         pdf_writer.add_page(page)
+
+#     # Écrire le PDF modifié dans le buffer
+#     pdf_writer.write(output_buffer)
+#     output_buffer.seek(0)
+
+#     # Écrire le contenu du buffer dans le fichier existant
+#     with open(bulletin.file.path, 'wb') as file:
+#         file.write(output_buffer.getvalue())
+
+#     bulletin.is_signed = True
+#     bulletin.save()
+#     messages.success(request, "Le Bulletin  a été signée avec succès.")
+#     # Rediriger vers une vue spécifique
+#     return redirect('liste_Bulletins_directeur')
+
+
 def signer_buletins(request, bulletin_id):
-    # Récupérer l'objet Attestation
+    # Récupérer l'objet Bulletin
     bulletin = Bulletin.objects.get(id=bulletin_id)
+
+    # Récupérer l'objet Directeur
+    directeur = Directeur.objects.get(user=request.user)
 
     # Ouvrir le PDF existant
     existing_pdf = PdfReader(bulletin.file.path)
@@ -316,17 +364,37 @@ def signer_buletins(request, bulletin_id):
     output_buffer = BytesIO()
     pdf_writer = PdfWriter(output_buffer)
 
-    # Ajouter le texte à chaque page du PDF existant
+    # Ajouter l'image de la signature à chaque page du PDF existant
     for page_number in range(len(existing_pdf.pages)):
-        page = existing_pdf.pages[page_number]
-        page_text = "Texte ajouté au bulletin  ✔️"
+        try:
+            page = existing_pdf.pages[page_number]
+        except IndexError:
+        # Gérer l'erreur lorsque le numéro de page est hors limite
+            continue
+
+        # Créer une page tampon vide
         buffer = BytesIO()
         c = canvas.Canvas(buffer, pagesize=letter)
-        c.drawString(100, 200, page_text)  # Ajouter le texte à une position spécifique sur chaque page
+
+        # Ajouter l'image à la page tampon
+        print(directeur.signature.path)
+        # image_width, image_height = (directeur.signature.width, directeur.signature.height)
+        image_width = 100  # Définir la largeur souhaitée de la signature
+        image_height = 50  # Définir la hauteur souhaitée de la signature
+        c.drawImage(directeur.signature.path, 50, 50, width=image_width, height=image_height)
+
+
+        # Enregistrer la page tampon
         c.save()
         buffer.seek(0)
+
+        # Créer un objet PDF à partir de la page tampon
         overlay_pdf = PdfReader(buffer)
+
+        # Fusionner la page tampon avec la page actuelle
         page.merge_page(overlay_pdf.pages[0])
+
+        # Ajouter la page modifiée au document final
         pdf_writer.add_page(page)
 
     # Écrire le PDF modifié dans le buffer
@@ -339,10 +407,10 @@ def signer_buletins(request, bulletin_id):
 
     bulletin.is_signed = True
     bulletin.save()
-    messages.success(request, "Le Bulletin  a été signée avec succès.")
+    messages.success(request, "Le bulletin a été signé avec succès.")
+
     # Rediriger vers une vue spécifique
     return redirect('liste_Bulletins_directeur')
-
 
 
 def recherche_Bulletins_directeur(request):

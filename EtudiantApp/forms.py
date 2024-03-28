@@ -81,7 +81,7 @@ class DemandeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user_data = kwargs.pop('user_data', None)
         super().__init__(*args, **kwargs)
-
+        print("zambeeeeeeeeeeeeeeee")
         # Rendre les champs date_nais, genre et telephone non éditables
 
         self.fields['date_nais'].widget.attrs['readonly'] = True
@@ -93,15 +93,11 @@ class DemandeForm(forms.ModelForm):
         self.fields['date_poste_demande'].widget.attrs['readonly'] = True
         self.fields['date_de_mise_en_traitement'].widget = forms.HiddenInput()
         self.fields['date_de_fin_treatment'].widget = forms.HiddenInput()
-        self.fields['date_refus'].widget = forms.HiddenInput()
         self.fields['date_termine'].widget = forms.HiddenInput()
+        self.fields['date_refus'].widget = forms.HiddenInput()
         self.fields['etat'].widget = forms.HiddenInput()
+
         # self.fields['identite_receptioniste'].widget = forms.HiddenInput()
-
-
-
-
-
 
 
         # Pré-remplir les champs date_nais, genre et telephone si l'utilisateur est connecté
@@ -113,8 +109,8 @@ class DemandeForm(forms.ModelForm):
             self.fields['cycle'].initial = user_data.get('cycle')
             self.fields['niveau'].initial = user_data.get('niveaux')
 
-            self.fields['etudiant'].queryset = Etudiant.objects.filter(matricule=user_data['matricule'])[:1]
-            self.fields['identite_receptioniste'].queryset = CSS.objects.all()[:1]
+            self.fields['etudiant'].queryset = Etudiant.objects.filter(matricule=user_data['matricule'])
+            self.fields['identite_receptioniste'].queryset = CSS.objects.all()
 
 
 
@@ -126,10 +122,15 @@ class DemandeForm(forms.ModelForm):
         if user_data and user_data.get('cycle') == 'DUT':
             self.fields['session_lic'].widget = forms.HiddenInput()
             self.fields['session_lic'].widget.attrs['class'] = 'd-none'
+            #----------------------------------------------------------------------------
+  
         elif user_data and user_data.get('cycle') == 'Licence':
             self.fields['session_dut'].widget = forms.HiddenInput()
             self.fields['session_dut'].widget.attrs['class'] = 'd-none'
-
+            # self.fields['niveau_dut_demande'].required = False
+            #------------------------------------------------------------------------------
+    
+    
 
 class UpdateDemandeForm(forms.ModelForm):
     class Meta:

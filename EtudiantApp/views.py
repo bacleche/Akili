@@ -160,7 +160,9 @@ def creer_demande(request):
     if request.method == 'POST':
         form = DemandeForm(request.POST, user_data=user_data)
         if form.is_valid():
+            print('allo11111111')
             form.save()
+            messages.success(request, 'La demande a bien été envoyée')
             
             # Ajoutez ici toute logique supplémentaire après l'enregistrement de la demande
             return redirect('creer_demande')  # Remplacez 'nom_de_votre_vue_de_confirmation' par le nom de votre vue de confirmation
