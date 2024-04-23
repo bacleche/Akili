@@ -74,7 +74,7 @@
                     <i class="fa fa-envelope"></i> <!-- Icône par défaut -->
                     <!-- Ajoutez d'autres styles ou classes CSS pour l'icône ici -->
                     {% if notifications_non_lues %}
-                        <span class="badge">{{ notifications_non_lues.count }}</span>
+                        <span class="badge" id="IDSPAN">{{ notifications_non_lues.count }}</span>
                     {% endif %}
                 </a>
                 <ul class="dropdown-menu">
@@ -266,7 +266,7 @@
             <small>Panneau de Control</small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Modifications </a></li>
+            <li><a href="{% url 'cssWork' %}"><i class="fa fa-dashboard"></i> Accueil </a></li>
             <li class="active">Tableau de Bord</li>
           </ol>
         </section>
@@ -441,5 +441,6 @@
         location.reload();
       }
     </script>
+
   </body>
 </html>

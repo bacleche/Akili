@@ -33,6 +33,10 @@
   </head>
   <style>
     
+    .errorlist li {
+      color: red;
+    }
+    
     .content-wrapper {
       min-height: 100vh; /* ou une hauteur minimale appropriée */
   }
@@ -272,7 +276,7 @@
             <small>Panneau de Control | {{user_data.role|upper}} </small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+            <li><a href="{% url 'student_space' %}"><i class="fa fa-dashboard"></i> Accueil</a></li>
             <li class="active">Tableau de Bord</li>
           </ol>
         </section>
@@ -283,10 +287,11 @@
             <div class="col-lg-3 col-xs-6">
               {% comment %} <h1>Faire une Demande </h1> {% endcomment %}
             </div>
-        </div><!-- /.row -->
+          </div><!-- /.row -->
           <!-- Main row -->
          
             <h2>Créer une demande</h2>
+            
               <form method="post" action="{% url 'creer_demande' %}">
                 {% csrf_token %}
                 {% if messages %}
@@ -296,7 +301,7 @@
                               {{ message }}
                           </div>
                       {% elif message.tags == 'error' %}
-                          <div class="error-message">
+                          <div id="error-message" class="error-message">
                               {{ message }}
                           </div>
                       {% endif %}
@@ -347,9 +352,23 @@
 
     <!-- jQuery 2.1.3 -->
     <script src="{% static 'assets_dash/plugins/jQuery/jQuery-2.1.3.min.js' %}"></script>
-
     <script>
 
+      $(document).ready(function() {
+      
+           const errorMessage = $('#error-message');
+
+          if (errorMessage.text().includes('/') && errorMessage.text().includes('!')) {
+            errorMessage.hide();
+          }
+        });
+
+    </script>
+    <script>
+      {% comment %} let y = document.getElementById('error-message').text()
+      console.log(y) {% endcomment %}
+
+     
       let contenu = $('#contenu').text();
       console.log(contenu)
       if(contenu.includes("refusé") || contenu.includes("accepté")) {

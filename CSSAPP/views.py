@@ -151,9 +151,12 @@ def list_bulletin_demandes(request):
     return render(request, 'pages/list_bulletins.html', context)
 
 def imprimer_demande_css(request, demande_id):
+    user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
+
     demande = get_object_or_404(Demande, id=demande_id)
     template_path = 'pages/imprimer_demande_css.html'
-    context = {'demande': demande}
+    datey = date.today()
+    context = {'demande': demande, 'datey': datey , 'user_data':user_data}
     # print(demande)
 
     # Créer une instance du modèle HTML
@@ -374,7 +377,7 @@ def liste_etudiants_licence_info3(request):
 
     etudiants_licence = Etudiant.objects.filter(cycle='licence', niveaux='licence3' , filiere='informatique',  statut='En Fréquentation')
 
-    return render(request, 'pages/groupeslistes/liste_etudiant_licence2_info.html', {'etudiants_licence': etudiants_licence , 'user_data': user_data})
+    return render(request, 'pages/groupeslistes/liste_etudiant_licence3_info.html', {'etudiants_licence': etudiants_licence , 'user_data': user_data})
 
 #-----------------Fin LICENCE INFORMATIQUE- --------------------------------------
 
@@ -496,7 +499,7 @@ def update_etudiant_statut(request, etudiant_id):
 
         if etudiant.statut == 'Ancien étudiant':
             messages.success(request, f'Le statut de l\'étudiant {etudiant.user.last_name} {etudiant.user.first_name} a été mis à jour avec succès.')
-            return redirect('liste_etudiants_licence')
+            return redirect('liste_etudiant_classifications')
         else:
             messages.success(request, f'Le statut de l\'étudiant {etudiant.user.last_name} {etudiant.user.first_name} a échoué.')
             return redirect('liste_etudiant_classifications')
@@ -507,76 +510,139 @@ def update_etudiant_statut(request, etudiant_id):
 
 def changer_etat_demande_attestion(request, demande_id, action):
     demande = get_object_or_404(Demande, id=demande_id)
+    date_posteT = date.today()
 
     if action == 'acceptee':
         demande.etat = 'Acceptée'
         demande.date_de_fin_treatment = date.today()
+        contenu_notification = f"Votre demande a été accepeté"
+        date_creation = date_posteT
+        notification = Notification(destinataire=demande.etudiant, expediteur_css=demande.identite_receptioniste ,  contenu=contenu_notification, date_creation=date_creation )
+        print('est arrivé')
+        notification.save()
 
     elif action == 'traitement':
         demande.etat = 'En cours de traitement'
         demande.date_de_mise_en_traitement = date.today()
+        contenu_notification = f"Votre demande est en cours de traitement"
+        date_creation = date_posteT
+        notification = Notification(destinataire=demande.etudiant, expediteur_css=demande.identite_receptioniste ,  contenu=contenu_notification, date_creation=date_creation )
+        notification.save()
+
     elif action == 'refusee':
         demande.etat = 'Refusée'
         demande.date_refus = date.today()
+        contenu_notification = f"Votre demande a été refusé"
+        date_creation = date_posteT
+        notification = Notification(destinataire=demande.etudiant, expediteur_css=demande.identite_receptioniste ,  contenu=contenu_notification, date_creation=date_creation )
+        notification.save()
+
     elif action == 'terminee':
         demande.etat = 'Terminée'
         demande.date_termine = date.today()
+        contenu_notification = f"Votre demande est finalisée"
+        date_creation = date_posteT
+        notification = Notification(destinataire=demande.etudiant, expediteur_css=demande.identite_receptioniste ,  contenu=contenu_notification, date_creation=date_creation )
+        notification.save()
+
     # Ajoutez d'autres co
     demande.save()
-    
+ 
     # Redirigez l'utilisateur vers la page précédente ou une autre page appropriée
     return redirect('list_demandes')
 
 
 
 def changer_etat_demande_bulletin(request, demande_id, action):
-    demande = get_object_or_404(Demande, id=demande_id)
+    demande = Demande.objects.get(id=demande_id)
+    date_posteT = date.today()
 
     if action == 'acceptee':
         demande.etat = 'Acceptée'
         demande.date_de_fin_treatment = date.today()
+        contenu_notification = f"Votre demande a été accepeté"
+        date_creation = date_posteT
+        notification = Notification(destinataire=demande.etudiant, expediteur_css=demande.identite_receptioniste , contenu=contenu_notification, date_creation=date_creation )
 
     elif action == 'traitement':
         demande.etat = 'En cours de traitement'
         demande.date_de_mise_en_traitement = date.today()
+        contenu_notification = f"Votre demande est en cours de traitement"
+        date_creation = date_posteT
+        notification = Notification(destinataire=demande.etudiant, expediteur_css=demande.identite_receptioniste ,  contenu=contenu_notification, date_creation=date_creation )
+        notification.save()
+
     elif action == 'refusee':
         demande.etat = 'Refusée'
         demande.date_refus = date.today()
+        contenu_notification = f"Votre demande a été refusé"
+        date_creation = date_posteT
+        notification = Notification(destinataire=demande.etudiant, expediteur_css=demande.identite_receptioniste ,  contenu=contenu_notification, date_creation=date_creation )
+        notification.save()
+
     elif action == 'terminee':
         demande.etat = 'Terminée'
         demande.date_termine = date.today()
     # Ajoutez d'autres conditions pour d'autres actions si nécessaire
+        contenu_notification = f"Votre demande est finalisée"
+        date_creation = date_posteT
+        notification = Notification(destinataire=demande.etudiant , expediteur_css=demande.identite_receptioniste ,contenu=contenu_notification, date_creation=date_creation)
+
+
+    # if notification:
+    #     notification.est_lue = False
+    #     notification.save()
 
     demande.save()
+    notification.save()
     
     # Redirigez l'utilisateur vers la page précédente ou une autre page appropriée
     return redirect('list_bulletin_demandes')
 
 
-# def historique_demandes(request):
-#     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles']}
-
-#     # Récupérez toutes les demandes depuis la base de données (ajustez selon votre modèle)
-#     demandes_en_attente = Demande.objects.filter(etat='En attente')
-#     demandes_en_cours = Demande.objects.filter(etat='En cours de traitement')
-#     demandes_terminees = Demande.objects.filter(etat='Terminée')
-#     demandes_refusees = Demande.objects.filter(etat='Refusée')
-
-#     # Passez les données au modèle
-#     context = {
-#         'historique_demandes': [
-#             ('En attente', demandes_en_attente),
-#             ('En cours de traitement', demandes_en_cours),
-#             ('Terminée', demandes_terminees),
-#             ('Refusée', demandes_refusees),
-#         ],
-#         'user_data': user_data,
-#     }
-
+# def changer_etat_demande_bulletin(request, demande_id, action):
+#     demande = Demande.objects.get(id=demande_id)
+#     date_posteT = date.today()
+#     v = demande.identite_receptioniste
+#     e = demande.etudiant
     
+#     if action == 'acceptee':
+#         demande.etat = 'Acceptée'
+#         demande.date_de_fin_treatment = date.today()
+#         contenu_notification = "Votre demande a été acceptée"
+#         date_creation = date_posteT
+#         # Création d'une nouvelle notification pour informer l'étudiant de l'action
+#         # notification_etudiant = Notification(destinataire=e, expediteur_css=v , contenu=contenu_notification, date_creation=date_creation)
 
-#     # Renvoyez la vue avec les données
-#     return render(request, 'pages/historiques_demandes.html', context)
+#     elif action == 'traitement':
+#         demande.etat = 'En cours de traitement'
+#         demande.date_de_mise_en_traitement = date.today()
+#     elif action == 'refusee':
+#         demande.etat = 'Refusée'
+#         demande.date_refus = date.today()
+#         contenu_notification = "Votre demande a été refusée"
+#         date_creation = date_posteT
+#         # Création d'une nouvelle notification pour informer l'étudiant de l'action
+#         # notification_etudiant = Notification(destinataire=e , expediteur_css=v ,contenu=contenu_notification, date_creation=date_creation)
+
+#     elif action == 'terminee':
+#         demande.etat = 'Terminée'
+#         demande.date_termine = date.today()
+#         contenu_notification = "Votre demande est finalisée"
+#         date_creation = date_posteT
+#         # Création d'une nouvelle notification pour informer l'étudiant de l'action
+#         # notification_etudiant = Notification(destinataire=e , expediteur_css=v ,contenu=contenu_notification, date_creation=date_creation)
+
+#     demande.save()
+    
+#     # # Vérifier si une nouvelle notification doit être créée
+#     # if 'notification_etudiant' in locals():
+#     #     notification_etudiant.est_lue = True
+
+#     #     notification_etudiant.save()
+#         # Mettre à jour la notification existante liée à la demande en la marquant comme lue
+    
+#     return redirect('list_bulletin_demandes')
 
 
 
@@ -1000,7 +1066,7 @@ def imprimer_toutes_les_demandes_bulletin(request):
 
         # Créer un fichier PDF
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="impression_demande_{demande}.pdf"'
+        response['Content-Disposition'] = f'attachment; filename="impression_bulletins_demande_{demande}.pdf"'
 
         # Générer le PDF
         pisa_status = pisa.CreatePDF(html, dest=response)

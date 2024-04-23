@@ -260,7 +260,7 @@
             <small>Panneau de Control | {{role|upper}} </small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+            <li><a href="{% url 'student_space' %}"><i class="fa fa-dashboard"></i> Accueil</a></li>
             <li class="active">Tableau de Bord</li>
           </ol>
         </section>
@@ -348,7 +348,7 @@
 
       let contenu = $('#contenu').text();
       console.log(contenu)
-      if(contenu.includes("refusé") || contenu.includes("accepté")) {
+      if(contenu.includes("refusé") || contenu.includes("accepté") || contenu.includes("traitement") || contenu.includes("finalisée")) {
         $('.btn-primary').hide();
         $('.btn-danger').hide();
 

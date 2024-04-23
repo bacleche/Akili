@@ -47,7 +47,9 @@ class Memoire(models.Model):
         if existing_memoires.exists():
             raise ValidationError("Vous ne pouvez publier qu'un seul mémoire avec ces identités.")
 
-    
+        if self.identite.statut !="Ancien étudiant":
+            raise ValidationError("Vous n'etes pas encore ancien pour publier un memoire !!!! ")
+
 
     def save(self, *args, **kwargs):
         is_new = not self.pk  # Vérifiez si le mémoire est nouveau
@@ -61,7 +63,6 @@ class Memoire(models.Model):
                 raise ValidationError("Le matricule d'identification du binôme est incorrect.")
         
         super().save(*args, **kwargs)
-    
         if is_new and binome:
             expediteur = self.identite
             mem = self.pk
@@ -78,3 +79,4 @@ class Memoire(models.Model):
             self.binome_notification_envoyee = True
             self.is_pubied = True
             self.save(update_fields=['binome_notification_envoyee', 'is_pubied'])
+ 

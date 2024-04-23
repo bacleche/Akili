@@ -92,7 +92,7 @@
                     <i class="fa fa-envelope"></i> <!-- Icône par défaut -->
                     <!-- Ajoutez d'autres styles ou classes CSS pour l'icône ici -->
                     {% if notifications_non_lues %}
-                        <span class="badge">{{ notifications_non_lues.count }}</span>
+                        <span class="badge" id="IDSPAN">{{ notifications_non_lues.count }}</span>
                     {% endif %}
                 </a>
                 <ul class="dropdown-menu">

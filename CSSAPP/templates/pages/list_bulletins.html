@@ -88,7 +88,7 @@
                     <i class="fa fa-envelope"></i> <!-- Icône par défaut -->
                     <!-- Ajoutez d'autres styles ou classes CSS pour l'icône ici -->
                     {% if notifications_non_lues %}
-                        <span class="badge">{{ notifications_non_lues.count }}</span>
+                        <span class="badge" id="IDSPAN">{{ notifications_non_lues.count }}</span>
                     {% endif %}
                 </a>
                 <ul class="dropdown-menu">
@@ -280,7 +280,7 @@
             <small>Panneau de Control</small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Liste des demandes des bulletins</a></li>
+            <li><a href="{% url 'cssWork' %}"><i class="fa fa-dashboard"></i> Accueil</a></li>
             <li class="active">Tableau de Bord</li>
           </ol>
         </section>
@@ -408,6 +408,31 @@
         
 
         </section><!-- /.content -->
+
+        {% for notification in notifications_non_lues %}
+        <!-- Modal -->
+          <div class="modal fade" id="notificationModal{{ notification.id }}" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="notificationModalLabel">{{ notification.titre }}</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                      </div>
+                      <div class="modal-body">
+                          <p id="contenu">{{ notification.contenu }}</p>
+                      </div>
+                      <div class="modal-footer">
+                          {% comment %} <button type="button" class="btn btn-primary" onclick="accepterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Accepter {{notification.expediteur.id}}</button> {% endcomment %}
+                          {% comment %} <button type="button" class="btn btn-danger" onclick="rejeterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Rejeter</button> {% endcomment %}
+                          <button type="button" class="btn btn-warning" onclick="compriS({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Compris</button>
+      
+                      </div>
+                  </div>
+              </div>
+          </div>
+        {% endfor %}
       </div><!-- /.content-wrapper -->
       <footer class="main-footer">
         <div class="pull-right hidden-xs">
@@ -523,5 +548,7 @@
             });
         });
   </script>
+
+
   </body>
 </html>

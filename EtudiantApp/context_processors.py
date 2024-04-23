@@ -34,7 +34,7 @@ def notifications_non_lues(request):
                 notifications2 = Notification.objects.filter(destinataire_css=css_connecte, est_lue=True)
                 print("**********************css*****")
             except ObjectDoesNotExist:
-                pass
+                css_connecte = None
 
        
     return {

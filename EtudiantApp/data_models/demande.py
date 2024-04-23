@@ -111,24 +111,30 @@ class Demande(models.Model):
     def clean(self):
         super().clean()
 
+        etudiant = self.etudiant
+        current_year = timezone.now().year
+
+        if int(self.annee_academique.split(' - ')[0]) > current_year:
+            raise ValidationError("L'année académique ne peut pas être supérieure à l'année en cours.")
+
         if self.cycle == 'licence':
                 if self.niveau == 'licence1':
-                    if self.niveau_licence_demande != 'licence1':
-                        raise ValidationError("Le niveau dont on demande de choisir doit être licence1.")
+                    if self.niveau_licence_demande != 'licence1' and self.session_lic not in ['S1' , 'S2']:
+                        raise ValidationError("Le niveau dont on demande de choisir doit être licence1 Ou le semestre selectionné n'est pas le bon !")
                 elif self.niveau == 'licence2':
-                    if self.niveau_licence_demande not in ['licence1', 'licence2']:
-                        raise ValidationError("Le(s) niveau(x) dont on demande de choisir doit être licence1 ou licence2.")
+                    if self.niveau_licence_demande not in ['licence1', 'licence2'] and self.session_lic not in ['S1' , 'S2' , 'S3' , 'S4']:
+                        raise ValidationError("Le(s) niveau(x) dont on demande de choisir doit être licence1 ou licence2. Soit  le semestre selectionné n'est pas le bon !")
                 elif self.niveau == 'licence3':
-                    if self.niveau_licence_demande not in ['licence1', 'licence2', 'licence3']:
-                        raise ValidationError("Le(s) niveau(x) dont on demande de choisir peut être licence1, licence2 ou licence3.")
+                    if self.niveau_licence_demande not in ['licence1', 'licence2', 'licence3'] and self.session_lic not in ['S1' , 'S2' , 'S3' , 'S4' , 'S5' , 'S6']:
+                        raise ValidationError("Le(s) niveau(x) dont on demande de choisir peut être licence1, licence2 ou licence3. Soit  le semestre selectionné n'est pas le bon !")
 
         elif self.cycle == 'dut':
                 if self.niveau == 'dut1':
-                    if self.niveau_dut_demande != 'dut1':
-                        raise ValidationError("Le niveau de demande choisi doit être DUT1.")
+                    if self.niveau_dut_demande != 'dut1' and self.session_dut not in ['S1' , 'S2']:
+                        raise ValidationError("Le niveau de demande choisi doit être DUT1 Ou le semestre selectionné n'est pas le bon !")
                 elif self.niveau == 'dut2':
-                    if self.niveau_dut_demande not in ['dut1', 'dut2']:
-                        raise ValidationError("Le niveau de demande choisi doit être DUT1 ou DUT2.")
+                    if self.niveau_dut_demande not in ['dut1', 'dut2'] and self.session_dut not in ['S1' , 'S2' , 'S3' , 'S4']:
+                        raise ValidationError("Le niveau de demande choisi doit être DUT1 ou DUT2 soit le semestre selectionné n'est pas le bon !")
                     
                     
     def save(self, *args, **kwargs):
@@ -148,8 +154,7 @@ class Demande(models.Model):
         
         
         # Assigner les informations de l'étudiant
-        if int(self.annee_academique.split(' - ')[0]) > current_year:
-            raise ValidationError("L'année académique ne peut pas être supérieure à l'année en cours.")
+        
         
         if etudiant.cycle == 'DUT':
             self.session_lic = None
@@ -169,16 +174,20 @@ class Demande(models.Model):
 
         expediteur = self.etudiant
         destinataire = self.identite_receptioniste
+        if self.etat == "En attente":
+            titre_poste = self.objet_demande  # Utilisez le champ approprié pour le titre du poste
+            contenu_notification = f"L\'Etudiant  {expediteur.user.last_name} {expediteur.user.first_name} a fait une demande : {titre_poste}."
+            date_creation = date.today()
+            print(date_creation)
+            print("Avant la création de la notification")
+            notification = Notification(destinataire_css=destinataire, expediteur=expediteur ,  contenu=contenu_notification, date_creation=date_creation)
+            notification.save()
+            print("Après la création de la notification")
 
-        titre_poste = self.objet_demande  # Utilisez le champ approprié pour le titre du poste
-        contenu_notification = f"L\'Etudiant  {expediteur.user.last_name} {expediteur.user.first_name} a fait une demande : {titre_poste}."
-        date_creation = date.today()
-        print(date_creation)
-        print("Avant la création de la notification")
-        notification = Notification(destinataire_css=destinataire, expediteur=expediteur ,  contenu=contenu_notification, date_creation=date_creation)
-        notification.save()
-        print("Après la création de la notification")
 
+        else:
+            pass
 
+ 
     def __str__(self):
         return f'{self.get_objet_demande_display()} - {self.session_dut or self.session_lic} - {self.filiere} - {self.cycle} - {self.annee_academique}'
