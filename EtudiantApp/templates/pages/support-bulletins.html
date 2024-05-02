@@ -6,6 +6,8 @@
     <title>AKILI - ETUDIANT</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.2 -->
+    <link href="{% static 'assets/css/arrangeStyle.css' %}" rel="stylesheet" type="text/css" />    
+
     <link href="{% static 'assets_dash/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />    
     <!-- FontAwesome 4.3.0 -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -256,7 +258,7 @@
             <small>Panneau de Control | {{user_data.role|upper}} </small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+            <li><a href="{% url 'student_space' %}"><i class="fa fa-dashboard"></i> Accueil</a></li>
             <li class="active">Tableau de Bord</li>
           </ol>
         </section>
@@ -299,8 +301,8 @@
                 <div class="card ombre-te">
                     <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.02VL_2TJCAoHIwlPpwsGuQHaHm%26pid%3DApi%26h%3D160&f=1&ipt=f50affa753aa12dcaf7bd7e211613bdd9504b437f74aa5863ba1dffdf023bc5e&ipo=images" class="card-img-top" alt="...">
                     <div class="card-body">
-                        <h5 class="card-title">Titre de la carte</h5>
-                        <p class="card-text">Description rapide du contenu de la carte.</p>
+                        <h5 class="card-title">Bulletin  - {{ forloop.counter }} de {{bulletin.etudiant}}</h5>
+                        {% comment %} <p class="card-text">Description rapide du contenu de la carte.</p> {% endcomment %}
                         <a href="{{ bulletin.file.url }}" target="_blank" class="btn btn-primary">Visualiser PDF</a>
                         <a href="{{ bulletin.file.url }}" download="bulletin_for{{bulletin.etudiant}}.pdf" class="btn btn-primary">Télécharger PDF</a>
 
@@ -338,9 +340,9 @@
                     <p id="contenu">{{ notification.contenu }}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="accepterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Accepter {{notification.expediteur.id}}</button>
-                    <button type="button" class="btn btn-danger" onclick="rejeterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Rejeter</button>
-                    <button type="button" class="btn btn-warning" onclick="compriS({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Compris</button>
+                    <button type="button" class="btn btn-primary typrimary" onclick="accepterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Accepter {{notification.expediteur.id}}</button>
+                    <button type="button" class="btn btn-danger tydanger" onclick="rejeterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Rejeter</button>
+                    <button type="button" class="btn btn-warning tywarning" onclick="compriS({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Compris</button>
 
                 </div>
             </div>
@@ -397,12 +399,13 @@
 
       let contenu = $('#contenu').text();
       console.log(contenu)
-      if(contenu.includes("refusé") || contenu.includes("accepté")) {
-        $('.btn-primary').hide();
-        $('.btn-danger').hide();
+    if(contenu.includes("refusé") || contenu.includes("accepté") || contenu.includes("traitement") || contenu.includes("finalisée") || contenu.includes("veuillez télécharger ou visualiser")) {
+
+        $('.typrimary').hide();
+        $('.tydanger').hide();
 
       } else {
-        $('.btn-warning').hide()
+        $('.tywarning').hide()
       }
      
       function accepterNotification(notificationId) {

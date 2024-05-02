@@ -42,12 +42,28 @@ class Memoire(models.Model):
             (models.Q(matricule_identification_binome=binome.Identification) if binome and binome.Identification else models.Q())
         )
         
-        # Vérifiez si un mémoire avec les mêmes identités existe déjà
-        existing_memoires = existing_memoires.exclude(pk=self.pk) if self.pk else existing_memoires
-        if existing_memoires.exists():
-            raise ValidationError("Vous ne pouvez publier qu'un seul mémoire avec ces identités.")
+        conditions = models.Q(identite=self.identite)  # Condition pour le principal
+        if binome:
+            conditions |= models.Q(identite=binome)  # Ajout du binôme aux conditions
+        
+        # Recherchez les mémoires existants avec ces identités
+        existing_memoires = Memoire.objects.filter(conditions)
 
-    
+        # Si le mémoire n'est pas nouveau, excluez-le de la recherche
+        if self.pk:
+            existing_memoires = existing_memoires.exclude(pk=self.pk)
+
+        # Si un mémoire existe avec cette identité ou ce binôme, levez une exception
+        if existing_memoires.exists():
+            raise ValidationError("Vous ne pouvez publier qu'un seul mémoire par étudiant ou binôme.")
+
+        if self.identite.statut !="Ancien étudiant":
+            raise ValidationError("Vous n'etes pas encore ancien pour publier un memoire !!!! ")
+        
+        if  not self.identite.a_soutenu:
+            raise ValidationError("Vous n'avez pas encore soutenu ")
+
+
 
     def save(self, *args, **kwargs):
         is_new = not self.pk  # Vérifiez si le mémoire est nouveau
@@ -61,7 +77,6 @@ class Memoire(models.Model):
                 raise ValidationError("Le matricule d'identification du binôme est incorrect.")
         
         super().save(*args, **kwargs)
-    
         if is_new and binome:
             expediteur = self.identite
             mem = self.pk
@@ -78,3 +93,4 @@ class Memoire(models.Model):
             self.binome_notification_envoyee = True
             self.is_pubied = True
             self.save(update_fields=['binome_notification_envoyee', 'is_pubied'])
+ 

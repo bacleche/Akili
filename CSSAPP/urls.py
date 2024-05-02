@@ -79,6 +79,14 @@ urlpatterns = [
     path('imprimer_etudiant_dut_informatique1', impression_specialise.imprimer_etudiant_dut_informatique1, name='imprimer_etudiant_dut_informatique1'),
     path('imprimer_etudiant_dut_informatique2', impression_specialise.imprimer_etudiant_dut_informatique2, name='imprimer_etudiant_dut_informatique2'),
 
+    path('listes_anciens_lic_info' , views.listes_anciens_lic_info , name='listes_anciens_lic_info'),
+    path('listes_anciens_lic_ap' , views.listes_anciens_lic_ap , name='listes_anciens_lic_ap'),
+    path('listes_anciens_dut_info' , views.listes_anciens_dut_info , name='listes_anciens_dut_info'),
+    path('listes_anciens_dut_ap' , views.listes_anciens_dut_ap , name='listes_anciens_dut_ap'),
+
+
+     path('imprimer_etudiant_par_annee/<str:annee_academique>/', views.imprimer_etudiant_par_annee, name='imprimer_etudiant_par_annee'),
+    path('update_etudiant_position_soutenance/<str:etudiant_id>/' , views.update_etudiant_position_soutenance , name='update_etudiant_position_soutenance'),
 
 
     

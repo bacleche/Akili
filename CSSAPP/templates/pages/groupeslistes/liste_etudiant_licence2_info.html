@@ -91,7 +91,7 @@
                     <i class="fa fa-envelope"></i> <!-- Icône par défaut -->
                     <!-- Ajoutez d'autres styles ou classes CSS pour l'icône ici -->
                     {% if notifications_non_lues %}
-                        <span class="badge">{{ notifications_non_lues.count }}</span>
+                        <span class="badge" id="IDSPAN">{{ notifications_non_lues.count }}</span>
                     {% endif %}
                 </a>
                 <ul class="dropdown-menu">
@@ -169,7 +169,7 @@
                       <a href="#" class="btn btn-default btn-flat">Profile</a>
                     </div>
                     <div class="pull-right">
-                      <a href="{% url 'deconnexion' %}" class="btn btn-default btn-flat">Sign out</a>
+                      <a href="{% url 'deconnexion' %}" class="btn btn-default btn-flat">deconnexion</a>
                     </div>
                   </li>
                 </ul>
@@ -251,6 +251,8 @@
               <ul class="treeview-menu">
                 <li><a href="{% url 'list_demandes' %}"><i class="fa fa-circle-o"></i>Attestations</a></li>
                 <li><a href="{% url 'list_bulletin_demandes' %}"><i class="fa fa-circle-o"></i>Bulletins</a></li>
+                <li><a href="{% url 'historique_demandes' %}"><i class="fa fa-circle-o"></i>Historiques</a></li>
+
               </ul>
             </li>
          
@@ -281,7 +283,7 @@
 
           </h1>
           <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Liste d'etudiant - Classifications</a></li>
+            <li><a href="{% url 'cssWork' %}"><i class="fa fa-dashboard"></i>Accueil</a></li>
             <li class="active">Tableau de Bord</li>
           </ol>
         </section>
@@ -362,7 +364,7 @@
                                                 <div id="successMessage" style="display: none;"></div>
 
                                                   <!-- Formulaire de création de document -->
-                                                  <form method="POST" action="{% url 'create_document' etudiant.id %}" enctype="multipart/form-data">
+                                                  <form method="POST" action="{% url 'create_document_lic2_info' etudiant.id %}" enctype="multipart/form-data">
                                                       {% csrf_token %}
                                                       <label for="nom">Etudiant :</label>
                                                       <input type="text" readonly name="etudiant" value="{{etudiant.user.last_name}} {{etudiant.user.first_name}}" class="form-control"/>

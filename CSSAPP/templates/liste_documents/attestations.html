@@ -92,7 +92,7 @@
                     <i class="fa fa-envelope"></i> <!-- Icône par défaut -->
                     <!-- Ajoutez d'autres styles ou classes CSS pour l'icône ici -->
                     {% if notifications_non_lues %}
-                        <span class="badge">{{ notifications_non_lues.count }}</span>
+                        <span class="badge" id="IDSPAN">{{ notifications_non_lues.count }}</span>
                     {% endif %}
                 </a>
                 <ul class="dropdown-menu">
@@ -415,7 +415,7 @@
       <div class="container-fluid">
         <div class="col-md-6">
             <a href="{% url 'imprimer_attestation_css_doc' %}" class="btn btn-primary">Sauvegarder et Imprimer</a>
-            <a href="{% url 'archive_documents_attestation' %}" class="btn btn-warning">Archiver</a>
+            {% comment %} <a href="{% url 'archive_documents_attestation' %}" class="btn btn-warning">Archiver</a> {% endcomment %}
             <a href="{% url 'supprimer_attestation_css' %}" class="btn btn-danger">Supprimer</a>
 
         </div>

@@ -68,9 +68,9 @@ admin.site.register(Bulletin, BulletinAdmin)
 
 
 class DemandeAdmin(admin.ModelAdmin):
-    list_display = ('etudiant', 'objet_demande', 'session_dut', 'session_lic', 'filiere', 'cycle', 'annee_academique', 'identite_receptioniste' , 'etat')
+    list_display = ('etudiant', 'objet_demande', 'session_dut', 'session_lic','choix_session', 'filiere', 'cycle', 'annee_academique', 'identite_receptioniste' , 'etat')
     search_fields = ('etudiant__nom', 'etudiant__prenom', 'objet_demande', 'filiere', 'cycle', 'annee_academique', 'identite_receptioniste__nom', 'identite_receptioniste__prenom')
-    list_filter = ('objet_demande', 'filiere', 'cycle', 'annee_academique', 'identite_receptioniste' , 'etat')
+    list_filter = ('objet_demande', 'filiere','choix_session', 'cycle', 'annee_academique', 'identite_receptioniste' , 'etat')
 
 admin.site.register(Demande, DemandeAdmin)
 

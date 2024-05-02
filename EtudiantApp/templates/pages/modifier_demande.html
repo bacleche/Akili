@@ -6,6 +6,8 @@
     <title>AKILI - ETUDIANT</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.2 -->
+    <link href="{% static 'assets/css/arrangeStyle.css' %}" rel="stylesheet" type="text/css" />    
+
     <link href="{% static 'assets_dash/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />    
     <!-- FontAwesome 4.3.0 -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -134,19 +136,17 @@
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <img src="{{ imagesprofiles }}" class="user-image" alt="User Image"/>
-                  <span class="hidden-xs">{{ nom }}</span>
+                  <img src="{{ user_data.imagesprofiles }}" class="user-image" alt="User Image"/>
+                  <span class="hidden-xs">{{ user_data.nom }}</span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
-                    <img src="{{ imagesprofiles }}" class="img-circle" alt="User Image" />
+                    <img src="{{ user_data.imagesprofiles }}" class="img-circle" alt="User Image" />
                     <p>
-                      {{ nom }} - {{role}}
-                      <small>Numero d'identification : {{Identification}}</small>
-
+                      {{ user_data.nom }} - {{user_data.role}}
+                      <small>Numero d'identification : {{user_data.Identification}}</small>
                     </p>
-                   
                   </li>
                   <!-- Menu Body -->
                  
@@ -259,7 +259,7 @@
             <small>Panneau de Control | {{user_data.role|upper}} </small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+            <li><a href="{% url 'student_space' %}"><i class="fa fa-dashboard"></i> Accueil</a></li>
             <li class="active">Tableau de Bord</li>
           </ol>
         </section>
@@ -328,7 +328,7 @@
             <form method="post" enctype="multipart/form-data">
               {% csrf_token %}
               {{ form.as_p }}
-              <button type="submit">Enregistrer les modifications</button>
+              <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
             </form>
           
             <br>
@@ -363,9 +363,9 @@
                     <p id="contenu">{{ notification.contenu }}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="accepterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Accepter {{notification.expediteur.id}}</button>
-                    <button type="button" class="btn btn-danger" onclick="rejeterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Rejeter</button>
-                    <button type="button" class="btn btn-warning" onclick="compriS({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Compris</button>
+                    <button type="button" class="btn btn-primary typrimary" onclick="accepterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Accepter {{notification.expediteur.id}}</button>
+                    <button type="button" class="btn btn-danger tydanger" onclick="rejeterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Rejeter</button>
+                    <button type="button" class="btn btn-warning tywarning" onclick="compriS({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Compris</button>
 
                 </div>
             </div>
@@ -380,12 +380,13 @@
 
       let contenu = $('#contenu').text();
       console.log(contenu)
-      if(contenu.includes("refusé") || contenu.includes("accepté")) {
-        $('.btn-primary').hide();
-        $('.btn-danger').hide();
+      if(contenu.includes("refusé") || contenu.includes("accepté") || contenu.includes("traitement") || contenu.includes("finalisée") || contenu.includes("veuillez télécharger ou visualiser")) {
+
+        $('.typrimary').hide();
+        $('.tydanger').hide();
 
       } else {
-        $('.btn-warning').hide()
+        $('.tywarning').hide()
       }
      
       function accepterNotification(notificationId) {
@@ -510,17 +511,14 @@
     }
   </script>
     
+   
   <script src="{% static 'assets_dash/plugins/jQuery/jQuery-2.1.3.min.js' %}"></script>
   <!-- jQuery UI 1.11.2 -->
-  <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js" type="text/javascript"></script>
   <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-  <script>
-    $.widget.bridge('uibutton', $.ui.button);
-  </script>
+
   <script src="{% static 'assets_dash/bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>    
   <!-- Morris.js charts -->
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-  <script src="{% static 'assets_dash/plugins/morris/morris.min.js' %}" type="text/javascript"></script>
+
   <!-- Sparkline -->
   <script src="{% static 'assets_dash/plugins/sparkline/jquery.sparkline.min.js' %}" type="text/javascript"></script>
   <!-- jvectormap -->
@@ -543,27 +541,158 @@
   <!-- AdminLTE App -->
   <script src="{% static 'assets_dash/dist/js/app.min.js' %}" type="text/javascript"></script>
 
-  <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-  <script src="{% static 'assets_dash/dist/js/pages/dashboard.js' %}" type="text/javascript"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cycleValue = document.getElementById('id_cycle').value.toLowerCase();
+        console.log(cycleValue)
+        const sessionDutField = document.getElementById('id_session_dut');
+        const sessionLicField = document.getElementById('id_session_lic');
+        const labelSessionDut = document.querySelector('label[for=id_session_dut]');
+        const labelSessionLic = document.querySelector('label[for=id_session_lic]');
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-          const cycleValue = document.getElementById('id_cycle').value.toLowerCase();
-          console.log(cycleValue)
+        //----------------------------------------------------------------------------------------
+
+
+        if($('select[name="id_objet_demande"]').val() != 'bulletin') {
+              $('#id_session_dut, #id_session_lic, #id_choix_session').hide()
+              $('label[for="id_choix_session"], label[for="id_session_dut"], label[for="id_session_lic"]').hide();
+
+        }
+
+
+        if (cycleValue == 'licence')
+        {
+          console.log('bonjour je suis en LIC')
+          labelSessionDut.hidden = true
+          sessionDutField.style.display = 'none'
+
+          $('select[name="niveau_dut_demande"]').removeAttr('required');
+          $('select[name="niveau_dut_demande"]').hide();
+          $('label[for="id_niveau_dut_demande"]').hide();
+          
+
+
+        } else {
+          console.log('bonjour je suis en DUT')
+        }
+    });
+
+    //----------------------------------------------------------------------------------------
+
+
+
+    {% comment %} $(document).ready(function() {
+      // Fonction pour masquer les champs de session et choix_session
+      function masquerChampsSession() {
+          $('#id_session_dut, #id_session_lic, #id_choix_session').hide().removeAttr('required');
+          $('label[for="id_choix_session"], label[for="id_session_dut"], label[for="id_session_lic"]').hide();
+      }
+  
+      // Fonction pour afficher les champs de session en fonction de l'objet_demande sélectionné
+      function afficherChampsSession(cycleValue) {
+          var objet_demande = $('#id_objet_demande').val();
+          if (objet_demande === 'attestation_frequentation' || objet_demande === 'attestation_reussite') {
+              masquerChampsSession();
+          } else {
+              if (cycleValue == 'licence') {
+                  $('#id_session_dut').hide();
+                  $('label[for="id_session_dut"]').hide();
+              } else {
+                  $('#id_session_lic').hide();
+                  $('label[for="id_session_lic"]').hide();
+              }
+              $('#id_choix_session').show();
+              $('label[for="id_choix_session"]').show();
+          }
+      }
+  
+      // Écouter les changements dans le champ objet_demande
+      $('#id_objet_demande').change(function() {
+          afficherChampsSession($('#id_cycle').val().toLowerCase());
+      });
+  
+      // Appeler la fonction afficherChampsSession au chargement de la page
+      document.addEventListener('DOMContentLoaded', function() {
+          var cycleValue = $('#id_cycle').val().toLowerCase();
+          console.log(cycleValue);
           const sessionDutField = document.getElementById('id_session_dut');
           const sessionLicField = document.getElementById('id_session_lic');
           const labelSessionDut = document.querySelector('label[for=id_session_dut]');
           const labelSessionLic = document.querySelector('label[for=id_session_lic]');
   
-          if (cycleValue == 'licence')
-          {
-            console.log('bonjour je suis en LIC')
-            labelSessionDut.hidden = true
-            sessionDutField.style.display = 'none'
+          if (cycleValue == 'licence') {
+              console.log('bonjour je suis en LIC')
+              labelSessionDut.hidden = true;
+              sessionDutField.style.display = 'none';
+  
+              $('select[name="niveau_dut_demande"]').hide();
+              $('label[for="id_niveau_dut_demande"]').hide();
           } else {
-            console.log('bonjour je suis en DUT')
+              console.log('bonjour je suis en DUT');
           }
       });
-  </script>
+  });
+   {% endcomment %}
+
+
+   $(document).ready(function() {
+  // Fonction pour masquer les champs de session et choix_session
+  function masquerChampsSession() {
+      $('#id_session_dut, #id_session_lic, #id_choix_session').removeAttr('required');
+      $('#id_session_dut, #id_session_lic, #id_choix_session').hide()
+      $('label[for="id_choix_session"], label[for="id_session_dut"], label[for="id_session_lic"]').hide();
+  }
+
+  // Fonction pour afficher les champs de session en fonction de l'objet_demande sélectionné
+  function afficherChampsSession(cycleValue) {
+      var objet_demande = $('#id_objet_demande').val();
+      if (objet_demande === 'attestation_frequentation' || objet_demande === 'attestation_reussite') {
+          masquerChampsSession();
+      } else {
+          if (cycleValue === 'licence') {
+              $('#id_session_dut').hide();
+              $('label[for="id_session_dut"]').hide();
+              $('#id_session_lic').show(); // Afficher le champ session_lic
+              $('label[for="id_session_lic"]').show(); // Afficher le label session_lic
+          } else {
+              $('#id_session_lic').hide();
+              $('label[for="id_session_lic"]').hide();
+              $('#id_session_dut').show(); // Afficher le champ session_dut
+              $('label[for="id_session_dut"]').show(); // Afficher le label session_dut
+          }
+          $('#id_choix_session').show();
+          $('label[for="id_choix_session"]').show();
+      }
+  }
+
+  // Écouter les changements dans le champ objet_demande
+  $('#id_objet_demande').change(function() {
+      afficherChampsSession($('#id_cycle').val().toLowerCase());
+  });
+
+  // Appeler la fonction afficherChampsSession au chargement de la page
+  document.addEventListener('DOMContentLoaded', function() {
+      var cycleValue = $('#id_cycle').val().toLowerCase();
+      console.log(cycleValue);
+      const sessionDutField = document.getElementById('id_session_dut');
+      const sessionLicField = document.getElementById('id_session_lic');
+      const labelSessionDut = document.querySelector('label[for=id_session_dut]');
+      const labelSessionLic = document.querySelector('label[for=id_session_lic]');
+
+      if (cycleValue === 'licence') {
+          console.log('bonjour je suis en LIC')
+          labelSessionDut.hidden = true;
+          sessionDutField.style.display = 'none';
+
+          $('select[name="niveau_dut_demande"]').removeAttr('required');
+          $('select[name="niveau_dut_demande"]').hide();
+          $('label[for="id_niveau_dut_demande"]').hide();
+      } else {
+          console.log('bonjour je suis en DUT');
+      }
+  });
+});
+
+</script>
   </body>
 </html>

@@ -93,7 +93,7 @@ class Archives(models.Model):
 class Archives_bulletins(models.Model):
     etudiant = models.ForeignKey(Etudiant, on_delete=models.DO_NOTHING)
     date_archivage = models.DateField(auto_now_add=True)
-    file = models.FileField(upload_to='archives-bulletins/', max_length=500)
+    file = models.FileField(upload_to='archives_bulletins/', max_length=500)
     is_archived = models.BooleanField(default=False)
 
     def __str__(self):
