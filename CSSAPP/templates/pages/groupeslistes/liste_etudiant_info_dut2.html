@@ -169,7 +169,7 @@
                       <a href="#" class="btn btn-default btn-flat">Profile</a>
                     </div>
                     <div class="pull-right">
-                      <a href="{% url 'deconnexion' %}" class="btn btn-default btn-flat">Sign out</a>
+                      <a href="{% url 'deconnexion' %}" class="btn btn-default btn-flat">deconnexion</a>
                     </div>
                   </li>
                 </ul>
@@ -251,6 +251,8 @@
               <ul class="treeview-menu">
                 <li><a href="{% url 'list_demandes' %}"><i class="fa fa-circle-o"></i>Attestations</a></li>
                 <li><a href="{% url 'list_bulletin_demandes' %}"><i class="fa fa-circle-o"></i>Bulletins</a></li>
+                <li><a href="{% url 'historique_demandes' %}"><i class="fa fa-circle-o"></i>Historiques</a></li>
+
               </ul>
             </li>
          
@@ -313,11 +315,10 @@
                       {% comment %} <input class="form-control mr-sm-2" type="date" name="date" placeholder="Date"> {% endcomment %}
                       {% comment %} <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Rechercher</button> {% endcomment %}
                   </form>
-                  
                   </div>
               </div>
             <div class="table-responsive">
-              {% if etudiants_licence %}
+              {% if etudiants_dut %}
                   <table class="table">
                       <thead class="thead-dark">
                           <tr>
@@ -333,7 +334,7 @@
                           </tr>
                       </thead>
                       <tbody>
-                          {% for etudiant in etudiants_licence %}
+                          {% for etudiant in etudiants_dut %}
                               <tr>
                                   <th scope="row"></th>
                                   <td>{{ etudiant.user.last_name }}</td>

@@ -50,61 +50,139 @@ def profile_details(request):
     user_data['civilite_choices'] = CSS._meta.get_field('civilite').choices
     return render(request, 'pages/profile-modify.html', user_data)
 
-def mis_a_jour_css(request):
+# def mis_a_jour_css(request):
  
-    # Récupérez l'utilisateur actuel (CSS dans ce cas)
-    user = CSS.objects.get(matricule=request.session.get('matricule'))
+#     # Récupérez l'utilisateur actuel (CSS dans ce cas)
+#     user = CSS.objects.get(matricule=request.session.get('matricule'))
     
+#     if request.method == 'POST':
+#         # Si la requête est de type POST, récupérez les données du formulaire
+#         user.user.last_name = request.POST.get('nom')
+#         user.user.first_name = request.POST.get('prenom')
+#         user.telephone = request.POST.get('phone')
+#         user.date_nais = request.POST.get('date')
+#         user.civilite = request.POST.get('civilite')
+#         user.role = request.POST.get('surname')  # Assurez-vous que le nom du champ correspond
+#         user.user.email = request.POST.get('email')
+#         user.role = request.POST.get('role')
+#         user.date_nais = request.POST.get('date_nais')
+#         pas1 = request.POST.get('password')
+#         pas2 = request.POST.get('password_conf')  # Utilisez set_password pour définir le mot de passe
+#           # Utilisez set_password pour définir le mot de passe
+#         if pas1 == pas2:
+#             if len(pas1) < 8 or len(pas2) < 8 : 
+#                 print('ddddddeuueueueue')
+#                 # return render(request, 'pages/profile-modify.html', {'user': user , 'error':'Aumoins 8 caractères'})
+#                 messages.error(request, 'Au moins 8 caractères')
+#                 return redirect('update_profile')
+#             user.user.set_password(request.POST.get('password'))
+         
+#             # Gérez l'image de profil
+#             if 'new_profile_image' in request.FILES:
+#                 image = request.FILES['new_profile_image']
+#                 # Enregistrez l'image avec un nouveau nom pour éviter les collisions
+#                 image_name = f"profile_image_{user.matricule}.{image.name.split('.')[-1]}"
+#                 user.imagesprofiles.save(image_name, image)
+
+#             # Sauvegardez les modifications
+#             user.user.save()
+
+#             # Mettez à jour les données de la session avec les nouvelles valeurs
+#             request.session['nom'] = user.user.last_name
+#             request.session['prenom'] = user.user.first_name
+#             request.session['telephone'] = user.telephone
+#             request.session['date_nais'] = user.date_nais
+#             request.session['civilite'] = user.civilite
+#             request.session['role'] = user.role
+#             request.session['email'] = user.user.email
+#             request.session['genre'] = user.genre
+#             # request.session['mot_de_passe'] = user.mot_de_passe
+#             # request.session['confirmer_de_passe'] = user.confirmer_mot_de_passe
+#             request.session['imagesprofiles'] = user.imagesprofiles.url
+
+#             return redirect('Profiles_css')  # Redirigez vers la page de détails après la modification
+
+#         else:
+#             print('ddddddeuueueueue')
+#             messages.error(request, 'Les mots de passe doivent etre identiques')
+#             return redirect('update_profile')
+
+#     return render(request, 'pages/profile-modify.html', {'user': user})
+
+
+from datetime import date
+import json
+
+# Classe pour convertir les objets de type date en JSON
+class DateEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, date):
+            return obj.isoformat()  # Conversion des dates au format JSON
+        return super().default(obj)
+
+def mis_a_jour_css(request):
+    # Récupérez l'utilisateur actuel
+    user = CSS.objects.get(matricule=request.session.get('matricule'))
+
     if request.method == 'POST':
-        # Si la requête est de type POST, récupérez les données du formulaire
+        # Récupérez les données du formulaire
         user.user.last_name = request.POST.get('nom')
         user.user.first_name = request.POST.get('prenom')
         user.telephone = request.POST.get('phone')
-        user.date_nais = request.POST.get('date')
+
+        # Conversion de la date en format JSON
+        date_nais_str = request.POST.get('date_nais')
+        if date_nais_str:
+            try:
+                date_nais = date.fromisoformat(date_nais_str)
+                user.date_nais = date_nais
+                request.session['date_nais'] = date_nais.isoformat()  # Utilisation de `isoformat()`
+            except ValueError:
+                messages.error(request, "Format de date invalide.")
+                return render(request, 'pages/profile-modify.html', {'user': user, 'error': 'Date invalide'})
+
         user.civilite = request.POST.get('civilite')
-        user.role = request.POST.get('surname')  # Assurez-vous que le nom du champ correspond
+        user.role = request.POST.get('surname')
         user.user.email = request.POST.get('email')
         user.role = request.POST.get('role')
-        user.date_nais = request.POST.get('date_nais')
-        pas1 = request.POST.get('password')
-        pas2 = request.POST.get('password_conf')  # Utilisez set_password pour définir le mot de passe
-          # Utilisez set_password pour définir le mot de passe
+
+        # Vérification des mots de passe
+        # pas1 = request.POST.get('password')
+        # pas2 = request.POST.get('password_conf')
+        pas1 = request.POST.get('password', '').strip()  # Supprime les espaces
+        pas2 = request.POST.get('password_conf', '').strip()
         if pas1 == pas2:
             if len(pas1) < 8 or len(pas2) < 8 : 
                 print('ddddddeuueueueue')
                 # return render(request, 'pages/profile-modify.html', {'user': user , 'error':'Aumoins 8 caractères'})
                 messages.error(request, 'Au moins 8 caractères')
                 return redirect('update_profile')
-            user.user.set_password(request.POST.get('password'))
-         
-            # Gérez l'image de profil
+            user.user.set_password(request.POST.get('password')) # Utilisez set_password pour définir le mot de passe sécurisé
+
+            # Gestion de l'image de profil
             if 'new_profile_image' in request.FILES:
                 image = request.FILES['new_profile_image']
-                # Enregistrez l'image avec un nouveau nom pour éviter les collisions
-                image_name = f"profile_image_{user.matricule}.{image.name.split('.')[-1]}"
-                user.imagesprofiles.save(image_name, image)
+                image_extension = image.name.split('.')[-1]
+                image_name = f"profile_image_{user.matricule}.{image_extension}"
+                user.imagesprofiles.save(image_name, image)  # Enregistrement de l'image avec un nom unique
 
-            # Sauvegardez les modifications
+            # Sauvegarder les modifications
             user.user.save()
 
-            # Mettez à jour les données de la session avec les nouvelles valeurs
+            # Mettez à jour les données de la session
             request.session['nom'] = user.user.last_name
             request.session['prenom'] = user.user.first_name
             request.session['telephone'] = user.telephone
-            request.session['date_nais'] = user.date_nais
             request.session['civilite'] = user.civilite
             request.session['role'] = user.role
             request.session['email'] = user.user.email
-            request.session['genre'] = user.genre
-            # request.session['mot_de_passe'] = user.mot_de_passe
-            # request.session['confirmer_de_passe'] = user.confirmer_mot_de_passe
+            request.session['mot_de_passe'] = user.user.password
             request.session['imagesprofiles'] = user.imagesprofiles.url
-
-            return redirect('Profiles_css')  # Redirigez vers la page de détails après la modification
+            print(request.session['mot_de_passe'] )
+            return redirect('Profiles_css')  # Redirection après mise à jour réussie
 
         else:
-            print('ddddddeuueueueue')
-            messages.error(request, 'Les mots de passe doivent etre identiques')
+            messages.error(request, 'Les mots de passe ne correspondent pas.')  # Mots de passe différents
             return redirect('update_profile')
 
     return render(request, 'pages/profile-modify.html', {'user': user})
@@ -440,7 +518,7 @@ def liste_etudiants_licence_admin2(request):
 
     etudiants_licence = Etudiant.objects.filter(cycle='licence', niveaux='licence2',  filiere='administration', statut='En Fréquentation')
 
-    return render(request, 'pages/groupeslistes/liste_etudiant_licence_admin2.html', {'etudiants_licence': etudiants_licence , 'user_data': user_data})
+    return render(request, 'pages/groupeslistes/liste_etudiants_licence_admin2.html', {'etudiants_licence': etudiants_licence , 'user_data': user_data})
 
 
 def liste_etudiants_licence_admin3(request): 
@@ -448,13 +526,190 @@ def liste_etudiants_licence_admin3(request):
 
     etudiants_licence = Etudiant.objects.filter(cycle='licence', niveaux='licence3' , filiere='administration',  statut='En Fréquentation')
 
-    return render(request, 'pages/groupeslistes/liste_etudiant_licence_admin3.html', {'etudiants_licence': etudiants_licence , 'user_data': user_data})
+    return render(request, 'pages/groupeslistes/liste_etudiants_licence_admin3.html', {'etudiants_licence': etudiants_licence , 'user_data': user_data})
 
 
 
 #-----------------LICENCE ADMINISTRATION- --------------------------------------
 
+# liste ds anciens listes_anciens_lic_info
+# def listes_anciens_lic_info(request): 
+#     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
 
+#     etudiants_licence = Etudiant.objects.filter(cycle='licence', filiere='informatique',  statut='Ancien étudiant')
+
+#     return render(request, 'listes_anciens/listes_anciens_lic_info.html', {'etudiants_licence': etudiants_licence , 'user_data': user_data})
+
+def listes_anciens_lic_info(request):
+    # Récupérer les données utilisateur depuis la session
+    user_data = {
+        key: request.session.get(key)
+        for key in [
+            'matricule', 'nom', 'prenom', 'telephone', 'date_nais', 
+            'civilite', 'role', 'email', 'genre', 'mot_de_passe', 
+            'confirmer_mot_de_passe', 'imagesprofiles'
+        ]
+    }
+
+    # Obtenir les anciens étudiants de licence informatique
+    etudiants_licence = Etudiant.objects.filter(
+        cycle='licence', filiere='informatique', statut='Ancien étudiant'
+    )
+
+    # Obtenir les années académiques uniques
+    annees_academiques = (
+        etudiants_licence.values_list('annee_academique', flat=True)
+        .distinct()
+        .order_by('annee_academique')
+    )
+
+    # Organiser les étudiants par année académique
+    etudiants_par_annee = {
+        annee.replace(' ', '_'): list(etudiants_licence.filter(annee_academique=annee))
+        for annee in annees_academiques
+    }
+
+    # Rendre le template avec les étudiants classés par année académique
+    return render(
+        request,
+        'listes_anciens/listes_anciens_lic_info.html',
+        {'etudiants_par_annee': etudiants_par_annee, 'user_data': user_data}
+    )
+
+
+# def listes_anciens_lic_ap(request): 
+#     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+
+#     etudiants_licence = Etudiant.objects.filter(cycle='licence', filiere='administration',  statut='Ancien étudiant')
+
+#     return render(request, 'listes_anciens/listes_anciens_lic_ap.html', {'etudiants_licence': etudiants_licence , 'user_data': user_data})
+
+def listes_anciens_lic_ap(request): 
+    # Récupérer les données utilisateur depuis la session
+    user_data = {
+        key: request.session.get(key)
+        for key in [
+            'matricule', 'nom', 'prenom', 'telephone', 'date_nais', 
+            'civilite', 'role', 'email', 'genre', 'mot_de_passe', 
+            'confirmer_mot_de_passe', 'imagesprofiles'
+        ]
+    }
+
+    # Obtenir les anciens étudiants de licence administration
+    etudiants_licence = Etudiant.objects.filter(
+        cycle='licence', filiere='administration', statut='Ancien étudiant'
+    )
+
+    # Obtenir les années académiques uniques
+    annees_academiques = (
+        etudiants_licence.values_list('annee_academique', flat=True)
+        .distinct()
+        .order_by('annee_academique')
+    )
+
+    # Organiser les étudiants par année académique
+    etudiants_par_annee = {
+        annee.replace(' ', '_'): list(etudiants_licence.filter(annee_academique=annee))
+        for annee in annees_academiques
+    }
+
+    # Rendre le template avec les étudiants classés par année académique
+    return render(
+        request,
+        'listes_anciens/listes_anciens_lic_ap.html',
+        {'etudiants_par_annee': etudiants_par_annee, 'user_data': user_data}
+    )
+
+
+# def listes_anciens_dut_info(request): 
+#     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+
+#     etudiants_licence = Etudiant.objects.filter(cycle='dut', filiere='informatique',  statut='Ancien étudiant')
+
+#     return render(request, 'listes_anciens/listes_anciens_dut_info.html', {'etudiants_licence': etudiants_licence , 'user_data': user_data})
+
+
+def listes_anciens_dut_info(request):
+    # Récupérer les données utilisateur depuis la session
+    user_data = {
+        key: request.session.get(key)
+        for key in [
+            'matricule', 'nom', 'prenom', 'telephone', 'date_nais', 
+            'civilite', 'role', 'email', 'genre', 'mot_de_passe', 
+            'confirmer_mot_de_passe', 'imagesprofiles'
+        ]
+    }
+
+    # Obtenir les anciens étudiants de DUT informatique
+    etudiants_dut = Etudiant.objects.filter(
+        cycle='dut', filiere='informatique', statut='Ancien étudiant'
+    )
+
+    # Obtenir les années académiques uniques
+    annees_academiques = (
+        etudiants_dut.values_list('annee_academique', flat=True)
+        .distinct()
+        .order_by('annee_academique')
+    )
+
+    # Organiser les étudiants par année académique
+    etudiants_par_annee = {
+        annee.replace(' ', '_'): list(etudiants_dut.filter(annee_academique=annee))
+        for annee in annees_academiques
+    }
+
+    # Rendre le template avec les étudiants classés par année académique
+    return render(
+        request,
+        'listes_anciens/listes_anciens_dut_info.html',
+        {'etudiants_par_annee': etudiants_par_annee, 'user_data': user_data}
+    )
+
+# def listes_anciens_dut_ap(request): 
+#     user_data = {key: request.session.get(key) for key in ['matricule', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe','confirmer_mot_de_passe', 'imagesprofiles']}
+
+#     etudiants_licence = Etudiant.objects.filter(cycle='dut', filiere='administration',  statut='Ancien étudiant')
+
+#     return render(request, 'listes_anciens/listes_anciens_dut_ap.html', {'etudiants_licence': etudiants_licence , 'user_data': user_data})
+
+def listes_anciens_dut_ap(request):
+    # Récupérer les données utilisateur depuis la session
+    user_data = {
+        key: request.session.get(key)
+        for key in [
+            'matricule', 'nom', 'prenom', 'telephone', 'date_nais', 
+            'civilite', 'role', 'email', 'genre', 'mot_de_passe', 
+            'confirmer_mot_de_passe', 'imagesprofiles'
+        ]
+    }
+
+    # Obtenir les anciens étudiants de DUT administration
+    etudiants_dut = Etudiant.objects.filter(
+        cycle='dut', filiere='administration', statut='Ancien étudiant'
+    )
+
+    # Obtenir les années académiques uniques
+    annees_academiques = (
+        etudiants_dut.values_list('annee_academique', flat=True)
+        .distinct()
+        .order_by('annee_academique')
+    )
+
+    # Organiser les étudiants par année académique
+    etudiants_par_annee = {
+        annee.replace(' ', '_'): list(etudiants_dut.filter(annee_academique=annee))
+        for annee in annees_academiques
+    }
+
+    # Rendre le template avec les étudiants classés par année académique
+    return render(
+        request,
+        'listes_anciens/listes_anciens_dut_ap.html',
+        {'etudiants_par_annee': etudiants_par_annee, 'user_data': user_data}
+    )
+
+
+# fin listes du listes_anciens_lic_info
 
 """
 FIn Fonction liste ------------------------------------------------------------------ //---------------------
@@ -505,6 +760,26 @@ def update_etudiant_statut(request, etudiant_id):
             return redirect('liste_etudiant_classifications')
 
     return JsonResponse({'success': False, 'error_message': 'Méthode non autorisée'})
+
+
+def update_etudiant_position_soutenance(request, etudiant_id):
+    etudiant = get_object_or_404(Etudiant, id=etudiant_id)
+
+    if request.method == 'POST':
+        
+        etudiant.a_soutenu = True
+        etudiant.save()
+
+        if etudiant.a_soutenu:
+            messages.success(request, f'L\'étudiant  {etudiant.user.last_name} {etudiant.user.first_name} est à present ancien définitif.')
+            return redirect('liste_etudiant_classifications')
+        else:
+            messages.success(request, f'La mis à jour  de l\'étudiant {etudiant.user.last_name} {etudiant.user.first_name} a échoué.')
+            return redirect('liste_etudiant_classifications')
+
+    return JsonResponse({'success': False, 'error_message': 'Méthode non autorisée'})
+
+
 
 
 
@@ -719,6 +994,13 @@ def taux_etudiants(request):
     dut_info_taux = Etudiant.objects.filter(cycle__startswith='dut', filiere='informatique').count()
     dut_admin_taux = Etudiant.objects.filter(cycle__startswith='dut', filiere='administration').count()
     
+    print(licence_info_taux)
+    print(licence_admin_taux)
+
+    print(licence_admin_taux)
+
+    print(licence_admin_taux)
+
     return render(request, 'pages/taux-etudiants.html', {
         **user_data,  # Ajoute les données de l'utilisateur au contexte
         'licence_info_taux': licence_info_taux,
@@ -1122,6 +1404,62 @@ def imprimer_toutes_les_demandes_attestations_dem(request):
 
 
 
+
+# from django.db.models.signals import pre_save
+# from django.dispatch import receiver
+# from django.core.exceptions import ValidationError
+# # Fonction pour obtenir l'année en cours
+# def get_current_academic_year():
+#     current_year = datetime.now().year
+#     return f"{current_year} - {current_year + 1}"
+
+# # Filtrage par année académique
+# def get_etudiants_par_annee():
+#     current_academic_year = get_current_academic_year()
+#     return Etudiant.objects.filter(annee_academique__lte=current_academic_year)
+
+# # Exemple de validation pour éviter les années futures
+# @receiver(pre_save, sender=Etudiant)
+# def validate_annee_academique(sender, instance, **kwargs):
+#     current_academic_year = get_current_academic_year()
+#     if instance.annee_academique > current_academic_year:
+#         raise ValidationError("L'année académique ne peut pas être supérieure à l'année en cours.")
+
+
+def imprimer_etudiant_par_annee(request, annee_academique):
+    # Récupérer les données utilisateur
+    user_data = {
+        key: request.session.get(key)
+        for key in [
+            'matricule', 'nom', 'prenom', 'telephone', 'date_nais',
+            'civilite', 'role', 'email', 'genre', 'mot_de_passe',
+            'confirmer_mot_de_passe', 'imagesprofiles'
+        ]
+    }
+
+    # Filtrer les étudiants par année académique
+    etudiants = Etudiant.objects.filter(annee_academique=annee_academique, statut='Ancien étudiant')
+
+    # Charger le template HTML
+    template_path = 'pages/imprimer_etudiant_par_annee.html'
+    template = get_template(template_path)
+    
+    # Remplir le template avec les données des étudiants
+    context = {'etudiants': etudiants, 'user_data': user_data, 'annee_academique': annee_academique, 'datey': date.today()}
+    html = template.render(context)
+
+    # Créer la réponse PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="etudiants_{annee_academique}.pdf"'
+
+    # Convertir le HTML en PDF
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    # Vérifier si la conversion a réussi
+    if pisa_status.err:
+        return HttpResponse('Erreur lors de la génération du PDF', status=500)
+
+    return response
 
 def custom_logout(request):
     logout(request)

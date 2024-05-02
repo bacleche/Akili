@@ -2,7 +2,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.contrib.auth.models import User
-
+import datetime
 class UtilisateurManager(models.Manager):
     pass
 
@@ -39,14 +39,19 @@ class Utilisateur(models.Model):
         abstract = True
 
     def clean(self):
-        """
-        Méthode de validation pour s'assurer que l'utilisateur a au moins 18 ans.
-        """
+        # Assurez-vous que `self.date_nais` est bien converti en `datetime.date`
+        if isinstance(self.date_nais, str):  # Si c'est une chaîne de caractères, convertissez-la
+            try:
+                self.date_nais = datetime.datetime.strptime(self.date_nais, '%Y-%m-%d').date()
+            except ValueError:
+                raise ValidationError({'date_nais': "Format de date incorrect. Utilisez AAAA-MM-JJ."})
+
         age_minimum = 18
         age_maximum = 120  # Vous pouvez ajuster cette valeur selon vos besoins
 
         if self.date_nais:
-            age = timezone.now().year - self.date_nais.year - ((timezone.now().month, timezone.now().day) < (self.date_nais.month, self.date_nais.day))
+            today = timezone.now().date()  # Utilisez `.date()` pour obtenir un objet `datetime.date`
+            age = today.year - self.date_nais.year - ((today.month, today.day) < (self.date_nais.month, self.date_nais.day))
 
             if age < age_minimum or age > age_maximum:
                 raise ValidationError({'date_nais': f"Âge invalide. Vous devez avoir entre {age_minimum} et {age_maximum} ans."})

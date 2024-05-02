@@ -367,6 +367,38 @@
             </div>
           </div>
           
+          <h1>Liste des Etudiants Anciens</h1>
+
+          <div class="container">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card mb-4">
+                  <div class="card-body">
+                    <h5 class="card-title" style="font-size:20px;"> <b><i class="fa fa-list-ul"></i> Liste des anciens en LICENCE</b></h5>
+                    <p class="card-text">Une liste explicite pour avoir une vision global sur les etudiants anciens</p>
+                    <a href="{% url 'listes_anciens_lic_info' %}" class="btn btn-primary">LICENCE-INF </a>
+                    <a href="{% url 'listes_anciens_lic_ap' %}" class="btn btn-primary">LICENCE-AP </a>
+                  </div>
+                </div>
+              </div>
+          
+              <div class="col-md-6">
+                <div class="card mb-4">
+                  <div class="card-body">
+                    <h5 class="card-title" style="font-size:20px;"> <b><i class="fa fa-list-ul"></i>Liste des anciens en DUT</b></h5>
+                    <p class="card-text">Une liste explicite pour avoir une vision global sur les etudiants anciens</p>
+                    <a href="{% url 'listes_anciens_dut_info'%}" class="btn btn-primary">DUT  - INFO </a>
+                    <a href="{% url 'listes_anciens_dut_ap' %}" class="btn btn-primary">DUT  - AP </a>
+
+                  </div>
+                </div>
+              </div>
+              <!-- Répétez ce bloc pour les autres cartes -->
+            
+              <!-- Ajoutez autant de cartes que nécessaire -->
+            </div>
+          </div>
+          
         
 
         </section><!-- /.content -->

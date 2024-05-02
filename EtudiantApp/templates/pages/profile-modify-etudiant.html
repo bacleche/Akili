@@ -6,6 +6,8 @@
     <title>AKILI - ETUDIANT</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.2 -->
+    <link href="{% static 'assets/css/arrangeStyle.css' %}" rel="stylesheet" type="text/css" />    
+
     <link href="{% static 'assets_dash/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />    
     <!-- FontAwesome 4.3.0 -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -29,7 +31,7 @@
     <!-- bootstrap wysihtml5 - text editor -->
     <link href="{% static 'assets_dash/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css' %}" rel="stylesheet" type="text/css" />
 
-
+   
   </head>
   <style>
   .content-wrapper {
@@ -254,7 +256,7 @@
             <small>Panneau de Control | {{role|upper}} </small>
           </h1>
           <ol class="breadcrumb">
-            <li><a href="{% url 'student_space' %}"><i class="fa fa-dashboard"></i> Mis à Jour</a></li>
+            <li><a href="{% url 'student_space' %}"><i class="fa fa-dashboard"></i> Accueil</a></li>
             <li class="active">Tableau de Bord</li>
           </ol>
         </section>
@@ -268,10 +270,12 @@
         </div><!-- /.row -->
           <!-- Main row -->
           <div class="row mt-2">
-            {% if error %}
-                  <div class="alert alert-danger" role="alert">
-                    {{ error }}
-                  </div>
+            {% if messages %}
+                <div class="alert alert-danger" role="alert">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
             {% endif %}
             <form action="{% url 'mis_a_jour_etudiant' %}" method="POST" role="form" class="php-email-form" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -303,7 +307,7 @@
               </div>
               <div class="col-md-6 form-group">
                 <label for="surname">Date de Naissance:</label>
-                <input type="date" name="date_nais" class="form-control" id="date"  placeholder="Votre date de naissance" value="{{date_nais}}" required="">
+                <input type="date" name="date_nais" class="form-control" id="date"  placeholder="Votre date de naissance"  value="{{date_nais}}" required="">
               </div>
               <div class="col-md-6 form-group hidden">
                 <label for="role">role:</label>
@@ -311,12 +315,12 @@
               </div>
               <div class="col-md-6 form-group">
                 <label for="password">Mot de passe:</label>
-                <input type="password" class="form-control" name="password" id="password" placeholder="Votre mot de passe" value="{{mot_de_passe}}" required="">
+                <input type="password" class="form-control" name="password" id="password" placeholder="Votre mot de passe"  required="">
                 
             </div>
             <div class="col-md-6 form-group">
                 <label for="password_conf">Confirmer Mot de passe:</label>
-                <input type="password" class="form-control" name="password_conf" id="password_conf" placeholder="Confirmation" value="{{mot_de_passe}}" required="">
+                <input type="password" class="form-control" name="password_conf" id="password_conf" placeholder="Confirmation" required="">
               
             </div>
             
@@ -325,7 +329,7 @@
                 <input type="file" name="new_profile_image" class="form-control" id="new_profile_image">
               </div>
             <div class="col-md-6 form-group">
-              <button type="submit" class="btn btn-primary form-control">Enregistrer les modifications</button>
+              <button type="submit" id="enregistrer" class="btn btn-primary form-control">Enregistrer les modifications</button>
             </div>
             </form>
           </div><!-- /.row (main row) -->
@@ -349,9 +353,9 @@
                     <p id="contenu">{{ notification.contenu }}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="accepterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Accepter {{notification.expediteur.id}}</button>
-                    <button type="button" class="btn btn-danger" onclick="rejeterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Rejeter</button>
-                    <button type="button" class="btn btn-warning" onclick="compriS({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Compris</button>
+                    <button type="button" class="btn btn-primary typrimary" onclick="accepterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Accepter {{notification.expediteur.id}}</button>
+                    <button type="button" class="btn btn-danger tydanger" onclick="rejeterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Rejeter</button>
+                    <button type="button" class="btn btn-warning tywarning" onclick="compriS({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Compris</button>
 
                 </div>
             </div>
@@ -407,12 +411,13 @@
 
       let contenu = $('#contenu').text();
       console.log(contenu)
-      if(contenu.includes("refusé") || contenu.includes("accepté")) {
-        $('.btn-primary').hide();
-        $('.btn-danger').hide();
+      if(contenu.includes("refusé") || contenu.includes("accepté") || contenu.includes("traitement") || contenu.includes("finalisée") || contenu.includes("veuillez télécharger ou visualiser")) {
+
+        $('.typrimary').hide();
+        $('.tydanger').hide();
 
       } else {
-        $('.btn-warning').hide()
+        $('.tywarning').hide()
       }
      
       function accepterNotification(notificationId) {
@@ -535,6 +540,27 @@
     function reloadPage() {
       location.reload();
     }
+  </script>
+
+  <script type="text/javascript">
+    // Écouteur d'événement pour la modification de la date de naissance
+document.getElementById('date').addEventListener('change', function() {
+  var dateNaissance = new Date(this.value);
+  var today = new Date();
+  var age = today.getFullYear() - dateNaissance.getFullYear();
+  var monthDiff = today.getMonth() - dateNaissance.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dateNaissance.getDate())) {
+    age--;
+  }
+  
+  // Vérifier si l'âge est inférieur à 18 ans
+  if (age < 18) {
+    document.getElementById('enregistrer').disabled = true; // Désactiver le bouton d'enregistrement
+    alert("Vous devez avoir aumoins 18 ans ! revoyer votre Date de naissance")
+  } else {
+    document.getElementById('enregistrer').disabled = false; // Activer le bouton d'enregistrement
+  }
+});
   </script>
   </body>
 </html>

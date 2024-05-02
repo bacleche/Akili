@@ -67,65 +67,136 @@ def profile_details_directeur(request):
     return render(request, 'pages-dir/update-profiles-directeur.html', user_data)
 
 
+from datetime import date
+import json
 
+class DateEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, date):
+            return obj.isoformat()  # Pour convertir les objets de type date en JSON
+        return super().default(obj)
 
 def mis_a_jour_directeur(request):
-    # Récupérez l'utilisateur actuel (CSS dans ce cas)
-    user = Directeur.objects.get(matricule=request.session.get('matricule'))
     
+    user = Directeur.objects.get(matricule=request.session.get('matricule'))
+   
+
     if request.method == 'POST':
-        # Si la requête est de type POST, récupérez les données du formulaire
+        # Récupérez les données du formulaire
         user.user.last_name = request.POST.get('nom')
         user.user.first_name = request.POST.get('prenom')
         user.telephone = request.POST.get('phone')
-        user.date_nais = request.POST.get('date')
+
+        # Vérifiez le format de la date et mettez à jour
+        date_nais_str = request.POST.get('date_nais')
+        if date_nais_str:
+            try:
+                date_nais = date.fromisoformat(date_nais_str)
+                user.date_nais = date_nais
+                request.session['date_nais'] = date_nais.isoformat()  # Mise à jour de la session
+            except ValueError:
+                messages.error(request, "Format de date invalide.")
+                return render(request, 'pages-dir/update-profiles-directeur.html', {'user': user})
+
         user.civilite = request.POST.get('civilite')
-        user.role = request.POST.get('surname')  # Assurez-vous que le nom du champ correspond
+        user.role = request.POST.get('role')  # Correction de la clé pour 'role'
         user.user.email = request.POST.get('email')
-        user.role = request.POST.get('role')
-        user.date_nais = request.POST.get('date_nais')
-        pas1 = request.POST.get('password')
-        pas2 = request.POST.get('password_conf')  # Utilisez set_password pour définir le mot de passe
-          # Utilisez set_password pour définir le mot de passe
+
+        # Vérification des mots de passe
+        pas1 = request.POST.get('password', '').strip()  # Supprime les espaces indésirables
+        pas2 = request.POST.get('password_conf', '').strip()
+
         if pas1 == pas2:
-            if len(pas1) < 8 or len(pas2) < 8 : 
-                print('ddddddeuueueueue')
-                # return render(request, 'pages/profile-modify.html', {'user': user , 'error':'Aumoins 8 caractères'})
-                messages.error(request, 'Au moins 8 caractères')
+            if len(pas1) < 8 or len(pas2) < 8:
+                messages.error(request, 'Le mot de passe doit comporter au moins 8 caractères.')
                 return redirect('profile_details_directeur')
-            user.user.set_password(request.POST.get('password'))
-         
-            # Gérez l'image de profil
+
+            user.user.set_password(pas1)  # Utilisation de `set_password` pour plus de sécurité
+
+            # Gestion de l'image de profil
             if 'new_profile_image' in request.FILES:
                 image = request.FILES['new_profile_image']
-                # Enregistrez l'image avec un nouveau nom pour éviter les collisions
-                image_name = f"profile_image_{user.matricule}.{image.name.split('.')[-1]}"
-                user.imagesprofiles.save(image_name, image)
+                image_extension = image.name.split('.')[-1]
+                image_name = f"profile_image_{user.matricule}.{image_extension}"
+                user.imagesprofiles.save(image_name, image)  # Nom unique pour l'image
 
-            # Sauvegardez les modifications
+            # Sauvegarde des modifications
             user.user.save()
 
-            # Mettez à jour les données de la session avec les nouvelles valeurs
+            # Mise à jour des données de session
             request.session['nom'] = user.user.last_name
             request.session['prenom'] = user.user.first_name
             request.session['telephone'] = user.telephone
-            request.session['date_nais'] = user.date_nais
             request.session['civilite'] = user.civilite
             request.session['role'] = user.role
             request.session['email'] = user.user.email
-            request.session['genre'] = user.genre
-            # request.session['mot_de_passe'] = user.mot_de_passe
-            # request.session['confirmer_de_passe'] = user.confirmer_mot_de_passe
-            request.session['imagesprofiles'] = user.imagesprofiles.url
+            request.session['imagesprofiles'] = user.imagesprofiles.url  # Stocke le lien de l'image de profil
 
-            return redirect('Profiles_directeur')  # Redirigez vers la page de détails après la modification
+            return redirect('Profiles_directeur')  # Redirection après mise à jour réussie
 
         else:
-            print('ddddddeuueueueue')
-            messages.error(request, 'Les mots de passe doivent etre identiques')
+            messages.error(request, 'Les mots de passe ne correspondent pas.')
             return redirect('profile_details_directeur')
 
     return render(request, 'pages-dir/update-profiles-directeur.html', {'user': user})
+
+# def mis_a_jour_directeur(request):
+#     # Récupérez l'utilisateur actuel (CSS dans ce cas)
+#     user = Directeur.objects.get(matricule=request.session.get('matricule'))
+    
+#     if request.method == 'POST':
+#         # Si la requête est de type POST, récupérez les données du formulaire
+#         user.user.last_name = request.POST.get('nom')
+#         user.user.first_name = request.POST.get('prenom')
+#         user.telephone = request.POST.get('phone')
+#         user.date_nais = request.POST.get('date')
+#         user.civilite = request.POST.get('civilite')
+#         user.role = request.POST.get('surname')  # Assurez-vous que le nom du champ correspond
+#         user.user.email = request.POST.get('email')
+#         user.role = request.POST.get('role')
+#         user.date_nais = request.POST.get('date_nais')
+#         pas1 = request.POST.get('password')
+#         pas2 = request.POST.get('password_conf')  # Utilisez set_password pour définir le mot de passe
+#           # Utilisez set_password pour définir le mot de passe
+#         if pas1 == pas2:
+#             if len(pas1) < 8 or len(pas2) < 8 : 
+#                 print('ddddddeuueueueue')
+#                 # return render(request, 'pages/profile-modify.html', {'user': user , 'error':'Aumoins 8 caractères'})
+#                 messages.error(request, 'Au moins 8 caractères')
+#                 return redirect('profile_details_directeur')
+#             user.user.set_password(request.POST.get('password'))
+         
+#             # Gérez l'image de profil
+#             if 'new_profile_image' in request.FILES:
+#                 image = request.FILES['new_profile_image']
+#                 # Enregistrez l'image avec un nouveau nom pour éviter les collisions
+#                 image_name = f"profile_image_{user.matricule}.{image.name.split('.')[-1]}"
+#                 user.imagesprofiles.save(image_name, image)
+
+#             # Sauvegardez les modifications
+#             user.user.save()
+
+#             # Mettez à jour les données de la session avec les nouvelles valeurs
+#             request.session['nom'] = user.user.last_name
+#             request.session['prenom'] = user.user.first_name
+#             request.session['telephone'] = user.telephone
+#             request.session['date_nais'] = user.date_nais
+#             request.session['civilite'] = user.civilite
+#             request.session['role'] = user.role
+#             request.session['email'] = user.user.email
+#             request.session['genre'] = user.genre
+#             # request.session['mot_de_passe'] = user.mot_de_passe
+#             # request.session['confirmer_de_passe'] = user.confirmer_mot_de_passe
+#             request.session['imagesprofiles'] = user.imagesprofiles.url
+
+#             return redirect('Profiles_directeur')  # Redirigez vers la page de détails après la modification
+
+#         else:
+#             print('ddddddeuueueueue')
+#             messages.error(request, 'Les mots de passe doivent etre identiques')
+#             return redirect('profile_details_directeur')
+
+#     return render(request, 'pages-dir/update-profiles-directeur.html', {'user': user})
 
 from django.core.paginator import Paginator
 

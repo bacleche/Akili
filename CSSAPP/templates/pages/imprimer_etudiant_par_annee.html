@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Liste des Anciens Étudiants - Année {{ annee_academique }}</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Étudiants de l'année académique {{ annee_academique }}</h1>
+    <p>Date: {{ datey }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Identification</th>
+                <th>Niveaux</th>
+                <th>Cycle</th>
+                <th>Filière</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if etudiants %}
+            {% for etudiant in etudiants %}
+            <tr>
+                <td>{{ etudiant.user.last_name }}</td>
+                <td>{{ etudiant.user.first_name }}</td>
+                <td>{{ etudiant.Identification }}</td>
+                <td>{{ etudiant.niveaux }}</td>
+                <td>{{ etudiant.cycle }}</td>
+                <td>{{ etudiant.filiere }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="6">Aucun étudiant trouvé pour cette année académique.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</body>
+</html>

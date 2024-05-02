@@ -324,12 +324,12 @@
               </div>
               <div class="col-md-6 form-group">
                 <label for="password">Mot de passe:</label>
-                <input type="password" class="form-control" name="password" id="password" placeholder="Votre mot de passe" value="{{mot_de_passe}}" required="">
+                <input type="password" class="form-control" name="password" id="password" placeholder="Votre mot de passe"  required="">
                 
             </div>
             <div class="col-md-6 form-group">
                 <label for="password_conf">Confirmer Mot de passe:</label>
-                <input type="password" class="form-control" name="password_conf" id="password_conf" placeholder="Confirmation" value="{{mot_de_passe}}" required="">
+                <input type="password" class="form-control" name="password_conf" id="password_conf" placeholder="Confirmation"  required="">
               
             </div>
             
@@ -338,7 +338,7 @@
                 <input type="file" name="new_profile_image" class="form-control" id="new_profile_image">
               </div>
             <div class="col-md-6 form-group">
-              <button type="submit" class="btn btn-primary form-control">Enregistrer les modifications</button>
+              <button type="submit" id="enregistrer" class="btn btn-primary form-control">Enregistrer les modifications</button>
             </div>
             </form>
           </div><!-- /.row (main row) -->
@@ -441,6 +441,25 @@
         location.reload();
       }
     </script>
-
+    <script type="text/javascript">
+      // Écouteur d'événement pour la modification de la date de naissance
+        document.getElementById('date').addEventListener('change', function() {
+          var dateNaissance = new Date(this.value);
+          var today = new Date();
+          var age = today.getFullYear() - dateNaissance.getFullYear();
+          var monthDiff = today.getMonth() - dateNaissance.getMonth();
+          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dateNaissance.getDate())) {
+            age--;
+          }
+          
+          // Vérifier si l'âge est inférieur à 18 ans
+          if (age < 18) {
+            document.getElementById('enregistrer').disabled = true; // Désactiver le bouton d'enregistrement
+            alert("Vous devez avoir aumoins 18 ans ! revoyer votre Date de naissance")
+          } else {
+            document.getElementById('enregistrer').disabled = false; // Activer le bouton d'enregistrement
+          }
+        });
+    </script>
   </body>
 </html>

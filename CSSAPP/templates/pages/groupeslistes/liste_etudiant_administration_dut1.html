@@ -170,7 +170,7 @@
                       <a href="#" class="btn btn-default btn-flat">Profile</a>
                     </div>
                     <div class="pull-right">
-                      <a href="{% url 'deconnexion' %}" class="btn btn-default btn-flat">Sign out</a>
+                      <a href="{% url 'deconnexion' %}" class="btn btn-default btn-flat">deconnexion</a>
                     </div>
                   </li>
                 </ul>
@@ -261,6 +261,8 @@
             <ul class="treeview-menu">
               <li><a href="{% url 'liste_Attestations' %}"><i class="fa fa-circle-o"></i>Classeur attestations</a></li>
               <li><a href="{% url 'liste_bulletinsf' %}"><i class="fa fa-circle-o"></i> Classeur Bulletins</a></li>
+              <li><a href="{% url 'historique_demandes' %}"><i class="fa fa-circle-o"></i>Historiques</a></li>
+
             </ul>
           </li>
             <li><a href="{% url 'deconnexion' %}"><i class="fa fa-sign-out"></i> Se Deconnecter</a></li>

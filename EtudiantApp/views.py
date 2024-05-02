@@ -54,60 +54,128 @@ def profile_details_etudiant(request):
     return render(request, 'pages/profile-modify-etudiant.html', user_data)
 
 
+# def mis_a_jour_etudiant(request):
+#     # Récupérez l'utilisateur actuel (CSS dans ce cas)
+#     user_data = Etudiant.objects.get(matricule=request.session.get('matricule'))
+    
+#     if request.method == 'POST':
+#         # Si la requête est de type POST, récupérez les données du formulaire
+#         user_data.user.last_name = request.POST.get('nom')
+#         user_data.user.first_name = request.POST.get('prenom')
+#         user_data.telephone = request.POST.get('phone')
+#         user_data.date_nais = request.POST.get('date')
+#         user_data.civilite = request.POST.get('civilite')
+#         user_data.role = request.POST.get('surname')  # Assurez-vous que le nom du champ correspond
+#         user_data.user.email = request.POST.get('email')
+#         user_data.role = request.POST.get('role')
+#         user_data.date_nais = request.POST.get('date_nais')
+#         pas1 = request.POST.get('password')
+#         pas2 = request.POST.get('password_conf')  # Utilisez set_password pour définir le mot de passe
+#           # Utilisez set_password pour définir le mot de passe
+#         if pas1 == pas2:
+#             user_data.user.set_password(request.POST.get('password'))
+         
+#             # Gérez l'image de profil
+#             if 'new_profile_image' in request.FILES:
+#                 image = request.FILES['new_profile_image']
+#                 image_extension = image.name.split('.')[-1]
+#                 image_name = f"profile_image_{user_data.matricule}.{image_extension}"
+#                 user_data.imagesprofiles.save(image_name, image)
+
+#             # Sauvegardez les modifications
+#             user_data.user.save()
+
+#             # Mettez à jour les données de la session avec les nouvelles valeurs
+#             request.session['nom'] = user_data.user.last_name
+#             request.session['prenom'] = user_data.user.first_name
+#             request.session['telephone'] = user_data.telephone
+#             request.session['date_nais'] = user_data.date_nais
+#             request.session['civilite'] = user_data.civilite
+#             request.session['role'] = user_data.role
+#             request.session['email'] = user_data.user.email
+#             request.session['genre'] = user_data.genre
+#             request.session['imagesprofiles'] = user_data.imagesprofiles.url
+
+#             return redirect('Profiles_etudiant')  # Redirigez vers la page de détails après la modification
+#         else:
+#             print('ddddddeuueueueue')
+#             return render(request, 'pages/profile-modify-etudiant.html', {'user_data': user_data , 'error':'non'})
+
+#     return render(request, 'pages/profile-modify-etudiant.html', {'user_data': user_data})
+
+from datetime import date
+import json
+
+class DateEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, date):
+            return obj.isoformat()  # Convertir les dates en format JSON-friendly
+        return super().default(obj)
+
 def mis_a_jour_etudiant(request):
-    # Récupérez l'utilisateur actuel (CSS dans ce cas)
+    # Récupérez l'utilisateur actuel
     user = Etudiant.objects.get(matricule=request.session.get('matricule'))
-    
-    
-    
+
     if request.method == 'POST':
-        # Si la requête est de type POST, récupérez les données du formulaire
+        # Récupérez les données du formulaire
         user.user.last_name = request.POST.get('nom')
         user.user.first_name = request.POST.get('prenom')
         user.telephone = request.POST.get('phone')
-        user.date_nais = request.POST.get('date')
+
+        # Sérialisation de la date
+        date_nais_str = request.POST.get('date_nais')
+        if date_nais_str:
+            try:
+                date_nais = date.fromisoformat(date_nais_str)
+                user.date_nais = date_nais
+                request.session['date_nais'] = date_nais.isoformat()  # Utilisation de `isoformat()`
+            except ValueError:
+                messages.error(request, "Format de date invalide.")
+                return render(request, 'pages/profile-modify-etudiant.html', {'user': user, 'error': 'Date invalide'})
+
         user.civilite = request.POST.get('civilite')
-        user.role = request.POST.get('surname')  # Assurez-vous que le nom du champ correspond
-        user.user.email = request.POST.get('email')
         user.role = request.POST.get('role')
-        user.date_nais = request.POST.get('date_nais')
-        pas1 = request.POST.get('password')
-        pas2 = request.POST.get('password_conf')  # Utilisez set_password pour définir le mot de passe
-          # Utilisez set_password pour définir le mot de passe
+        user.user.email = request.POST.get('email')
+
+        # Vérification des mots de passe
+        pas1 = request.POST.get('password', '').strip()  # Supprime les espaces superflus
+        pas2 = request.POST.get('password_conf', '').strip()
+
+        # Mettre à jour le mot de passe uniquement si les champs ne sont pas vides
         if pas1 == pas2:
-            user.user.set_password(request.POST.get('password'))
-         
-            # Gérez l'image de profil
+            if len(pas1) < 8 or len(pas2) < 8 : 
+                    messages.error(request, 'Le mot de passe doit comporter au moins 8 caractères.')
+                    return render(request, 'pages/profile-modify-etudiant.html', {'user': user})
+
+            user.user.set_password(pas1)  # Définit le mot de passe uniquement si les champs sont remplis
+                
+ 
+        # Gestion de l'image de profil
             if 'new_profile_image' in request.FILES:
                 image = request.FILES['new_profile_image']
-                # Enregistrez l'image avec un nouveau nom pour éviter les collisions
-                image_name = f"profile_image_{user.matricule}.{image.name.split('.')[-1]}"
-                user.imagesprofiles.save(image_name, image)
+                image_extension = image.name.split('.')[-1]
+                image_name = f"profile_image_{user.matricule}.{image_extension}"
+                user.imagesprofiles.save(image_name, image)  # Enregistrement avec un nom unique
 
-            # Sauvegardez les modifications
+        # Sauvegarder les modifications
             user.user.save()
 
-            # Mettez à jour les données de la session avec les nouvelles valeurs
+            # Mettez à jour les données de la session
             request.session['nom'] = user.user.last_name
             request.session['prenom'] = user.user.first_name
             request.session['telephone'] = user.telephone
-            request.session['date_nais'] = user.date_nais
             request.session['civilite'] = user.civilite
             request.session['role'] = user.role
             request.session['email'] = user.user.email
-            request.session['genre'] = user.genre
-            # request.session['mot_de_passe'] = user.mot_de_passe
-            # request.session['confirmer_de_passe'] = user.confirmer_mot_de_passe
             request.session['imagesprofiles'] = user.imagesprofiles.url
 
-            return redirect('Profiles_etudiant')  # Redirigez vers la page de détails après la modification
+            return redirect('Profiles_etudiant')
         else:
-            print('ddddddeuueueueue')
-            return render(request, 'pages/profile-modify-etudiant.html', {'user': user , 'error':'non'})
+            messages.error(request, 'Les mots de passe ne correspondent pas.')  # Mots de passe différents
+            return redirect('profile_details_etudiant')
+        # return redirect('Profiles_etudiant')  # Redirection après mise à jour réussie
 
     return render(request, 'pages/profile-modify-etudiant.html', {'user': user})
-
-
 
 # def poster_memoire(request):
 #     user_data = {key: request.session.get(key) for key in ['matricule', 'Identification', 'nom', 'prenom', 'telephone', 'date_nais', 'civilite', 'role', 'email', 'genre', 'mot_de_passe', 'confirmer_mot_de_passe', 'imagesprofiles' , 'cycle', 'filiere' , 'niveaux']}

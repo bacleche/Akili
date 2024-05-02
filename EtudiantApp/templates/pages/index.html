@@ -6,6 +6,7 @@
     <title>AKILI - ETUDIANT</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <!-- Bootstrap 3.3.2 -->
+    <link href="{% static 'assets/css/arrangeStyle.css' %}" rel="stylesheet" type="text/css" />    
     <link href="{% static 'assets_dash/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />    
     <!-- FontAwesome 4.3.0 -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -331,9 +332,9 @@
                     <p id="contenu">{{ notification.contenu }}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="accepterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Accepter {{notification.expediteur.id}}</button>
-                    <button type="button" class="btn btn-danger" onclick="rejeterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Rejeter</button>
-                    <button type="button" class="btn btn-warning" onclick="compriS({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Compris</button>
+                    <button type="button" class="btn btn-primary typrimary" onclick="accepterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Accepter {{notification.expediteur.id}}</button>
+                    <button type="button" class="btn btn-danger tydanger" onclick="rejeterNotification({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Rejeter</button>
+                    <button type="button" class="btn btn-warning tywarning" onclick="compriS({{ notification.id }})" data-expediteur="{{ notification.expediteur.id }}" data-destinataire="{{ notification.destinataire.id }}">Compris</button>
 
                 </div>
             </div>
@@ -348,12 +349,12 @@
 
       let contenu = $('#contenu').text();
       console.log(contenu)
-      if(contenu.includes("refusé") || contenu.includes("accepté") || contenu.includes("traitement") || contenu.includes("finalisée")) {
-        $('.btn-primary').hide();
-        $('.btn-danger').hide();
+      if(contenu.includes("refusé") || contenu.includes("accepté") || contenu.includes("traitement") || contenu.includes("finalisée") || contenu.includes("veuillez télécharger ou visualiser")) {
+        $('.typrimary').hide();
+        $('.tydanger').hide();
 
       } else {
-        $('.btn-warning').hide()
+        $('.tywarning').hide()
       }
      
       function accepterNotification(notificationId) {
